@@ -1,20 +1,8 @@
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  LineChart, Line, PieChart, Pie, Cell, Area, AreaChart
-} from "recharts";
-import { 
-  TrendingUp, DollarSign, PieChart as PieChartIcon, BarChart3, 
-  Brain, FileText, CreditCard, Zap, CheckCircle, Star,
-  Calendar, Download, MessageSquare, BookOpen, Shield
-} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import AppSidebar from "@/components/AppSidebar";
 import Header from "@/components/Header";
 import OnboardingFlow from "@/components/OnboardingFlow";
 import Dashboard from "@/components/Dashboard";
@@ -63,15 +51,24 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
-      <Header 
-        activeSection={activeSection} 
-        setActiveSection={setActiveSection}
-        isOnboarded={isOnboarded}
-      />
-      
-      <main className="container mx-auto px-4 py-8">
-        {renderContent()}
-      </main>
+      <SidebarProvider>
+        <div className="min-h-screen flex w-full">
+          {isOnboarded && (
+            <AppSidebar 
+              activeSection={activeSection} 
+              setActiveSection={setActiveSection}
+            />
+          )}
+          
+          <div className="flex-1 flex flex-col">
+            <Header isOnboarded={isOnboarded} />
+            
+            <main className="flex-1 container mx-auto px-4 py-8">
+              {renderContent()}
+            </main>
+          </div>
+        </div>
+      </SidebarProvider>
     </div>
   );
 };
