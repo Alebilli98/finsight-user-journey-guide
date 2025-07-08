@@ -34,7 +34,7 @@ const AppSidebar = ({ activeSection, setActiveSection }: AppSidebarProps) => {
   ];
 
   return (
-    <Sidebar className={collapsed ? "w-14" : "w-60"} collapsible>
+    <Sidebar className={collapsed ? "w-14" : "w-60"} collapsible="icon">
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel className="flex items-center space-x-2 px-2 py-4">
