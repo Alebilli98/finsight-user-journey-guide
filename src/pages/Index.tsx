@@ -12,6 +12,7 @@ import Analytics from "@/components/Analytics";
 import Reports from "@/components/Reports";
 import AISolution from "@/components/AISolution";
 import LendingSolution from "@/components/LendingSolution";
+import Calendar from "@/components/Calendar";
 import Packages from "@/components/Packages";
 import UserProfile from "@/components/UserProfile";
 
@@ -90,6 +91,8 @@ const Index = () => {
         return <AISolution />;
       case "lending":
         return <LendingSolution />;
+      case "calendar":
+        return <Calendar />;
       case "packages":
         return <Packages />;
       case "profile":
