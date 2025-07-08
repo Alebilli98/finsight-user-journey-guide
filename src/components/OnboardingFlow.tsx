@@ -1,214 +1,217 @@
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import { 
-  CheckCircle, ArrowRight, Zap, Shield, BookOpen, MessageSquare,
-  Calendar, Clock, Users, Play
+  TrendingUp, Shield, Zap, Globe, Users, CheckCircle,
+  Building2, MapPin, Target, Eye, Heart
 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
 
 interface OnboardingFlowProps {
   onComplete: () => void;
 }
 
 const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [selectedIntegration, setSelectedIntegration] = useState<string | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const { toast } = useToast();
+  const [currentStep, setCurrentStep] = useState(0);
 
-  const integrations = [
-    { id: "quickbooks", name: "QuickBooks", logo: "📊", popular: true },
-    { id: "xero", name: "Xero", logo: "📈", popular: false },
-    { id: "asana", name: "Asana", logo: "✅", popular: false },
-    { id: "freshbooks", name: "FreshBooks", logo: "📋", popular: false },
-    { id: "sage", name: "Sage", logo: "💼", popular: false },
-    { id: "wave", name: "Wave", logo: "🌊", popular: false },
+  const steps = [
+    "Welcome to FinSight",
+    "Our Mission & Vision", 
+    "Connect Your Data",
+    "Setup Complete"
   ];
 
-  const handleIntegrationSelect = (integrationId: string) => {
-    setSelectedIntegration(integrationId);
-    toast({
-      title: "Integration Selected",
-      description: `${integrations.find(i => i.id === integrationId)?.name} integration selected.`,
-    });
-  };
+  const integrations = [
+    { name: "QuickBooks", description: "Connect your accounting data", icon: "📊" },
+    { name: "Xero", description: "Sync financial records", icon: "💼" },
+    { name: "Asana", description: "Project management integration", icon: "✅" },
+    { name: "Banking APIs", description: "Real-time transaction data", icon: "🏦" },
+  ];
 
-  const handleNextStep = () => {
-    if (currentStep === 1 && !selectedIntegration) {
-      toast({
-        title: "Please select an integration",
-        description: "Choose an accounting software to continue.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (currentStep < 4) {
+  const nextStep = () => {
+    if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
-      handleComplete();
+      onComplete();
     }
   };
 
-  const handleComplete = () => {
-    setIsProcessing(true);
-    setTimeout(() => {
-      onComplete();
-    }, 2000);
-  };
-
-  const renderStep = () => {
+  const renderStepContent = () => {
     switch (currentStep) {
-      case 1:
+      case 0:
         return (
-          <div className="space-y-6">
-            <div className="text-center space-y-4">
-              <h2 className="text-2xl font-bold text-gray-900">Welcome to FinSight!</h2>
-              <p className="text-gray-600 max-w-2xl mx-auto">
-                We're here to empower your startup/company with cutting-edge financial analysis 
-                and AI-powered advice. Let's get you set up to thrive.
-              </p>
+          <div className="text-center space-y-6">
+            <div className="bg-gradient-to-r from-blue-600 to-green-600 p-4 rounded-full w-20 h-20 mx-auto flex items-center justify-center">
+              <TrendingUp className="h-10 w-10 text-white" />
             </div>
-
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900">Step 1: Select Integration</h3>
-              <p className="text-gray-600">
-                Choose your accounting software to securely link your accounts and import financial data.
-              </p>
-              
-              <div className="grid md:grid-cols-3 gap-4">
-                {integrations.map((integration) => (
-                  <Card 
-                    key={integration.id}
-                    className={`cursor-pointer transition-all hover:shadow-md ${
-                      selectedIntegration === integration.id 
-                        ? 'ring-2 ring-blue-500 bg-blue-50' 
-                        : 'hover:bg-gray-50'
-                    }`}
-                    onClick={() => handleIntegrationSelect(integration.id)}
-                  >
-                    <CardContent className="p-4 text-center">
-                      <div className="text-2xl mb-2">{integration.logo}</div>
-                      <h4 className="font-medium text-gray-900">{integration.name}</h4>
-                      {integration.popular && (
-                        <Badge variant="secondary" className="mt-2 bg-green-100 text-green-800">
-                          Popular
-                        </Badge>
-                      )}
-                    </CardContent>
-                  </Card>
-                ))}
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome to FinSight</h2>
+              <p className="text-lg text-gray-600 mb-4">Your AI-Powered Financial Intelligence Platform</p>
+              <div className="flex justify-center">
+                <Badge className="bg-blue-100 text-blue-800 px-3 py-1">
+                  <MapPin className="h-3 w-3 mr-1" />
+                  Dubai, UAE Based
+                </Badge>
               </div>
+            </div>
+            <div className="bg-gradient-to-r from-blue-50 to-green-50 p-6 rounded-lg">
+              <p className="text-gray-700 leading-relaxed">
+                Empowering startups and SMEs to compete with larger companies through 
+                cutting-edge financial analysis and AI-powered advice. Transform your 
+                financial management and unlock your business potential.
+              </p>
             </div>
           </div>
         );
 
-      case 2:
+      case 1:
         return (
-          <div className="space-y-6">
-            <div className="text-center space-y-4">
-              <CheckCircle className="h-12 w-12 text-green-500 mx-auto" />
-              <h2 className="text-2xl font-bold text-gray-900">Secure Account Linking</h2>
-              <p className="text-gray-600 max-w-2xl mx-auto">
-                Your {integrations.find(i => i.id === selectedIntegration)?.name} account will be 
-                securely connected to import your financial data and power personalized insights.
-              </p>
+          <div className="space-y-8">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Our Mission & Vision</h2>
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-6">
+              <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+                <CardHeader>
+                  <CardTitle className="flex items-center space-x-2">
+                    <Target className="h-5 w-5 text-blue-600" />
+                    <span>Our Mission</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-700 leading-relaxed">
+                    To unleash the full potential of startups and SMEs, fostering their growth 
+                    through integrated technological solutions and solid financial advice, enabling 
+                    them to compete effectively with larger companies.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+                <CardHeader>
+                  <CardTitle className="flex items-center space-x-2">
+                    <Eye className="h-5 w-5 text-green-600" />
+                    <span>Our Vision</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-700 leading-relaxed">
+                    To be the leading AI-powered financial intelligence platform that empowers 
+                    every startup and SME to achieve financial mastery and sustainable growth.
+                  </p>
+                </CardContent>
+              </Card>
             </div>
 
-            <Card className="max-w-md mx-auto">
+            <Card>
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
-                  <Shield className="h-5 w-5 text-green-500" />
-                  <span>Security Features</span>
+                  <Heart className="h-5 w-5 text-purple-600" />
+                  <span>Our Core Values</span>
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex items-center space-x-2">
-                  <CheckCircle className="h-4 w-4 text-green-500" />
-                  <span className="text-sm">Bank-level encryption</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <CheckCircle className="h-4 w-4 text-green-500" />
-                  <span className="text-sm">Read-only access</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <CheckCircle className="h-4 w-4 text-green-500" />
-                  <span className="text-sm">SOC 2 Type II compliant</span>
+              <CardContent>
+                <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-4">
+                  {[
+                    { name: "Innovation", icon: Zap, color: "text-yellow-600" },
+                    { name: "Client Empowerment", icon: Users, color: "text-blue-600" },
+                    { name: "Integrity & Trust", icon: Shield, color: "text-green-600" },
+                    { name: "Accessibility", icon: Globe, color: "text-purple-600" },
+                    { name: "Excellence", icon: CheckCircle, color: "text-red-600" },
+                  ].map((value) => {
+                    const Icon = value.icon;
+                    return (
+                      <div key={value.name} className="text-center p-3">
+                        <Icon className={`h-6 w-6 ${value.color} mx-auto mb-2`} />
+                        <p className="text-sm font-medium text-gray-900">{value.name}</p>
+                      </div>
+                    );
+                  })}
                 </div>
               </CardContent>
             </Card>
           </div>
         );
 
-      case 3:
+      case 2:
         return (
           <div className="space-y-6">
-            <div className="text-center space-y-4">
-              <Clock className="h-12 w-12 text-blue-500 mx-auto animate-spin" />
-              <h2 className="text-2xl font-bold text-gray-900">Initial Data Sync</h2>
-              <p className="text-gray-600 max-w-2xl mx-auto">
-                FinSight is securely syncing and processing your historical financial information. 
-                This will take just a moment...
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Connect Your Financial Data</h2>
+              <p className="text-gray-600">
+                Securely link your business accounts to unlock personalized AI insights
               </p>
             </div>
 
-            <div className="max-w-md mx-auto">
-              <Progress value={75} className="h-2" />
-              <p className="text-sm text-gray-500 mt-2 text-center">Processing financial data...</p>
+            <div className="grid md:grid-cols-2 gap-4">
+              {integrations.map((integration, index) => (
+                <Card key={index} className="hover:shadow-md transition-shadow cursor-pointer border-2 hover:border-blue-300">
+                  <CardContent className="p-4">
+                    <div className="flex items-center space-x-3">
+                      <div className="text-2xl">{integration.icon}</div>
+                      <div>
+                        <h3 className="font-semibold text-gray-900">{integration.name}</h3>
+                        <p className="text-sm text-gray-600">{integration.description}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
 
-            <div className="grid md:grid-cols-2 gap-4 max-w-2xl mx-auto">
-              <Card>
-                <CardContent className="p-4 text-center">
-                  <BookOpen className="h-8 w-8 text-blue-500 mx-auto mb-2" />
-                  <h4 className="font-medium">Support Available</h4>
-                  <p className="text-sm text-gray-600">Our consultants are ready to help</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="p-4 text-center">
-                  <Calendar className="h-8 w-8 text-green-500 mx-auto mb-2" />
-                  <h4 className="font-medium">Book Interview</h4>
-                  <p className="text-sm text-gray-600">One-on-one introduction available</p>
-                </CardContent>
-              </Card>
+            <div className="bg-blue-50 p-4 rounded-lg">
+              <div className="flex items-start space-x-3">
+                <Shield className="h-5 w-5 text-blue-600 mt-0.5" />
+                <div>
+                  <h4 className="font-medium text-blue-900">Enterprise-Grade Security</h4>
+                  <p className="text-sm text-blue-700 mt-1">
+                    Your data is protected with bank-level encryption (AES-256) and stored in 
+                    compliance with GDPR and Dubai Free Zone regulations.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-green-50 p-4 rounded-lg">
+              <div className="flex items-start space-x-3">
+                <Building2 className="h-5 w-5 text-green-600 mt-0.5" />
+                <div>
+                  <h4 className="font-medium text-green-900">Expert Support Available</h4>
+                  <p className="text-sm text-green-700 mt-1">
+                    Need help? Our financial consultants are ready to assist with setup and 
+                    can schedule a one-on-one introduction interview.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         );
 
-      case 4:
+      case 3:
         return (
-          <div className="space-y-6">
-            <div className="text-center space-y-4">
-              <Play className="h-12 w-12 text-green-500 mx-auto" />
-              <h2 className="text-2xl font-bold text-gray-900">Quick Tour</h2>
-              <p className="text-gray-600 max-w-2xl mx-auto">
-                Get a brief, interactive introduction to the main sections of FinSight and 
-                start exploring your financial insights.
+          <div className="text-center space-y-6">
+            <div className="bg-green-100 p-4 rounded-full w-20 h-20 mx-auto flex items-center justify-center">
+              <CheckCircle className="h-10 w-10 text-green-600" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Setup Complete!</h2>
+              <p className="text-gray-600 mb-6">
+                Your financial data is being synced. This may take a few moments.
               </p>
             </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {[
-                { title: "Financial Health Dashboard", desc: "Real-time financial overview", icon: "📊" },
-                { title: "P&L and BS Analysis", desc: "Detailed financial statements", icon: "📈" },
-                { title: "AI Analysis", desc: "Intelligent recommendations", icon: "🤖" },
-                { title: "Process Automation", desc: "Streamline your workflows", icon: "⚡" },
-                { title: "Reports & Analytics", desc: "Comprehensive reporting", icon: "📋" },
-                { title: "Lending Solutions", desc: "Credit and funding guidance", icon: "💳" },
-              ].map((feature, index) => (
-                <Card key={index} className="hover:shadow-md transition-shadow">
-                  <CardContent className="p-4 text-center">
-                    <div className="text-2xl mb-2">{feature.icon}</div>
-                    <h4 className="font-medium text-gray-900">{feature.title}</h4>
-                    <p className="text-sm text-gray-600 mt-1">{feature.desc}</p>
-                  </CardContent>
-                </Card>
-              ))}
+            
+            <div className="bg-gradient-to-r from-blue-50 to-green-50 p-6 rounded-lg">
+              <h3 className="font-semibold text-gray-900 mb-3">What's Next?</h3>
+              <ul className="text-left text-gray-700 space-y-2">
+                <li>• Explore your Financial Health Dashboard</li>
+                <li>• Review AI-powered insights and recommendations</li>
+                <li>• Access cash flow forecasting and predictive analytics</li>
+                <li>• Generate professional financial reports</li>
+                <li>• Discover ESG analysis tools (Premium users)</li>
+              </ul>
             </div>
           </div>
         );
@@ -218,54 +221,39 @@ const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
     }
   };
 
-  if (isProcessing) {
-    return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto"></div>
-          <h2 className="text-xl font-semibold text-gray-900">Setting up your account...</h2>
-          <p className="text-gray-600">This will just take a moment</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="max-w-4xl mx-auto">
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-sm font-medium text-gray-500">
-            Step {currentStep} of 4
+          <h1 className="text-lg font-semibold text-gray-900">
+            Step {currentStep + 1} of {steps.length}
           </h1>
-          <div className="flex space-x-2">
-            {[1, 2, 3, 4].map((step) => (
-              <div
-                key={step}
-                className={`w-2 h-2 rounded-full ${
-                  step <= currentStep ? 'bg-blue-600' : 'bg-gray-300'
-                }`}
-              />
-            ))}
-          </div>
+          <span className="text-sm text-gray-500">
+            {Math.round(((currentStep + 1) / steps.length) * 100)}% Complete
+          </span>
         </div>
-        <Progress value={(currentStep / 4) * 100} className="h-1" />
+        <Progress value={((currentStep + 1) / steps.length) * 100} className="h-2" />
+        <div className="flex justify-between mt-2">
+          {steps.map((step, index) => (
+            <span
+              key={index}
+              className={`text-xs ${
+                index <= currentStep ? "text-blue-600 font-medium" : "text-gray-400"
+              }`}
+            >
+              {step}
+            </span>
+          ))}
+        </div>
       </div>
 
-      <Card>
+      <Card className="min-h-[500px]">
         <CardContent className="p-8">
-          {renderStep()}
+          {renderStepContent()}
           
-          <div className="flex justify-between mt-8">
-            <Button 
-              variant="outline" 
-              onClick={() => setCurrentStep(Math.max(1, currentStep - 1))}
-              disabled={currentStep === 1}
-            >
-              Previous
-            </Button>
-            <Button onClick={handleNextStep} className="flex items-center space-x-2">
-              <span>{currentStep === 4 ? 'Complete Setup' : 'Next'}</span>
-              <ArrowRight className="h-4 w-4" />
+          <div className="flex justify-end mt-8">
+            <Button onClick={nextStep} size="lg" className="px-8">
+              {currentStep === steps.length - 1 ? "Enter FinSight" : "Continue"}
             </Button>
           </div>
         </CardContent>

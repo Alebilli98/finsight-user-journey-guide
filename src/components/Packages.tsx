@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
   Check, Star, Zap, Crown, Shield, BarChart3, 
-  Users, Clock, HeadphonesIcon, TrendingUp
+  Users, Clock, HeadphonesIcon, TrendingUp, Building2,
+  Globe, Leaf, Brain, Calculator
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -13,22 +14,25 @@ const Packages = () => {
 
   const packages = [
     {
-      name: "Free",
+      name: "Free Tier",
       price: "$0",
       period: "forever",
-      description: "Perfect for getting started with basic financial insights",
+      description: "Basic financial understanding for startups getting started",
       features: [
         "Basic financial dashboard",
-        "Monthly reports (PDF)",
-        "Standard financial ratios",
+        "Essential financial ratios",
+        "Monthly financial reports (PDF)",
+        "Standard data visualizations",
         "Email support",
-        "Up to 3 integrations",
+        "Up to 2 data source integrations",
         "Basic AI insights (5 per month)",
+        "Cash flow overview",
       ],
       limitations: [
-        "Limited historical data (3 months)",
+        "Limited to 3 months historical data",
+        "Basic forecasting only",
+        "No ESG analysis",
         "No custom reports",
-        "No advanced analytics",
       ],
       cta: "Current Plan",
       popular: false,
@@ -37,25 +41,29 @@ const Packages = () => {
       color: "gray"
     },
     {
-      name: "Plus",
-      price: "$49",
+      name: "Plus Package",
+      price: "$79",
       period: "per month",
-      description: "Enhanced features for growing businesses with deeper analysis needs",
+      description: "Advanced financial analysis and AI-powered forecasting for growing businesses",
       features: [
-        "Advanced financial dashboard",
+        "Advanced Financial Health Dashboard",
+        "Complete Balance Sheet & P&L analysis",
+        "Profitability, efficiency & leverage ratios",
+        "AI-powered cash flow forecasting",
+        "Predictive analytics & scenario planning",
         "Weekly & monthly reports (PDF, Excel)",
-        "Comprehensive ratio analysis",
-        "Industry benchmarking",
-        "Unlimited integrations",
-        "Advanced AI insights (50 per month)",
-        "Cash flow forecasting",
-        "Custom financial reports",
+        "Advanced data visualizations",
+        "Unlimited data source integrations",
+        "Enhanced AI insights (100 per month)",
+        "Investment & financing analysis",
+        "Custom financial reporting",
         "Priority email support",
-        "Automated alerts & notifications",
+        "Mobile app access",
       ],
       limitations: [
         "12 months historical data",
-        "No ESG reporting",
+        "Basic ESG reporting only",
+        "No dedicated account manager",
       ],
       cta: "Upgrade to Plus",
       popular: true,
@@ -64,24 +72,27 @@ const Packages = () => {
       color: "blue"
     },
     {
-      name: "Premier",
-      price: "$149",
+      name: "Premier Package",
+      price: "$199",
       period: "per month",
-      description: "Complete financial management solution for established businesses",
+      description: "Complete financial intelligence platform with ESG analysis and expert advisory",
       features: [
-        "Premium dashboard with real-time data",
-        "Daily, weekly, monthly, yearly reports",
+        "Premium real-time dashboard",
+        "Complete financial ecosystem analysis",
+        "Advanced AI-driven predictive modeling",
+        "Unlimited AI consultations & insights",
+        "Full ESG (Environmental, Social, Governance) analysis",
+        "ESG performance reporting & benchmarking",
+        "Multi-scenario forecasting & modeling",
+        "Investment readiness assessments",
+        "Funding preparation tools",
         "All export formats (PDF, Excel, CSV, API)",
-        "Advanced forecasting & modeling",
-        "Unlimited AI consultations",
-        "ESG reporting & sustainability metrics",
-        "Multi-entity consolidation",
-        "Custom KPI tracking",
+        "Unlimited historical data access",
+        "Custom industry-specific modules",
         "Dedicated account manager",
         "Phone & chat support",
-        "API access",
-        "White-label reports",
-        "Unlimited historical data",
+        "API access for integrations",
+        "White-label reporting",
       ],
       limitations: [],
       cta: "Upgrade to Premier",
@@ -92,54 +103,61 @@ const Packages = () => {
     },
   ];
 
-  const addOns = [
+  const aiServices = [
     {
-      name: "Dedicated Account Manager",
-      price: "$299/month",
-      description: "Personal financial expert for strategic guidance",
+      name: "AI Reconciliation Guidance",
+      price: "From $299/project",
+      description: "Automated reconciliation with AI-powered anomaly detection",
+      icon: Calculator,
+    },
+    {
+      name: "AI-Powered Recruitment",
+      price: "From $499/project", 
+      description: "Smart hiring solutions for financial and operational roles",
       icon: Users,
     },
     {
-      name: "Real-time Data Sync",
-      price: "$99/month", 
-      description: "Instant data updates from all connected sources",
-      icon: Clock,
+      name: "Automated Invoice Processing",
+      price: "From $199/month",
+      description: "AI-driven invoice management and processing automation",
+      icon: Brain,
     },
     {
-      name: "24/7 Priority Support",
-      price: "$199/month",
-      description: "Around-the-clock phone and chat support",
-      icon: HeadphonesIcon,
-    },
-    {
-      name: "Advanced Forecasting",
-      price: "$149/month",
-      description: "Multi-scenario financial modeling and predictions",
-      icon: TrendingUp,
+      name: "ESG Consulting Services",
+      price: "From $899/project",
+      description: "Comprehensive ESG analysis and sustainability reporting",
+      icon: Leaf,
     },
   ];
 
   const handleUpgrade = (packageName: string) => {
     toast({
       title: "Upgrade Initiated",
-      description: `Upgrading to ${packageName} plan. You'll receive a confirmation email shortly.`,
+      description: `Upgrading to ${packageName}. Our Dubai-based team will contact you shortly.`,
     });
   };
 
-  const handleAddOn = (addOnName: string) => {
+  const handleServiceRequest = (serviceName: string) => {
     toast({
-      title: "Add-on Selected",
-      description: `${addOnName} has been added to your cart.`,
+      title: "Service Request Submitted",
+      description: `Request for ${serviceName} submitted. Our experts will reach out within 24 hours.`,
     });
   };
 
   return (
     <div className="space-y-8">
       <div className="text-center space-y-4">
-        <h1 className="text-3xl font-bold text-gray-900">Choose Your Package</h1>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          Select the perfect plan for your business needs. Upgrade anytime as you grow.
+        <h1 className="text-3xl font-bold text-gray-900">Choose Your FinSight Package</h1>
+        <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+          Democratizing access to sophisticated financial tools. From foundational insights 
+          to comprehensive financial intelligence with ESG analysis.
         </p>
+        <div className="flex justify-center">
+          <Badge className="bg-blue-100 text-blue-800 px-3 py-1">
+            <Building2 className="h-3 w-3 mr-1" />
+            Operated from Dubai International Free Zone
+          </Badge>
+        </div>
       </div>
 
       {/* Pricing Plans */}
@@ -232,23 +250,23 @@ const Packages = () => {
         })}
       </div>
 
-      {/* Add-ons Section */}
+      {/* AI Services Section */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <Shield className="h-5 w-5 text-blue-600" />
-            <span>Premium Add-ons</span>
+            <Brain className="h-5 w-5 text-blue-600" />
+            <span>Specialized AI Services</span>
           </CardTitle>
           <CardDescription>
-            Enhance your plan with additional features and services
+            Tailored AI-driven solutions for specific business automation needs
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid md:grid-cols-2 gap-6">
-            {addOns.map((addOn) => {
-              const Icon = addOn.icon;
+            {aiServices.map((service) => {
+              const Icon = service.icon;
               return (
-                <Card key={addOn.name} className="hover:shadow-md transition-shadow">
+                <Card key={service.name} className="hover:shadow-md transition-shadow">
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between">
                       <div className="flex items-start space-x-3">
@@ -256,17 +274,17 @@ const Packages = () => {
                           <Icon className="h-5 w-5 text-blue-600" />
                         </div>
                         <div className="flex-1">
-                          <h4 className="font-medium text-gray-900 mb-1">{addOn.name}</h4>
-                          <p className="text-sm text-gray-600 mb-2">{addOn.description}</p>
-                          <p className="text-lg font-semibold text-blue-600">{addOn.price}</p>
+                          <h4 className="font-medium text-gray-900 mb-1">{service.name}</h4>
+                          <p className="text-sm text-gray-600 mb-2">{service.description}</p>
+                          <p className="text-lg font-semibold text-blue-600">{service.price}</p>
                         </div>
                       </div>
                       <Button 
                         variant="outline"
                         size="sm"
-                        onClick={() => handleAddOn(addOn.name)}
+                        onClick={() => handleServiceRequest(service.name)}
                       >
-                        Add
+                        Request Quote
                       </Button>
                     </div>
                   </CardContent>
@@ -282,19 +300,20 @@ const Packages = () => {
         <CardContent className="p-8 text-center">
           <div className="max-w-2xl mx-auto space-y-4">
             <div className="bg-white p-4 rounded-full inline-block mb-4">
-              <Crown className="h-8 w-8 text-purple-600" />
+              <Globe className="h-8 w-8 text-purple-600" />
             </div>
-            <h3 className="text-2xl font-bold text-gray-900">Enterprise Solution</h3>
+            <h3 className="text-2xl font-bold text-gray-900">Enterprise & Consulting Solutions</h3>
             <p className="text-gray-600">
-              Need something more? Our enterprise solution offers custom features, 
-              dedicated infrastructure, and personalized support for large organizations.
+              Large organization or need custom solutions? Our Dubai-based team offers 
+              enterprise-grade platforms, dedicated infrastructure, and personalized 
+              financial consulting services.
             </p>
             <div className="flex justify-center space-x-4 pt-4">
               <Button variant="outline">
-                Request Demo
+                Schedule Consultation
               </Button>
               <Button>
-                Contact Sales
+                Contact Dubai Office
               </Button>
             </div>
           </div>

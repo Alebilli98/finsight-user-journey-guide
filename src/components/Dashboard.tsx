@@ -4,7 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { 
   TrendingUp, TrendingDown, DollarSign, PieChart, BarChart3, 
-  AlertCircle, CheckCircle, Calendar
+  AlertCircle, CheckCircle, Calendar, Leaf, Building2, 
+  Globe, Target, Zap, Brain, Shield
 } from "lucide-react";
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -13,12 +14,12 @@ import {
 
 const Dashboard = () => {
   const kpiData = [
-    { name: "Jan", revenue: 65000, expenses: 48000, profit: 17000 },
-    { name: "Feb", revenue: 72000, expenses: 52000, profit: 20000 },
-    { name: "Mar", revenue: 68000, expenses: 49000, profit: 19000 },
-    { name: "Apr", revenue: 78000, expenses: 56000, profit: 22000 },
-    { name: "May", revenue: 85000, expenses: 61000, profit: 24000 },
-    { name: "Jun", revenue: 92000, expenses: 64000, profit: 28000 },
+    { name: "Jan", revenue: 65000, expenses: 48000, profit: 17000, cashFlow: 22000 },
+    { name: "Feb", revenue: 72000, expenses: 52000, profit: 20000, cashFlow: 25000 },
+    { name: "Mar", revenue: 68000, expenses: 49000, profit: 19000, cashFlow: 21000 },
+    { name: "Apr", revenue: 78000, expenses: 56000, profit: 22000, cashFlow: 28000 },
+    { name: "May", revenue: 85000, expenses: 61000, profit: 24000, cashFlow: 32000 },
+    { name: "Jun", revenue: 92000, expenses: 64000, profit: 28000, cashFlow: 35000 },
   ];
 
   const expenseData = [
@@ -30,22 +31,49 @@ const Dashboard = () => {
   ];
 
   const healthMetrics = [
-    { name: "Cash Flow", value: 85, status: "healthy", trend: "up" },
-    { name: "Profitability", value: 78, status: "healthy", trend: "up" },
-    { name: "Efficiency", value: 72, status: "warning", trend: "stable" },
-    { name: "Leverage", value: 45, status: "healthy", trend: "down" },
+    { name: "Profitability Ratio", value: 85, status: "healthy", trend: "up" },
+    { name: "Efficiency Ratio", value: 78, status: "healthy", trend: "up" },
+    { name: "Leverage Ratio", value: 45, status: "healthy", trend: "down" },
+    { name: "Liquidity Position", value: 72, status: "warning", trend: "stable" },
+  ];
+
+  const aiInsights = [
+    {
+      title: "Cash Flow Prediction",
+      insight: "AI forecasts 15% increase in cash flow next quarter based on current trends",
+      confidence: 87,
+      type: "positive"
+    },
+    {
+      title: "Cost Optimization",
+      insight: "Identified $12K monthly savings opportunity in operational expenses", 
+      confidence: 92,
+      type: "opportunity"
+    },
+    {
+      title: "Investment Readiness",
+      insight: "Financial metrics indicate 78% readiness for Series A funding",
+      confidence: 81,
+      type: "neutral"
+    }
   ];
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Financial Health Dashboard</h1>
-          <p className="text-gray-600">Real-time snapshot of your company's financial performance</p>
+          <h1 className="text-2xl font-bold text-gray-900">Financial Intelligence Dashboard</h1>
+          <p className="text-gray-600">AI-powered insights for startup financial mastery</p>
         </div>
-        <div className="flex items-center space-x-2">
-          <Calendar className="h-4 w-4 text-gray-500" />
-          <span className="text-sm text-gray-500">Last updated: Today, 2:30 PM</span>
+        <div className="flex items-center space-x-4">
+          <Badge className="bg-green-100 text-green-800">
+            <Building2 className="h-3 w-3 mr-1" />
+            Dubai Licensed
+          </Badge>
+          <div className="flex items-center space-x-2 text-sm text-gray-500">
+            <Calendar className="h-4 w-4" />
+            <span>Last updated: Today, 2:30 PM</span>
+          </div>
         </div>
       </div>
 
@@ -74,7 +102,7 @@ const Dashboard = () => {
             <div className="text-2xl font-bold text-blue-600">$28,000</div>
             <p className="text-xs text-gray-500 flex items-center mt-1">
               <TrendingUp className="h-3 w-3 mr-1" />
-              +16.7% from last month
+              +16.7% margin improvement
             </p>
           </CardContent>
         </Card>
@@ -85,35 +113,68 @@ const Dashboard = () => {
             <BarChart3 className="h-4 w-4 text-purple-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-purple-600">$45,000</div>
+            <div className="text-2xl font-bold text-purple-600">$35,000</div>
             <p className="text-xs text-gray-500 flex items-center mt-1">
               <TrendingUp className="h-3 w-3 mr-1" />
-              Positive trend
+              Strong liquidity position
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Burn Rate</CardTitle>
-            <AlertCircle className="h-4 w-4 text-orange-600" />
+            <CardTitle className="text-sm font-medium">Funding Readiness</CardTitle>
+            <Target className="h-4 w-4 text-orange-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-600">$64,000</div>
+            <div className="text-2xl font-bold text-orange-600">78%</div>
             <p className="text-xs text-gray-500 flex items-center mt-1">
-              <TrendingDown className="h-3 w-3 mr-1" />
-              -8.2% from last month
+              <CheckCircle className="h-3 w-3 mr-1" />
+              Investment ready score
             </p>
           </CardContent>
         </Card>
       </div>
 
+      {/* AI Insights Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <Brain className="h-5 w-5 text-blue-600" />
+            <span>AI-Powered Financial Insights</span>
+          </CardTitle>
+          <CardDescription>Personalized recommendations based on your financial data</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid md:grid-cols-3 gap-4">
+            {aiInsights.map((insight, index) => (
+              <div 
+                key={index}
+                className={`p-4 rounded-lg border ${
+                  insight.type === 'positive' ? 'bg-green-50 border-green-200' :
+                  insight.type === 'opportunity' ? 'bg-blue-50 border-blue-200' :
+                  'bg-gray-50 border-gray-200'
+                }`}
+              >
+                <div className="flex items-start justify-between mb-2">
+                  <h4 className="font-medium text-gray-900">{insight.title}</h4>
+                  <Badge variant="secondary" className="text-xs">
+                    {insight.confidence}% confidence
+                  </Badge>
+                </div>
+                <p className="text-sm text-gray-700">{insight.insight}</p>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Charts Section */}
       <div className="grid lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
-            <CardTitle>Revenue vs Profit Trend</CardTitle>
-            <CardDescription>6-month financial performance overview</CardDescription>
+            <CardTitle>Revenue & Cash Flow Trend</CardTitle>
+            <CardDescription>6-month financial performance with predictive forecasting</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -132,7 +193,7 @@ const Dashboard = () => {
                 />
                 <Area 
                   type="monotone" 
-                  dataKey="profit" 
+                  dataKey="cashFlow" 
                   stackId="2"
                   stroke="#10b981" 
                   fill="#10b981" 
@@ -145,8 +206,8 @@ const Dashboard = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Expense Breakdown</CardTitle>
-            <CardDescription>Current month expense distribution</CardDescription>
+            <CardTitle>Expense Distribution Analysis</CardTitle>
+            <CardDescription>Current month breakdown with optimization suggestions</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -172,11 +233,11 @@ const Dashboard = () => {
         </Card>
       </div>
 
-      {/* Health Metrics */}
+      {/* Financial Health Ratios */}
       <Card>
         <CardHeader>
-          <CardTitle>Financial Health Metrics</CardTitle>
-          <CardDescription>Key performance indicators and ratios</CardDescription>
+          <CardTitle>Key Financial Ratios & Health Metrics</CardTitle>
+          <CardDescription>Essential profitability, efficiency, and leverage indicators</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -216,12 +277,12 @@ const Dashboard = () => {
       </Card>
 
       {/* Quick Actions */}
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-4 gap-6">
         <Card className="bg-gradient-to-r from-blue-50 to-blue-100 border-blue-200">
           <CardContent className="p-6 text-center">
-            <PieChart className="h-8 w-8 text-blue-600 mx-auto mb-3" />
-            <h3 className="font-semibold text-gray-900 mb-2">View Detailed Analytics</h3>
-            <p className="text-sm text-gray-600">Dive deeper into your financial metrics</p>
+            <BarChart3 className="h-8 w-8 text-blue-600 mx-auto mb-3" />
+            <h3 className="font-semibold text-gray-900 mb-2">Advanced Analytics</h3>
+            <p className="text-sm text-gray-600">Deep dive into financial metrics and trends</p>
           </CardContent>
         </Card>
 
@@ -229,15 +290,23 @@ const Dashboard = () => {
           <CardContent className="p-6 text-center">
             <CheckCircle className="h-8 w-8 text-green-600 mx-auto mb-3" />
             <h3 className="font-semibold text-gray-900 mb-2">Generate Reports</h3>
-            <p className="text-sm text-gray-600">Download comprehensive financial reports</p>
+            <p className="text-sm text-gray-600">Professional reports for investors and compliance</p>
           </CardContent>
         </Card>
 
         <Card className="bg-gradient-to-r from-purple-50 to-purple-100 border-purple-200">
           <CardContent className="p-6 text-center">
-            <AlertCircle className="h-8 w-8 text-purple-600 mx-auto mb-3" />
-            <h3 className="font-semibold text-gray-900 mb-2">AI Insights</h3>
-            <p className="text-sm text-gray-600">Get personalized recommendations</p>
+            <Brain className="h-8 w-8 text-purple-600 mx-auto mb-3" />
+            <h3 className="font-semibold text-gray-900 mb-2">AI Consultation</h3>
+            <p className="text-sm text-gray-600">Get personalized financial recommendations</p>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gradient-to-r from-emerald-50 to-emerald-100 border-emerald-200">
+          <CardContent className="p-6 text-center">
+            <Leaf className="h-8 w-8 text-emerald-600 mx-auto mb-3" />
+            <h3 className="font-semibold text-gray-900 mb-2">ESG Analysis</h3>
+            <p className="text-sm text-gray-600">Sustainability metrics and ESG reporting</p>
           </CardContent>
         </Card>
       </div>
