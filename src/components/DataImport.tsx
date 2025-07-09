@@ -477,7 +477,10 @@ Total Investments,85000,100%`;
                     <h3 className="text-lg font-medium mb-2">No Systems Connected</h3>
                     <p className="text-sm mb-4">Connect your business systems to enable automated data synchronization</p>
                     <Button 
-                      onClick={() => document.querySelector('[value="integration"]')?.click()}
+                      onClick={() => {
+                        const integrationTab = document.querySelector('[value="integration"]') as HTMLElement;
+                        integrationTab?.click();
+                      }}
                       className="bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700"
                     >
                       <Plug className="h-4 w-4 mr-2" />
