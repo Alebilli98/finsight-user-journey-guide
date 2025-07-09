@@ -15,6 +15,7 @@ import LendingSolution from "@/components/LendingSolution";
 import Calendar from "@/components/Calendar";
 import Packages from "@/components/Packages";
 import UserProfile from "@/components/UserProfile";
+import DataImport from "@/components/DataImport";
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState("dashboard");
@@ -32,6 +33,11 @@ const Index = () => {
       const userData = JSON.parse(savedUser);
       setUser(userData);
       setIsAuthenticated(true);
+      
+      // Show onboarding only if it's the user's first time
+      if (!userData.hasCompletedOnboarding) {
+        setShowOnboarding(true);
+      }
     }
   }, []);
 
@@ -48,14 +54,36 @@ const Index = () => {
   const handleAuthSuccess = (userData: any) => {
     setUser(userData);
     setIsAuthenticated(true);
-    setShowOnboarding(true);
+    
+    // Show onboarding only for first-time users
+    if (userData.isFirstLogin || !userData.hasCompletedOnboarding) {
+      setShowOnboarding(true);
+    } else {
+      setActiveSection("dashboard");
+      toast({
+        title: `Welcome back, ${userData.firstName}!`,
+        description: "Your financial dashboard is ready.",
+      });
+    }
   };
 
   const handleCompleteOnboarding = () => {
+    // Mark onboarding as completed
+    const updatedUser = { ...user, hasCompletedOnboarding: true };
+    setUser(updatedUser);
+    localStorage.setItem("finsight_user", JSON.stringify(updatedUser));
+    
+    // Update users array
+    const savedUsers = JSON.parse(localStorage.getItem("finsight_users") || "[]");
+    const updatedUsers = savedUsers.map((u: any) => 
+      u.email === user.email ? updatedUser : u
+    );
+    localStorage.setItem("finsight_users", JSON.stringify(updatedUsers));
+    
     setShowOnboarding(false);
     setActiveSection("dashboard");
     toast({
-      title: "Welcome to FinSight!",
+      title: `Welcome to FinSight, ${user.firstName}!`,
       description: "Your financial transformation journey begins now.",
     });
   };
@@ -65,6 +93,7 @@ const Index = () => {
     setUser(null);
     setIsAuthenticated(false);
     setActiveSection("dashboard");
+    setShowOnboarding(false);
     toast({
       title: "Logged Out",
       description: "You have been successfully logged out.",
@@ -73,6 +102,13 @@ const Index = () => {
 
   const handleUserUpdate = (updatedUser: any) => {
     setUser(updatedUser);
+    // Update both current user and users array
+    localStorage.setItem("finsight_user", JSON.stringify(updatedUser));
+    const savedUsers = JSON.parse(localStorage.getItem("finsight_users") || "[]");
+    const updatedUsers = savedUsers.map((u: any) => 
+      u.email === updatedUser.email ? updatedUser : u
+    );
+    localStorage.setItem("finsight_users", JSON.stringify(updatedUsers));
   };
 
   const renderContent = () => {
@@ -82,7 +118,7 @@ const Index = () => {
 
     switch (activeSection) {
       case "dashboard":
-        return <Dashboard />;
+        return <Dashboard user={user} />;
       case "analytics":
         return <Analytics />;
       case "reports":
@@ -97,8 +133,10 @@ const Index = () => {
         return <Packages />;
       case "profile":
         return <UserProfile user={user} onUserUpdate={handleUserUpdate} />;
+      case "data-import":
+        return <DataImport user={user} onDataUpdate={handleUserUpdate} />;
       default:
-        return <Dashboard />;
+        return <Dashboard user={user} />;
     }
   };
 
@@ -129,7 +167,7 @@ const Index = () => {
           
           <div className="flex-1 flex flex-col">
             <Header 
-              isOnboarded={true}
+              isOnboarded={!showOnboarding}
               user={user}
               onLogout={handleLogout}
               onProfile={() => setActiveSection("profile")}

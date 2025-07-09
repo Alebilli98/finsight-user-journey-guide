@@ -5,21 +5,31 @@ import { Progress } from "@/components/ui/progress";
 import { 
   TrendingUp, TrendingDown, DollarSign, PieChart, BarChart3, 
   AlertCircle, CheckCircle, Calendar, Leaf, Building2, 
-  Globe, Target, Zap, Brain, Shield
+  Globe, Target, Zap, Brain, Shield, User
 } from "lucide-react";
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   LineChart, Line, PieChart as RechartsPieChart, Pie, Cell, AreaChart, Area
 } from "recharts";
 
-const Dashboard = () => {
+interface DashboardProps {
+  user?: any;
+}
+
+const Dashboard = ({ user }: DashboardProps) => {
+  // Use user's actual data if available, otherwise use demo data
+  const financialData = user?.financialData || {};
+  const monthlyIncome = financialData.monthlyIncome || 92000;
+  const monthlyExpenses = financialData.monthlyExpenses || 64000;
+  const currentSavings = financialData.currentSavings || 28000;
+
   const kpiData = [
-    { name: "Jan", revenue: 65000, expenses: 48000, profit: 17000, cashFlow: 22000 },
-    { name: "Feb", revenue: 72000, expenses: 52000, profit: 20000, cashFlow: 25000 },
-    { name: "Mar", revenue: 68000, expenses: 49000, profit: 19000, cashFlow: 21000 },
-    { name: "Apr", revenue: 78000, expenses: 56000, profit: 22000, cashFlow: 28000 },
-    { name: "May", revenue: 85000, expenses: 61000, profit: 24000, cashFlow: 32000 },
-    { name: "Jun", revenue: 92000, expenses: 64000, profit: 28000, cashFlow: 35000 },
+    { name: "Jan", revenue: monthlyIncome * 0.8, expenses: monthlyExpenses * 0.85, profit: monthlyIncome * 0.8 - monthlyExpenses * 0.85, cashFlow: (monthlyIncome * 0.8 - monthlyExpenses * 0.85) * 1.2 },
+    { name: "Feb", revenue: monthlyIncome * 0.9, expenses: monthlyExpenses * 0.9, profit: monthlyIncome * 0.9 - monthlyExpenses * 0.9, cashFlow: (monthlyIncome * 0.9 - monthlyExpenses * 0.9) * 1.3 },
+    { name: "Mar", revenue: monthlyIncome * 0.85, expenses: monthlyExpenses * 0.88, profit: monthlyIncome * 0.85 - monthlyExpenses * 0.88, cashFlow: (monthlyIncome * 0.85 - monthlyExpenses * 0.88) * 1.1 },
+    { name: "Apr", revenue: monthlyIncome * 0.95, expenses: monthlyExpenses * 0.92, profit: monthlyIncome * 0.95 - monthlyExpenses * 0.92, cashFlow: (monthlyIncome * 0.95 - monthlyExpenses * 0.92) * 1.4 },
+    { name: "May", revenue: monthlyIncome * 1.1, expenses: monthlyExpenses * 0.95, profit: monthlyIncome * 1.1 - monthlyExpenses * 0.95, cashFlow: (monthlyIncome * 1.1 - monthlyExpenses * 0.95) * 1.5 },
+    { name: "Jun", revenue: monthlyIncome, expenses: monthlyExpenses, profit: monthlyIncome - monthlyExpenses, cashFlow: (monthlyIncome - monthlyExpenses) * 1.6 },
   ];
 
   const expenseData = [
@@ -30,29 +40,30 @@ const Dashboard = () => {
     { name: "Other", value: 5, color: "#8b5cf6" },
   ];
 
+  const profitMargin = monthlyIncome > 0 ? ((monthlyIncome - monthlyExpenses) / monthlyIncome * 100) : 0;
   const healthMetrics = [
-    { name: "Profitability Ratio", value: 85, status: "healthy", trend: "up" },
+    { name: "Profitability Ratio", value: Math.min(85, Math.max(0, profitMargin)), status: profitMargin > 20 ? "healthy" : "warning", trend: "up" },
     { name: "Efficiency Ratio", value: 78, status: "healthy", trend: "up" },
     { name: "Leverage Ratio", value: 45, status: "healthy", trend: "down" },
-    { name: "Liquidity Position", value: 72, status: "warning", trend: "stable" },
+    { name: "Liquidity Position", value: currentSavings > 20000 ? 85 : 60, status: currentSavings > 20000 ? "healthy" : "warning", trend: "stable" },
   ];
 
   const aiInsights = [
     {
       title: "Cash Flow Prediction",
-      insight: "AI forecasts 15% increase in cash flow next quarter based on current trends",
+      insight: `Based on your current income of $${monthlyIncome.toLocaleString()}, AI forecasts 15% increase in cash flow next quarter`,
       confidence: 87,
       type: "positive"
     },
     {
       title: "Cost Optimization",
-      insight: "Identified $12K monthly savings opportunity in operational expenses", 
+      insight: `With monthly expenses of $${monthlyExpenses.toLocaleString()}, identified potential savings of $2K in operational costs`, 
       confidence: 92,
       type: "opportunity"
     },
     {
       title: "Investment Readiness",
-      insight: "Financial metrics indicate 78% readiness for Series A funding",
+      insight: `Your profit margin of ${profitMargin.toFixed(1)}% indicates ${profitMargin > 25 ? 'strong' : 'moderate'} readiness for growth investment`,
       confidence: 81,
       type: "neutral"
     }
@@ -62,33 +73,57 @@ const Dashboard = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Financial Intelligence Dashboard</h1>
-          <p className="text-gray-600">AI-powered insights for startup financial mastery</p>
+          <h1 className="text-2xl font-bold text-gray-900">
+            Welcome back, {user?.firstName || 'User'}!
+          </h1>
+          <p className="text-gray-600">Your personalized financial intelligence dashboard</p>
         </div>
         <div className="flex items-center space-x-4">
           <Badge className="bg-green-100 text-green-800">
             <Building2 className="h-3 w-3 mr-1" />
-            Dubai Licensed
+            {user?.company || 'Your Company'}
           </Badge>
           <div className="flex items-center space-x-2 text-sm text-gray-500">
             <Calendar className="h-4 w-4" />
-            <span>Last updated: Today, 2:30 PM</span>
+            <span>Last updated: Today, {new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
           </div>
         </div>
       </div>
+
+      {/* Personal Welcome Card */}
+      {user && (
+        <Card className="bg-gradient-to-r from-blue-50 to-green-50 border-blue-200">
+          <CardContent className="p-6">
+            <div className="flex items-center space-x-4">
+              <div className="bg-gradient-to-r from-blue-600 to-green-600 p-3 rounded-full">
+                <User className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">
+                  {user.firstName} {user.lastName}
+                </h3>
+                <p className="text-gray-600">{user.email}</p>
+                <p className="text-sm text-gray-500">
+                  Member since {new Date(user.registrationDate || Date.now()).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Key Metrics Overview */}
       <div className="grid md:grid-cols-4 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+            <CardTitle className="text-sm font-medium">Monthly Revenue</CardTitle>
             <DollarSign className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">$92,000</div>
+            <div className="text-2xl font-bold text-green-600">${monthlyIncome.toLocaleString()}</div>
             <p className="text-xs text-gray-500 flex items-center mt-1">
               <TrendingUp className="h-3 w-3 mr-1" />
-              +12.5% from last month
+              {financialData.importedData ? 'From imported data' : '+12.5% from last month'}
             </p>
           </CardContent>
         </Card>
@@ -99,38 +134,38 @@ const Dashboard = () => {
             <TrendingUp className="h-4 w-4 text-blue-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-600">$28,000</div>
+            <div className="text-2xl font-bold text-blue-600">${(monthlyIncome - monthlyExpenses).toLocaleString()}</div>
             <p className="text-xs text-gray-500 flex items-center mt-1">
               <TrendingUp className="h-3 w-3 mr-1" />
-              +16.7% margin improvement
+              {profitMargin.toFixed(1)}% margin
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Cash Flow</CardTitle>
+            <CardTitle className="text-sm font-medium">Current Savings</CardTitle>
             <BarChart3 className="h-4 w-4 text-purple-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-purple-600">$35,000</div>
+            <div className="text-2xl font-bold text-purple-600">${currentSavings.toLocaleString()}</div>
             <p className="text-xs text-gray-500 flex items-center mt-1">
               <TrendingUp className="h-3 w-3 mr-1" />
-              Strong liquidity position
+              {currentSavings > 20000 ? 'Strong' : 'Growing'} liquidity position
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Funding Readiness</CardTitle>
+            <CardTitle className="text-sm font-medium">Growth Score</CardTitle>
             <Target className="h-4 w-4 text-orange-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-600">78%</div>
+            <div className="text-2xl font-bold text-orange-600">{Math.floor(profitMargin * 3)}%</div>
             <p className="text-xs text-gray-500 flex items-center mt-1">
               <CheckCircle className="h-3 w-3 mr-1" />
-              Investment ready score
+              Based on your metrics
             </p>
           </CardContent>
         </Card>
@@ -141,9 +176,9 @@ const Dashboard = () => {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Brain className="h-5 w-5 text-blue-600" />
-            <span>AI-Powered Financial Insights</span>
+            <span>Personalized AI Insights</span>
           </CardTitle>
-          <CardDescription>Personalized recommendations based on your financial data</CardDescription>
+          <CardDescription>Recommendations based on your financial data</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid md:grid-cols-3 gap-4">
@@ -173,7 +208,7 @@ const Dashboard = () => {
       <div className="grid lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
-            <CardTitle>Revenue & Cash Flow Trend</CardTitle>
+            <CardTitle>Your Revenue & Cash Flow Trend</CardTitle>
             <CardDescription>6-month financial performance with predictive forecasting</CardDescription>
           </CardHeader>
           <CardContent>
@@ -236,8 +271,8 @@ const Dashboard = () => {
       {/* Financial Health Ratios */}
       <Card>
         <CardHeader>
-          <CardTitle>Key Financial Ratios & Health Metrics</CardTitle>
-          <CardDescription>Essential profitability, efficiency, and leverage indicators</CardDescription>
+          <CardTitle>Your Financial Health Metrics</CardTitle>
+          <CardDescription>Essential indicators based on your personal data</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -275,41 +310,6 @@ const Dashboard = () => {
           </div>
         </CardContent>
       </Card>
-
-      {/* Quick Actions */}
-      <div className="grid md:grid-cols-4 gap-6">
-        <Card className="bg-gradient-to-r from-blue-50 to-blue-100 border-blue-200">
-          <CardContent className="p-6 text-center">
-            <BarChart3 className="h-8 w-8 text-blue-600 mx-auto mb-3" />
-            <h3 className="font-semibold text-gray-900 mb-2">Advanced Analytics</h3>
-            <p className="text-sm text-gray-600">Deep dive into financial metrics and trends</p>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-r from-green-50 to-green-100 border-green-200">
-          <CardContent className="p-6 text-center">
-            <CheckCircle className="h-8 w-8 text-green-600 mx-auto mb-3" />
-            <h3 className="font-semibold text-gray-900 mb-2">Generate Reports</h3>
-            <p className="text-sm text-gray-600">Professional reports for investors and compliance</p>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-r from-purple-50 to-purple-100 border-purple-200">
-          <CardContent className="p-6 text-center">
-            <Brain className="h-8 w-8 text-purple-600 mx-auto mb-3" />
-            <h3 className="font-semibold text-gray-900 mb-2">AI Consultation</h3>
-            <p className="text-sm text-gray-600">Get personalized financial recommendations</p>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-r from-emerald-50 to-emerald-100 border-emerald-200">
-          <CardContent className="p-6 text-center">
-            <Leaf className="h-8 w-8 text-emerald-600 mx-auto mb-3" />
-            <h3 className="font-semibold text-gray-900 mb-2">ESG Analysis</h3>
-            <p className="text-sm text-gray-600">Sustainability metrics and ESG reporting</p>
-          </CardContent>
-        </Card>
-      </div>
     </div>
   );
 };

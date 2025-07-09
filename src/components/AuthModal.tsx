@@ -43,31 +43,37 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = "login" }: Aut
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulate API call
+    // Check if user exists in localStorage
+    const savedUsers = JSON.parse(localStorage.getItem("finsight_users") || "[]");
+    const user = savedUsers.find((u: any) => u.email === loginData.email);
+
     setTimeout(() => {
-      if (loginData.email && loginData.password) {
+      if (user && user.password === loginData.password) {
+        // Check if user has completed onboarding
+        const isFirstLogin = !user.hasCompletedOnboarding;
+        
         const userData = {
-          id: Date.now(),
-          firstName: "Demo",
-          lastName: "User",
-          email: loginData.email,
-          company: "Demo Company",
-          plan: "Free"
+          ...user,
+          lastLogin: new Date().toISOString()
         };
         
-        // Store in localStorage
+        // Update user's last login
+        const updatedUsers = savedUsers.map((u: any) => 
+          u.email === loginData.email ? userData : u
+        );
+        localStorage.setItem("finsight_users", JSON.stringify(updatedUsers));
         localStorage.setItem("finsight_user", JSON.stringify(userData));
         
-        onAuthSuccess(userData);
+        onAuthSuccess({ ...userData, isFirstLogin });
         toast({
           title: "Login Successful!",
-          description: "Welcome back to FinSight.",
+          description: `Welcome back, ${userData.firstName}!`,
         });
         onClose();
       } else {
         toast({
           title: "Login Failed",
-          description: "Please check your credentials and try again.",
+          description: "Invalid email or password. Please try again.",
           variant: "destructive"
         });
       }
@@ -89,8 +95,31 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = "login" }: Aut
       return;
     }
 
-    // Simulate API call
+    if (signupData.password.length < 6) {
+      toast({
+        title: "Password Too Short",
+        description: "Password must be at least 6 characters long.",
+        variant: "destructive"
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    // Check if user already exists
+    const savedUsers = JSON.parse(localStorage.getItem("finsight_users") || "[]");
+    const existingUser = savedUsers.find((u: any) => u.email === signupData.email);
+
     setTimeout(() => {
+      if (existingUser) {
+        toast({
+          title: "Account Already Exists",
+          description: "An account with this email already exists. Please login instead.",
+          variant: "destructive"
+        });
+        setIsLoading(false);
+        return;
+      }
+
       if (signupData.email && signupData.password && signupData.firstName) {
         const userData = {
           id: Date.now(),
@@ -98,16 +127,28 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = "login" }: Aut
           lastName: signupData.lastName,
           email: signupData.email,
           company: signupData.company,
-          plan: "Free"
+          password: signupData.password,
+          plan: "Free",
+          registrationDate: new Date().toISOString(),
+          hasCompletedOnboarding: false,
+          financialData: {
+            monthlyIncome: 0,
+            monthlyExpenses: 0,
+            currentSavings: 0,
+            investments: 0,
+            goals: []
+          }
         };
         
-        // Store in localStorage
+        // Save to users array
+        const updatedUsers = [...savedUsers, userData];
+        localStorage.setItem("finsight_users", JSON.stringify(updatedUsers));
         localStorage.setItem("finsight_user", JSON.stringify(userData));
         
-        onAuthSuccess(userData);
+        onAuthSuccess({ ...userData, isFirstLogin: true });
         toast({
-          title: "Account Created!",
-          description: "Welcome to FinSight. Let's get you started!",
+          title: "Account Created Successfully!",
+          description: "Welcome to FinSight! Let's get you started.",
         });
         onClose();
       } else {
@@ -216,7 +257,7 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = "login" }: Aut
                 <form onSubmit={handleSignup} className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="signup-firstname">First Name</Label>
+                      <Label htmlFor="signup-firstname">First Name *</Label>
                       <div className="relative">
                         <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                         <Input
@@ -236,13 +277,12 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = "login" }: Aut
                         placeholder="Rossi"
                         value={signupData.lastName}
                         onChange={(e) => setSignupData({ ...signupData, lastName: e.target.value })}
-                        required
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
+                    <Label htmlFor="signup-email">Email *</Label>
                     <div className="relative">
                       <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                       <Input
@@ -267,13 +307,12 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = "login" }: Aut
                         className="pl-10"
                         value={signupData.company}
                         onChange={(e) => setSignupData({ ...signupData, company: e.target.value })}
-                        required
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="signup-password">Password</Label>
+                    <Label htmlFor="signup-password">Password * (min 6 characters)</Label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                       <Input
@@ -284,6 +323,7 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = "login" }: Aut
                         value={signupData.password}
                         onChange={(e) => setSignupData({ ...signupData, password: e.target.value })}
                         required
+                        minLength={6}
                       />
                       <Button
                         type="button"
@@ -298,7 +338,7 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = "login" }: Aut
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="signup-confirm">Confirm Password</Label>
+                    <Label htmlFor="signup-confirm">Confirm Password *</Label>
                     <Input
                       id="signup-confirm"
                       type="password"

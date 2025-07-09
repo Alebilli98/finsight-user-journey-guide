@@ -1,6 +1,6 @@
 
 import { 
-  TrendingUp, BarChart3, FileText, Brain, CreditCard, Package, Calendar
+  TrendingUp, BarChart3, FileText, Brain, CreditCard, Package, Calendar, Upload
 } from "lucide-react";
 import {
   Sidebar,
@@ -27,6 +27,7 @@ const AppSidebar = ({ activeSection, setActiveSection }: AppSidebarProps) => {
     { id: "dashboard", label: "Dashboard", icon: TrendingUp },
     { id: "analytics", label: "Analytics", icon: BarChart3 },
     { id: "reports", label: "Reports", icon: FileText },
+    { id: "data-import", label: "Data Import", icon: Upload },
     { id: "ai-solution", label: "AI Solution", icon: Brain },
     { id: "lending", label: "Lending", icon: CreditCard },
     { id: "calendar", label: "Calendar", icon: Calendar },
