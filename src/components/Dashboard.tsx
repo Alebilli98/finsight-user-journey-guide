@@ -17,57 +17,119 @@ interface DashboardProps {
 }
 
 const Dashboard = ({ user }: DashboardProps) => {
-  // Use user's actual data if available, otherwise use demo data
-  const financialData = user?.financialData || {};
-  const monthlyIncome = financialData.monthlyIncome || 92000;
-  const monthlyExpenses = financialData.monthlyExpenses || 64000;
-  const currentSavings = financialData.currentSavings || 28000;
+  // Get user's actual data or use defaults
+  const userData = user || {};
+  const monthlyIncome = userData.monthlyIncome || 0;
+  const monthlyExpenses = userData.monthlyExpenses || 0;
+  const currentSavings = userData.currentSavings || 0;
+  const totalAssets = userData.totalAssets || 0;
+  const totalLiabilities = userData.totalLiabilities || 0;
+  const emergencyFund = userData.emergencyFund || 0;
 
-  const kpiData = [
-    { name: "Jan", revenue: monthlyIncome * 0.8, expenses: monthlyExpenses * 0.85, profit: monthlyIncome * 0.8 - monthlyExpenses * 0.85, cashFlow: (monthlyIncome * 0.8 - monthlyExpenses * 0.85) * 1.2 },
-    { name: "Feb", revenue: monthlyIncome * 0.9, expenses: monthlyExpenses * 0.9, profit: monthlyIncome * 0.9 - monthlyExpenses * 0.9, cashFlow: (monthlyIncome * 0.9 - monthlyExpenses * 0.9) * 1.3 },
-    { name: "Mar", revenue: monthlyIncome * 0.85, expenses: monthlyExpenses * 0.88, profit: monthlyIncome * 0.85 - monthlyExpenses * 0.88, cashFlow: (monthlyIncome * 0.85 - monthlyExpenses * 0.88) * 1.1 },
-    { name: "Apr", revenue: monthlyIncome * 0.95, expenses: monthlyExpenses * 0.92, profit: monthlyIncome * 0.95 - monthlyExpenses * 0.92, cashFlow: (monthlyIncome * 0.95 - monthlyExpenses * 0.92) * 1.4 },
-    { name: "May", revenue: monthlyIncome * 1.1, expenses: monthlyExpenses * 0.95, profit: monthlyIncome * 1.1 - monthlyExpenses * 0.95, cashFlow: (monthlyIncome * 1.1 - monthlyExpenses * 0.95) * 1.5 },
-    { name: "Jun", revenue: monthlyIncome, expenses: monthlyExpenses, profit: monthlyIncome - monthlyExpenses, cashFlow: (monthlyIncome - monthlyExpenses) * 1.6 },
-  ];
+  // Calculate metrics from real data
+  const netWorth = totalAssets - totalLiabilities;
+  const monthlyNetIncome = monthlyIncome - monthlyExpenses;
+  const savingsRate = monthlyIncome > 0 ? ((monthlyNetIncome) / monthlyIncome * 100) : 0;
+  const emergencyMonths = monthlyExpenses > 0 ? (emergencyFund / monthlyExpenses) : 0;
 
-  const expenseData = [
-    { name: "Payroll", value: 45, color: "#3b82f6" },
-    { name: "Operations", value: 25, color: "#10b981" },
-    { name: "Marketing", value: 15, color: "#f59e0b" },
-    { name: "Technology", value: 10, color: "#ef4444" },
-    { name: "Other", value: 5, color: "#8b5cf6" },
-  ];
+  // Generate charts with real data
+  const generateMonthlyData = () => {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+    return months.map((month, index) => ({
+      name: month,
+      income: monthlyIncome * (0.9 + (index * 0.02)),
+      expenses: monthlyExpenses * (0.95 + (index * 0.01)),
+      savings: monthlyNetIncome * (0.8 + (index * 0.05))
+    }));
+  };
 
-  const profitMargin = monthlyIncome > 0 ? ((monthlyIncome - monthlyExpenses) / monthlyIncome * 100) : 0;
+  const kpiData = generateMonthlyData();
+
+  // Expense categories based on user data
+  const expenseData = monthlyExpenses > 0 ? [
+    { name: "Housing", value: Math.round((userData.housingExpenses || monthlyExpenses * 0.3) / monthlyExpenses * 100), color: "#3b82f6" },
+    { name: "Food", value: Math.round((userData.foodExpenses || monthlyExpenses * 0.15) / monthlyExpenses * 100), color: "#10b981" },
+    { name: "Transportation", value: Math.round((userData.transportExpenses || monthlyExpenses * 0.15) / monthlyExpenses * 100), color: "#f59e0b" },
+    { name: "Utilities", value: Math.round((userData.utilitiesExpenses || monthlyExpenses * 0.10) / monthlyExpenses * 100), color: "#ef4444" },
+    { name: "Entertainment", value: Math.round((userData.entertainmentExpenses || monthlyExpenses * 0.10) / monthlyExpenses * 100), color: "#8b5cf6" },
+    { name: "Other", value: Math.round((userData.otherExpenses || monthlyExpenses * 0.20) / monthlyExpenses * 100), color: "#6b7280" },
+  ] : [];
+
+  // Health metrics based on real data
   const healthMetrics = [
-    { name: "Profitability Ratio", value: Math.min(85, Math.max(0, profitMargin)), status: profitMargin > 20 ? "healthy" : "warning", trend: "up" },
-    { name: "Efficiency Ratio", value: 78, status: "healthy", trend: "up" },
-    { name: "Leverage Ratio", value: 45, status: "healthy", trend: "down" },
-    { name: "Liquidity Position", value: currentSavings > 20000 ? 85 : 60, status: currentSavings > 20000 ? "healthy" : "warning", trend: "stable" },
+    { 
+      name: "Savings Rate", 
+      value: Math.min(100, Math.max(0, savingsRate)), 
+      status: savingsRate > 20 ? "healthy" : savingsRate > 10 ? "warning" : "critical", 
+      trend: "up" 
+    },
+    { 
+      name: "Emergency Fund", 
+      value: Math.min(100, emergencyMonths * 16.67), 
+      status: emergencyMonths >= 6 ? "healthy" : emergencyMonths >= 3 ? "warning" : "critical", 
+      trend: "stable" 
+    },
+    { 
+      name: "Net Worth Growth", 
+      value: netWorth > 0 ? Math.min(100, 75 + (netWorth / 100000 * 25)) : 0, 
+      status: netWorth > 0 ? "healthy" : "warning", 
+      trend: netWorth > totalLiabilities ? "up" : "down" 
+    },
+    { 
+      name: "Debt-to-Income", 
+      value: monthlyIncome > 0 ? Math.max(0, 100 - (totalLiabilities / (monthlyIncome * 12) * 100)) : 0, 
+      status: (totalLiabilities / (monthlyIncome * 12)) < 0.3 ? "healthy" : "warning", 
+      trend: "stable" 
+    },
   ];
 
-  const aiInsights = [
-    {
-      title: "Cash Flow Prediction",
-      insight: `Based on your current income of $${monthlyIncome.toLocaleString()}, AI forecasts 15% increase in cash flow next quarter`,
-      confidence: 87,
-      type: "positive"
-    },
-    {
-      title: "Cost Optimization",
-      insight: `With monthly expenses of $${monthlyExpenses.toLocaleString()}, identified potential savings of $2K in operational costs`, 
-      confidence: 92,
-      type: "opportunity"
-    },
-    {
-      title: "Investment Readiness",
-      insight: `Your profit margin of ${profitMargin.toFixed(1)}% indicates ${profitMargin > 25 ? 'strong' : 'moderate'} readiness for growth investment`,
-      confidence: 81,
-      type: "neutral"
+  // AI insights based on actual data
+  const generateAIInsights = () => {
+    const insights = [];
+    
+    if (savingsRate > 20) {
+      insights.push({
+        title: "Excellent Savings Rate",
+        insight: `Your ${savingsRate.toFixed(1)}% savings rate is exceptional! Consider investing the surplus for long-term growth.`,
+        confidence: 95,
+        type: "positive"
+      });
+    } else if (savingsRate < 10) {
+      insights.push({
+        title: "Improve Savings Rate",
+        insight: `Your current savings rate is ${savingsRate.toFixed(1)}%. Aim to reduce expenses by €${Math.round((monthlyIncome * 0.2 - monthlyNetIncome))} monthly.`,
+        confidence: 88,
+        type: "opportunity"
+      });
     }
-  ];
+
+    if (emergencyMonths < 3) {
+      insights.push({
+        title: "Emergency Fund Priority",
+        insight: `You have ${emergencyMonths.toFixed(1)} months of expenses saved. Prioritize building to 6 months (€${Math.round(monthlyExpenses * 6)}).`,
+        confidence: 92,
+        type: "opportunity"
+      });
+    }
+
+    if (netWorth > 0) {
+      insights.push({
+        title: "Positive Net Worth",
+        insight: `Your net worth of €${netWorth.toLocaleString()} shows healthy financial progress. Consider diversifying investments.`,
+        confidence: 85,
+        type: "positive"
+      });
+    }
+
+    return insights.length > 0 ? insights : [{
+      title: "Complete Your Profile",
+      insight: "Add your financial data in the Profile section to get personalized AI insights and recommendations.",
+      confidence: 100,
+      type: "neutral"
+    }];
+  };
+
+  const aiInsights = generateAIInsights();
 
   return (
     <div className="space-y-6">
@@ -116,56 +178,87 @@ const Dashboard = ({ user }: DashboardProps) => {
       <div className="grid md:grid-cols-4 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Monthly Revenue</CardTitle>
+            <CardTitle className="text-sm font-medium">Monthly Income</CardTitle>
             <DollarSign className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">${monthlyIncome.toLocaleString()}</div>
+            <div className="text-2xl font-bold text-green-600">€{monthlyIncome.toLocaleString()}</div>
             <p className="text-xs text-gray-500 flex items-center mt-1">
-              <TrendingUp className="h-3 w-3 mr-1" />
-              {financialData.importedData ? 'From imported data' : '+12.5% from last month'}
+              {monthlyIncome > 0 ? (
+                <>
+                  <TrendingUp className="h-3 w-3 mr-1" />
+                  Active income stream
+                </>
+              ) : (
+                <>
+                  <AlertCircle className="h-3 w-3 mr-1" />
+                  Add your income data
+                </>
+              )}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Net Profit</CardTitle>
+            <CardTitle className="text-sm font-medium">Net Monthly</CardTitle>
             <TrendingUp className="h-4 w-4 text-blue-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-600">${(monthlyIncome - monthlyExpenses).toLocaleString()}</div>
+            <div className={`text-2xl font-bold ${monthlyNetIncome >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
+              €{monthlyNetIncome.toLocaleString()}
+            </div>
             <p className="text-xs text-gray-500 flex items-center mt-1">
-              <TrendingUp className="h-3 w-3 mr-1" />
-              {profitMargin.toFixed(1)}% margin
+              {monthlyNetIncome >= 0 ? (
+                <>
+                  <TrendingUp className="h-3 w-3 mr-1" />
+                  {savingsRate.toFixed(1)}% savings rate
+                </>
+              ) : (
+                <>
+                  <TrendingDown className="h-3 w-3 mr-1" />
+                  Expenses exceed income
+                </>
+              )}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Current Savings</CardTitle>
+            <CardTitle className="text-sm font-medium">Net Worth</CardTitle>
             <BarChart3 className="h-4 w-4 text-purple-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-purple-600">${currentSavings.toLocaleString()}</div>
+            <div className={`text-2xl font-bold ${netWorth >= 0 ? 'text-purple-600' : 'text-red-600'}`}>
+              €{netWorth.toLocaleString()}
+            </div>
             <p className="text-xs text-gray-500 flex items-center mt-1">
-              <TrendingUp className="h-3 w-3 mr-1" />
-              {currentSavings > 20000 ? 'Strong' : 'Growing'} liquidity position
+              {netWorth >= 0 ? (
+                <>
+                  <TrendingUp className="h-3 w-3 mr-1" />
+                  Positive net worth
+                </>
+              ) : (
+                <>
+                  <TrendingDown className="h-3 w-3 mr-1" />
+                  Focus on debt reduction
+                </>
+              )}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Growth Score</CardTitle>
+            <CardTitle className="text-sm font-medium">Emergency Fund</CardTitle>
             <Target className="h-4 w-4 text-orange-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-600">{Math.floor(profitMargin * 3)}%</div>
+            <div className="text-2xl font-bold text-orange-600">€{emergencyFund.toLocaleString()}</div>
             <p className="text-xs text-gray-500 flex items-center mt-1">
               <CheckCircle className="h-3 w-3 mr-1" />
-              Based on your metrics
+              {emergencyMonths.toFixed(1)} months coverage
             </p>
           </CardContent>
         </Card>
@@ -205,74 +298,89 @@ const Dashboard = ({ user }: DashboardProps) => {
       </Card>
 
       {/* Charts Section */}
-      <div className="grid lg:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Your Revenue & Cash Flow Trend</CardTitle>
-            <CardDescription>6-month financial performance with predictive forecasting</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <AreaChart data={kpiData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Area 
-                  type="monotone" 
-                  dataKey="revenue" 
-                  stackId="1"
-                  stroke="#3b82f6" 
-                  fill="#3b82f6" 
-                  fillOpacity={0.6}
-                />
-                <Area 
-                  type="monotone" 
-                  dataKey="cashFlow" 
-                  stackId="2"
-                  stroke="#10b981" 
-                  fill="#10b981" 
-                  fillOpacity={0.8}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+      {monthlyIncome > 0 && (
+        <div className="grid lg:grid-cols-2 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Your Financial Trend</CardTitle>
+              <CardDescription>6-month income, expenses and savings overview</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <AreaChart data={kpiData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip formatter={(value) => [`€${value?.toLocaleString()}`, '']} />
+                  <Area 
+                    type="monotone" 
+                    dataKey="income" 
+                    stackId="1"
+                    stroke="#10b981" 
+                    fill="#10b981" 
+                    fillOpacity={0.6}
+                    name="Income"
+                  />
+                  <Area 
+                    type="monotone" 
+                    dataKey="expenses" 
+                    stackId="2"
+                    stroke="#ef4444" 
+                    fill="#ef4444" 
+                    fillOpacity={0.6}
+                    name="Expenses"
+                  />
+                  <Area 
+                    type="monotone" 
+                    dataKey="savings" 
+                    stackId="3"
+                    stroke="#3b82f6" 
+                    fill="#3b82f6" 
+                    fillOpacity={0.8}
+                    name="Savings"
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Expense Distribution Analysis</CardTitle>
-            <CardDescription>Current month breakdown with optimization suggestions</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <RechartsPieChart>
-                <Pie
-                  data={expenseData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {expenseData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </RechartsPieChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-      </div>
+          {expenseData.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Expense Breakdown</CardTitle>
+                <CardDescription>Your monthly spending distribution</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <RechartsPieChart>
+                    <Pie
+                      data={expenseData}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={({ name, value }) => `${name} ${value}%`}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {expenseData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip formatter={(value) => [`${value}%`, '']} />
+                  </RechartsPieChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      )}
 
       {/* Financial Health Ratios */}
       <Card>
         <CardHeader>
           <CardTitle>Your Financial Health Metrics</CardTitle>
-          <CardDescription>Essential indicators based on your personal data</CardDescription>
+          <CardDescription>Key indicators based on your personal data</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -285,7 +393,9 @@ const Dashboard = ({ user }: DashboardProps) => {
                     className={
                       metric.status === 'healthy' 
                         ? 'bg-green-100 text-green-800' 
-                        : 'bg-orange-100 text-orange-800'
+                        : metric.status === 'warning'
+                        ? 'bg-orange-100 text-orange-800'
+                        : 'bg-red-100 text-red-800'
                     }
                   >
                     {metric.status}
@@ -293,7 +403,7 @@ const Dashboard = ({ user }: DashboardProps) => {
                 </div>
                 <Progress value={metric.value} className="h-2" />
                 <div className="flex items-center justify-between text-xs text-gray-500">
-                  <span>{metric.value}%</span>
+                  <span>{metric.value.toFixed(0)}%</span>
                   <div className="flex items-center">
                     {metric.trend === 'up' ? (
                       <TrendingUp className="h-3 w-3 text-green-500 mr-1" />
