@@ -1,3 +1,4 @@
+
 import { useState, useRef } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -29,140 +30,263 @@ const DataImport = ({ user, onDataUpdate }: DataImportProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
-  const parseFinancialData = (data: any[]) => {
-    console.log('Raw Excel data:', data);
+  const parseFinancialData = (workbook: any) => {
+    console.log('Parsing Excel workbook with sheets:', workbook.SheetNames);
     
     const result = {
+      // Company Info
+      companyName: '',
+      industry: '',
+      yearEnd: '',
+      
+      // P&L Data (Annual)
+      salesRevenue: 0,
+      otherRevenues: 0,
+      totalRevenue: 0,
+      cogs: 0,
+      grossProfit: 0,
+      wagesAndSalaries: 0,
+      socialSecurityContributions: 0,
+      employeeSeveranceIndemnity: 0,
+      totalPersonnelCosts: 0,
+      amortizationIntangible: 0,
+      depreciationTangible: 0,
+      totalAmortizationDepreciation: 0,
+      changesInventories: 0,
+      otherOperatingExpenses: 0,
+      otherCosts: 0,
+      interestFinancialExpenses: 0,
+      totalFinancialExpenses: 0,
+      profitBeforeTax: 0,
+      incomeTaxes: 0,
+      netIncome: 0,
+      
+      // Balance Sheet
+      intangibleFixedAssets: 0,
+      tangibleFixedAssets: 0,
+      totalFixedAssets: 0,
+      inventories: 0,
+      receivables: 0,
+      totalReceivables: 0,
+      cashAndEquivalents: 0,
+      totalCurrentAssets: 0,
+      totalAssets: 0,
+      capital: 0,
+      legalReserve: 0,
+      otherReserves: 0,
+      profitLoss: 0,
+      totalEquity: 0,
+      employeeSeveranceIndemnityTFR: 0,
+      debts: 0,
+      totalDebts: 0,
+      totalLiabilities: 0,
+      
+      // Monthly Data
+      monthlyData: [] as any[],
+      
+      // Calculated fields for compatibility
       monthlyIncome: 0,
       monthlyExpenses: 0,
-      totalAssets: 0,
-      totalLiabilities: 0,
+      annualRevenue: 0,
+      annualExpenses: 0,
       currentSavings: 0,
       emergencyFund: 0,
+      totalLiabilities: 0,
       housingExpenses: 0,
       foodExpenses: 0,
       transportExpenses: 0,
       utilitiesExpenses: 0,
       entertainmentExpenses: 0,
-      otherExpenses: 0,
-      annualRevenue: 0,
-      annualExpenses: 0,
-      grossProfit: 0,
-      netIncome: 0,
-      monthlyData: [] as any[]
+      otherExpenses: 0
     };
 
-    // Parse the data structure - looking for rows with Description in column A and Value in column B
-    data.forEach((row) => {
-      if (!row || typeof row !== 'object') return;
-      
-      // Handle both array format [Description, Value] and object format {A: Description, B: Value}
-      let description = '';
-      let value = 0;
-      
-      if (Array.isArray(row)) {
-        description = String(row[0] || '').toLowerCase();
-        value = parseFloat(String(row[1] || '').replace(/[^0-9.-]/g, ''));
-      } else {
-        // Object format from Excel (A, B columns)
-        description = String(row.A || row.Description || row.description || '').toLowerCase();
-        value = parseFloat(String(row.B || row.Value || row.value || row.Amount || row.amount || '').replace(/[^0-9.-]/g, ''));
+    try {
+      // Parse P&L Sheet
+      if (workbook.Sheets['P&L Yearly']) {
+        const plSheet = workbook.Sheets['P&L Yearly'];
+        const plData = XLSX.utils.sheet_to_json(plSheet, { header: 1 });
+        
+        console.log('P&L Data:', plData);
+        
+        // Parse P&L data based on the structure shown in the image
+        (plData as any[][]).forEach((row: any[], index: number) => {
+          if (!row || !row[0]) return;
+          
+          const description = String(row[0]).toLowerCase().trim();
+          const value2024 = parseFloat(String(row[1] || '').replace(/[^0-9.-]/g, '')) || 0;
+          
+          if (description.includes('revenues from sales')) {
+            result.salesRevenue = value2024;
+          } else if (description.includes('other revenues')) {
+            result.otherRevenues = value2024;
+          } else if (description.includes('total production value')) {
+            result.totalRevenue = value2024;
+          } else if (description.includes('cogs') || description.includes('cost of goods')) {
+            result.cogs = value2024;
+          } else if (description.includes('wages and salaries')) {
+            result.wagesAndSalaries = value2024;
+          } else if (description.includes('social security')) {
+            result.socialSecurityContributions = value2024;
+          } else if (description.includes('employee severance')) {
+            result.employeeSeveranceIndemnity = value2024;
+          } else if (description.includes('total personnel costs')) {
+            result.totalPersonnelCosts = value2024;
+          } else if (description.includes('amortization of intangible')) {
+            result.amortizationIntangible = value2024;
+          } else if (description.includes('depreciation of tangible')) {
+            result.depreciationTangible = value2024;
+          } else if (description.includes('total amortization')) {
+            result.totalAmortizationDepreciation = value2024;
+          } else if (description.includes('changes in inventories')) {
+            result.changesInventories = value2024;
+          } else if (description.includes('other operating expenses')) {
+            result.otherOperatingExpenses = value2024;
+          } else if (description.includes('other costs')) {
+            result.otherCosts = value2024;
+          } else if (description.includes('interest and other financial')) {
+            result.interestFinancialExpenses = value2024;
+          } else if (description.includes('total financial')) {
+            result.totalFinancialExpenses = value2024;
+          } else if (description.includes('profit before tax')) {
+            result.profitBeforeTax = value2024;
+          } else if (description.includes('income taxes')) {
+            result.incomeTaxes = value2024;
+          } else if (description.includes('profit (loss) for the year')) {
+            result.netIncome = value2024;
+          }
+        });
       }
-      
-      if (isNaN(value) || !description) return;
-      
-      console.log(`Processing: ${description} = ${value}`);
-      
-      // Map descriptions to result fields
-      if (description.includes('total revenue') || description.includes('annual revenue')) {
-        result.annualRevenue = value;
-        result.monthlyIncome = Math.round(value / 12);
-      } else if (description.includes('monthly revenue') || description.includes('monthly income')) {
-        result.monthlyIncome = value;
-        result.annualRevenue = value * 12;
-      } else if (description.includes('monthly expenses')) {
-        result.monthlyExpenses = value;
-        result.annualExpenses = value * 12;
-      } else if (description.includes('total expenses') || description.includes('annual expenses')) {
-        result.annualExpenses = value;
-        result.monthlyExpenses = Math.round(value / 12);
-      } else if (description.includes('gross profit')) {
-        result.grossProfit = value;
-      } else if (description.includes('net income')) {
-        result.netIncome = value;
-      } else if (description.includes('total assets')) {
-        result.totalAssets = value;
-      } else if (description.includes('total liabilities')) {
-        result.totalLiabilities = value;
-      } else if (description.includes('cash') || description.includes('savings')) {
-        result.currentSavings = value;
-        result.emergencyFund = value;
-      } else if (description.includes('housing') || description.includes('rent')) {
-        result.housingExpenses = value;
-      } else if (description.includes('food')) {
-        result.foodExpenses = value;
-      } else if (description.includes('transport')) {
-        result.transportExpenses = value;
-      } else if (description.includes('utilities')) {
-        result.utilitiesExpenses = value;
-      } else if (description.includes('entertainment')) {
-        result.entertainmentExpenses = value;
-      } else if (description.includes('operating expenses')) {
-        result.monthlyExpenses = Math.round(value / 12);
-        result.annualExpenses = value;
-      } else if (description.includes('cost of goods sold') || description.includes('cogs')) {
-        // COGS is part of expenses but handled separately for gross profit calculation
-        const cogs = value;
-        if (result.annualRevenue > 0) {
-          result.grossProfit = result.annualRevenue - cogs;
-        }
-      } else if (description.includes('ebitda')) {
-        // EBITDA can help estimate other financial metrics
-        const ebitda = value;
-        if (result.netIncome === 0) {
-          result.netIncome = Math.round(ebitda * 0.75); // Rough estimate
-        }
-      }
-    });
 
-    // Calculate missing values using business logic
-    if (result.monthlyExpenses === 0 && result.annualExpenses > 0) {
-      result.monthlyExpenses = Math.round(result.annualExpenses / 12);
-    }
-    
-    if (result.monthlyIncome === 0 && result.annualRevenue > 0) {
+      // Parse Balance Sheet
+      if (workbook.Sheets['Balance sheet Yearly']) {
+        const bsSheet = workbook.Sheets['Balance sheet Yearly'];
+        const bsData = XLSX.utils.sheet_to_json(bsSheet, { header: 1 });
+        
+        console.log('Balance Sheet Data:', bsData);
+        
+        (bsData as any[][]).forEach((row: any[]) => {
+          if (!row || !row[0]) return;
+          
+          const description = String(row[0]).toLowerCase().trim();
+          const value2024 = parseFloat(String(row[1] || '').replace(/[^0-9.-]/g, '')) || 0;
+          
+          if (description.includes('intangible fixed assets')) {
+            result.intangibleFixedAssets = value2024;
+          } else if (description.includes('tangible fixed assets')) {
+            result.tangibleFixedAssets = value2024;
+          } else if (description.includes('total fixed assets')) {
+            result.totalFixedAssets = value2024;
+          } else if (description.includes('inventories')) {
+            result.inventories = value2024;
+          } else if (description.includes('receivables')) {
+            result.receivables = value2024;
+          } else if (description.includes('total receivables')) {
+            result.totalReceivables = value2024;
+          } else if (description.includes('cash and cash equivalents')) {
+            result.cashAndEquivalents = value2024;
+          } else if (description.includes('total current assets')) {
+            result.totalCurrentAssets = value2024;
+          } else if (description.includes('total assets')) {
+            result.totalAssets = value2024;
+          } else if (description.includes('capital')) {
+            result.capital = value2024;
+          } else if (description.includes('legal reserve')) {
+            result.legalReserve = value2024;
+          } else if (description.includes('other reserves')) {
+            result.otherReserves = value2024;
+          } else if (description.includes('profit (loss) for the year')) {
+            result.profitLoss = value2024;
+          } else if (description.includes('total equity')) {
+            result.totalEquity = value2024;
+          } else if (description.includes('employee severance indemnity')) {
+            result.employeeSeveranceIndemnityTFR = value2024;
+          } else if (description.includes('debts')) {
+            result.debts = value2024;
+          } else if (description.includes('total debts')) {
+            result.totalDebts = value2024;
+          } else if (description.includes('total liabilities')) {
+            result.totalLiabilities = value2024;
+          }
+        });
+      }
+
+      // Parse Monthly Data
+      if (workbook.Sheets['P&L monthly']) {
+        const monthlySheet = workbook.Sheets['P&L monthly'];
+        const monthlyData = XLSX.utils.sheet_to_json(monthlySheet, { header: 1 });
+        
+        console.log('Monthly Data:', monthlyData);
+        
+        // Get company info from first rows
+        if (monthlyData.length > 0) {
+          const companyRow = monthlyData[1] as any[];
+          const yearRow = monthlyData[2] as any[];
+          const industryRow = monthlyData[3] as any[];
+          
+          if (companyRow && companyRow[1]) result.companyName = String(companyRow[1]);
+          if (yearRow && yearRow[1]) result.yearEnd = String(yearRow[1]);
+          if (industryRow && industryRow[1]) result.industry = String(industryRow[1]);
+        }
+        
+        // Parse monthly financial data
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        let salesRevenueRow: any[] = [];
+        let operatingExpensesRow: any[] = [];
+        let netIncomeRow: any[] = [];
+        
+        (monthlyData as any[][]).forEach((row: any[]) => {
+          if (!row || !row[0]) return;
+          
+          const description = String(row[0]).toLowerCase().trim();
+          
+          if (description.includes('sales revenue')) {
+            salesRevenueRow = row;
+          } else if (description.includes('total operating expenses')) {
+            operatingExpensesRow = row;
+          } else if (description.includes('net income')) {
+            netIncomeRow = row;
+          }
+        });
+        
+        // Create monthly data array
+        result.monthlyData = months.map((month, index) => {
+          const revenue = parseFloat(String(salesRevenueRow[index + 1] || '').replace(/[^0-9.-]/g, '')) || 0;
+          const expenses = parseFloat(String(operatingExpensesRow[index + 1] || '').replace(/[^0-9.-]/g, '')) || 0;
+          const netIncome = parseFloat(String(netIncomeRow[index + 1] || '').replace(/[^0-9.-]/g, '')) || 0;
+          
+          return {
+            month,
+            revenue,
+            expenses,
+            savings: netIncome
+          };
+        });
+      }
+
+      // Calculate derived values for compatibility
+      result.annualRevenue = result.totalRevenue || result.salesRevenue;
       result.monthlyIncome = Math.round(result.annualRevenue / 12);
-    }
-
-    // If we have gross profit and revenue, we can estimate COGS and operating expenses
-    if (result.grossProfit > 0 && result.annualRevenue > 0 && result.annualExpenses === 0) {
-      const estimatedCOGS = result.annualRevenue - result.grossProfit;
-      result.annualExpenses = estimatedCOGS + (result.netIncome > 0 ? (result.grossProfit - result.netIncome) : result.grossProfit * 0.6);
+      result.annualExpenses = result.cogs + result.totalPersonnelCosts + result.otherOperatingExpenses + result.otherCosts;
       result.monthlyExpenses = Math.round(result.annualExpenses / 12);
+      result.currentSavings = result.cashAndEquivalents;
+      result.emergencyFund = result.cashAndEquivalents;
+      result.grossProfit = result.annualRevenue - result.cogs;
+      
+      // Calculate expense breakdown for dashboard
+      if (result.monthlyExpenses > 0) {
+        result.housingExpenses = Math.round(result.monthlyExpenses * 0.3);
+        result.foodExpenses = Math.round(result.monthlyExpenses * 0.15);
+        result.transportExpenses = Math.round(result.monthlyExpenses * 0.15);
+        result.utilitiesExpenses = Math.round(result.monthlyExpenses * 0.1);
+        result.entertainmentExpenses = Math.round(result.monthlyExpenses * 0.1);
+        result.otherExpenses = result.monthlyExpenses - (result.housingExpenses + result.foodExpenses + result.transportExpenses + result.utilitiesExpenses + result.entertainmentExpenses);
+      }
+
+    } catch (error) {
+      console.error('Error parsing financial data:', error);
     }
 
-    // Calculate expense breakdown if not provided
-    if (result.monthlyExpenses > 0 && result.housingExpenses === 0) {
-      result.housingExpenses = Math.round(result.monthlyExpenses * 0.3);
-      result.foodExpenses = Math.round(result.monthlyExpenses * 0.15);
-      result.transportExpenses = Math.round(result.monthlyExpenses * 0.15);
-      result.utilitiesExpenses = Math.round(result.monthlyExpenses * 0.1);
-      result.entertainmentExpenses = Math.round(result.monthlyExpenses * 0.1);
-      result.otherExpenses = result.monthlyExpenses - (result.housingExpenses + result.foodExpenses + result.transportExpenses + result.utilitiesExpenses + result.entertainmentExpenses);
-    }
-
-    // Generate monthly data for charts
-    if (result.monthlyIncome > 0) {
-      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      result.monthlyData = months.map((month, index) => ({
-        month,
-        revenue: Math.round(result.monthlyIncome * (0.9 + Math.random() * 0.2)),
-        expenses: Math.round(result.monthlyExpenses * (0.9 + Math.random() * 0.2)),
-        savings: Math.round((result.monthlyIncome - result.monthlyExpenses) * (0.8 + Math.random() * 0.4))
-      }));
-    }
-
-    console.log('Final parsed data:', result);
+    console.log('Final parsed financial data:', result);
     return result;
   };
 
@@ -175,8 +299,8 @@ const DataImport = ({ user, onDataUpdate }: DataImportProps) => {
     
     if (!allowedTypes.includes(fileExtension)) {
       toast({
-        title: "Invalid File Type",
-        description: "Please upload a CSV or Excel file.",
+        title: "Tipo di File Non Valido",
+        description: "Carica un file CSV o Excel.",
         variant: "destructive"
       });
       return;
@@ -200,28 +324,23 @@ const DataImport = ({ user, onDataUpdate }: DataImportProps) => {
       const arrayBuffer = await file.arrayBuffer();
       const workbook = XLSX.read(arrayBuffer, { type: 'array' });
       
-      // Get the first worksheet
-      const worksheetName = workbook.SheetNames[0];
-      const worksheet = workbook.Sheets[worksheetName];
-      
-      // Convert to JSON - this will create objects with A, B, C properties for columns
-      const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 'A', defval: '' });
-      
-      console.log('Excel parsed data:', jsonData);
+      console.log('Excel workbook loaded with sheets:', workbook.SheetNames);
 
       clearInterval(interval);
       setUploadProgress(100);
 
-      if (!jsonData || jsonData.length === 0) {
-        throw new Error('No valid data found in file');
+      if (!workbook.SheetNames || workbook.SheetNames.length === 0) {
+        throw new Error('Nessun foglio valido trovato nel file');
       }
 
       // Parse the financial data
-      const parsedData = parseFinancialData(jsonData as any[]);
+      const parsedData = parseFinancialData(workbook);
       
       // Update user financial data
       const updatedUser = {
         ...user,
+        companyName: parsedData.companyName || user.company,
+        industry: parsedData.industry || user.industry,
         // Update direct user properties for immediate dashboard reflection
         monthlyIncome: parsedData.monthlyIncome,
         monthlyExpenses: parsedData.monthlyExpenses,
@@ -241,9 +360,11 @@ const DataImport = ({ user, onDataUpdate }: DataImportProps) => {
           importedData: {
             fileName: file.name,
             importDate: new Date().toISOString(),
-            recordsProcessed: jsonData.length,
+            recordsProcessed: workbook.SheetNames.length,
             totalRevenue: parsedData.annualRevenue,
-            totalExpenses: parsedData.annualExpenses
+            totalExpenses: parsedData.annualExpenses,
+            companyName: parsedData.companyName,
+            industry: parsedData.industry
           },
           lastDataUpdate: new Date().toISOString()
         }
@@ -256,15 +377,15 @@ const DataImport = ({ user, onDataUpdate }: DataImportProps) => {
       onDataUpdate(updatedUser);
       
       toast({
-        title: "Data Imported Successfully!",
-        description: `Processed ${jsonData.length} records. Annual Revenue: €${parsedData.annualRevenue.toLocaleString()}, Monthly Income: €${parsedData.monthlyIncome.toLocaleString()}`,
+        title: "Dati Importati con Successo!",
+        description: `Processati ${workbook.SheetNames.length} fogli. Ricavi Annuali: €${parsedData.annualRevenue.toLocaleString()}, Reddito Mensile: €${parsedData.monthlyIncome.toLocaleString()}`,
       });
 
     } catch (error) {
       console.error('File parsing error:', error);
       toast({
-        title: "Import Failed",
-        description: `Error processing the file: ${error instanceof Error ? error.message : 'Unknown error'}. Please check the format and try again.`,
+        title: "Importazione Fallita",
+        description: `Errore nel processare il file: ${error instanceof Error ? error.message : 'Errore sconosciuto'}. Controlla il formato e riprova.`,
         variant: "destructive"
       });
     } finally {
@@ -310,57 +431,134 @@ const DataImport = ({ user, onDataUpdate }: DataImportProps) => {
   };
 
   const downloadTemplate = () => {
-    // Create a proper Excel file with separate columns
-    const templateData = [
-      ['Description', 'Value'],
-      ['Company Information', ''],
-      ['Company Name', 'Your Company Name'],
-      ['Industry', 'Technology'],
-      ['Founded', '2020'],
-      ['Employees', '50'],
-      ['', ''],
-      ['Financial Summary (Annual)', ''],
-      ['Total Revenue', '500000'],
-      ['Cost of Goods Sold', '200000'], 
-      ['Gross Profit', '300000'],
-      ['Operating Expenses', '180000'],
-      ['EBITDA', '120000'],
-      ['Net Income', '90000'],
-      ['', ''],
-      ['Balance Sheet', ''],
-      ['Total Assets', '250000'],
-      ['Total Liabilities', '100000'],
-      ['Cash and Savings', '50000'],
-      ['', ''],
-      ['Monthly Breakdown', ''],
-      ['Monthly Revenue', '41667'],
-      ['Monthly Expenses', '35000'],
-      ['Housing Expenses', '10500'],
-      ['Food Expenses', '5250'],
-      ['Transport Expenses', '5250'],
-      ['Utilities Expenses', '3500'],
-      ['Entertainment Expenses', '3500'],
-      ['Other Expenses', '7000']
-    ];
-
-    // Create workbook and worksheet
+    // Create comprehensive Excel template with P&L, Balance Sheet, and Monthly data
     const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.aoa_to_sheet(templateData);
     
-    // Set column widths
-    ws['!cols'] = [
-      { width: 25 }, // Description column
-      { width: 15 }  // Value column
+    // P&L Yearly Sheet
+    const plData = [
+      ['Account', '31/12/2024', '31/12/2023'],
+      ['Revenues from sales and services', '500000', '450000'],
+      ['Other revenues and income (Other)', '25000', '20000'],
+      ['Total Production Value', '525000', '470000'],
+      [''],
+      ['For raw materials, consumables, supplies & goods', '200000', '180000'],
+      ['For services', '50000', '45000'],
+      ['For use of third-party assets', '15000', '12000'],
+      ['COGS', '265000', '237000'],
+      [''],
+      [''],
+      ['Wages and salaries', '120000', '110000'],
+      ['Social security contributions', '35000', '32000'],
+      ['Employee severance indemnity', '8000', '7000'],
+      ['Total personnel costs', '163000', '149000'],
+      [''],
+      ['Amortization and depreciation:', ''],
+      ['Amortization of intangible fixed assets', '5000', '4000'],
+      ['Depreciation of tangible fixed assets', '15000', '12000'],
+      ['Total amortization and depreciation', '20000', '16000'],
+      [''],
+      ['Changes in inventories', '5000', '3000'],
+      ['Other operating expenses', '25000', '22000'],
+      ['Other costs', '8000', '7000'],
+      [''],
+      [''],
+      ['Interest and other financial expenses (Other)', '12000', '10000'],
+      ['Total financial income and expenses', '12000', '10000'],
+      [''],
+      [''],
+      ['Profit before tax', '27000', '26000'],
+      ['Income taxes for the year (Current taxes)', '8100', '7800'],
+      [''],
+      ['Profit (Loss) for the year', '18900', '18200']
     ];
     
-    XLSX.utils.book_append_sheet(wb, ws, 'Business Data');
+    const ws1 = XLSX.utils.aoa_to_sheet(plData);
+    ws1['!cols'] = [{ width: 40 }, { width: 15 }, { width: 15 }];
+    XLSX.utils.book_append_sheet(wb, ws1, 'P&L Yearly');
+
+    // Balance Sheet Yearly
+    const bsData = [
+      ['Line Item', '31-12-2024 (EUR)', '31-12-2023 (EUR)'],
+      ['ASSETS', '', ''],
+      ['B) Fixed Assets', '', ''],
+      ['I - Intangible Fixed Assets', '25000', '20000'],
+      ['II - Tangible Fixed Assets', '150000', '130000'],
+      ['Total Fixed Assets (B)', '175000', '150000'],
+      ['C) Current Assets', '', ''],
+      ['I - Inventories', '45000', '40000'],
+      ['II - Receivables (due within next financial year)', '85000', '75000'],
+      ['Total Receivables', '85000', '75000'],
+      ['IV - Cash and Cash Equivalents', '35000', '30000'],
+      ['Total Current Assets (C)', '165000', '145000'],
+      ['D) Accrued Income and Prepaid Expenses', '5000', '4000'],
+      ['TOTAL ASSETS', '345000', '299000'],
+      ['LIABILITIES & EQUITY', '', ''],
+      ['A) Equity', '', ''],
+      ['I - Capital', '100000', '100000'],
+      ['IV - Legal Reserve', '20000', '18000'],
+      ['VI - Other Reserves', '45000', '35000'],
+      ['IX - Profit (Loss) for the year', '18900', '18200'],
+      ['Total Equity', '183900', '171200'],
+      ['C) Employee Severance Indemnity (TFR)', '25000', '22000'],
+      ['D) Debts', '', ''],
+      ['Debts (due within next financial year)', '136100', '105800'],
+      ['Total Debts', '136100', '105800'],
+      ['E) Accrued Expenses and Deferred Income', '0', '0'],
+      ['TOTAL LIABILITIES & EQUITY', '345000', '299000']
+    ];
+    
+    const ws2 = XLSX.utils.aoa_to_sheet(bsData);
+    ws2['!cols'] = [{ width: 40 }, { width: 20 }, { width: 20 }];
+    XLSX.utils.book_append_sheet(wb, ws2, 'Balance sheet Yearly');
+
+    // Monthly P&L Sheet
+    const monthlyData = [
+      ['', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+      ['Company Name', 'Your Company Name', '', '', '', '', '', '', '', '', '', '', '', ''],
+      ['Year end', '2024', '', '', '', '', '', '', '', '', '', '', '', ''],
+      ['Industry:', 'Technology', '', '', '', '', '', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+      ['Line Item', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Annual Total'],
+      ['Sales Revenue', '42000', '38000', '45000', '48000', '52000', '55000', '58000', '54000', '47000', '49000', '51000', '56000', '595000'],
+      ['Cost of Goods Sold (COGS)', '16800', '15200', '18000', '19200', '20800', '22000', '23200', '21600', '18800', '19600', '20400', '22400', '238000'],
+      ['Direct Materials', '8400', '7600', '9000', '9600', '10400', '11000', '11600', '10800', '9400', '9800', '10200', '11200', '119000'],
+      ['Direct Labor', '8400', '7600', '9000', '9600', '10400', '11000', '11600', '10800', '9400', '9800', '10200', '11200', '119000'],
+      ['Total Cost of Goods Sold', '16800', '15200', '18000', '19200', '20800', '22000', '23200', '21600', '18800', '19600', '20400', '22400', '238000'],
+      ['Gross Profit', '25200', '22800', '27000', '28800', '31200', '33000', '34800', '32400', '28200', '29400', '30600', '33600', '357000'],
+      ['Operating Expenses', '18900', '17100', '20250', '21600', '23400', '24750', '26100', '24300', '21150', '22050', '22950', '25200', '267750'],
+      ['Housing Expenses', '5670', '5130', '6075', '6480', '7020', '7425', '7830', '7290', '6345', '6615', '6885', '7560', '80325'],
+      ['Food Expenses', '2835', '2565', '3038', '3240', '3510', '3713', '3915', '3645', '3173', '3308', '3443', '3780', '40165'],
+      ['Transport Expenses', '2835', '2565', '3038', '3240', '3510', '3713', '3915', '3645', '3173', '3308', '3443', '3780', '40165'],
+      ['Utilities Expenses', '1890', '1710', '2025', '2160', '2340', '2475', '2610', '2430', '2115', '2205', '2295', '2520', '26775'],
+      ['Entertainment Expenses', '1890', '1710', '2025', '2160', '2340', '2475', '2610', '2430', '2115', '2205', '2295', '2520', '26775'],
+      ['Other Expenses', '3780', '3420', '4050', '4320', '4680', '4950', '5220', '4860', '4230', '4410', '4590', '5040', '53550'],
+      ['General & Admin (G&A)', '1890', '1710', '2025', '2160', '2340', '2475', '2610', '2430', '2115', '2205', '2295', '2520', '26775'],
+      ['Sales & Marketing', '1890', '1710', '2025', '2160', '2340', '2475', '2610', '2430', '2115', '2205', '2295', '2520', '26775'],
+      ['Total Operating Expenses', '18900', '17100', '20250', '21600', '23400', '24750', '26100', '24300', '21150', '22050', '22950', '25200', '267750'],
+      ['EBITDA', '6300', '5700', '6750', '7200', '7800', '8250', '8700', '8100', '7050', '7350', '7650', '8400', '89250'],
+      ['Depreciation & Amortization', '1260', '1140', '1350', '1440', '1560', '1650', '1740', '1620', '1410', '1470', '1530', '1680', '17850'],
+      ['EBIT (Operating Income)', '5040', '4560', '5400', '5760', '6240', '6600', '6960', '6480', '5640', '5880', '6120', '6720', '71400'],
+      ['Interest Expense', '1000', '1000', '1000', '1000', '1000', '1000', '1000', '1000', '1000', '1000', '1000', '1000', '12000'],
+      ['Pre-Tax Income', '4040', '3560', '4400', '4760', '5240', '5600', '5960', '5480', '4640', '4880', '5120', '5720', '59400'],
+      ['Income Tax Expense', '1212', '1068', '1320', '1428', '1572', '1680', '1788', '1644', '1392', '1464', '1536', '1716', '17820'],
+      ['Net Income', '2828', '2492', '3080', '3332', '3668', '3920', '4172', '3836', '3248', '3416', '3584', '4004', '41580']
+    ];
+    
+    const ws3 = XLSX.utils.aoa_to_sheet(monthlyData);
+    ws3['!cols'] = [
+      { width: 25 }, { width: 10 }, { width: 10 }, { width: 10 }, { width: 10 }, 
+      { width: 10 }, { width: 10 }, { width: 10 }, { width: 10 }, { width: 10 }, 
+      { width: 10 }, { width: 10 }, { width: 10 }, { width: 15 }
+    ];
+    XLSX.utils.book_append_sheet(wb, ws3, 'P&L monthly');
     
     // Write the file
-    XLSX.writeFile(wb, 'business_template.xlsx');
+    XLSX.writeFile(wb, 'Financial_Statement_Template.xlsx');
     
     toast({
-      title: "Template Downloaded",
-      description: "Use this Excel template with separate columns for Description and Value.",
+      title: "Template Scaricato",
+      description: "Usa questo template Excel completo con P&L, Balance Sheet e dati mensili.",
     });
   };
 
@@ -368,20 +566,20 @@ const DataImport = ({ user, onDataUpdate }: DataImportProps) => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Data Import & Integration</h1>
-          <p className="text-gray-600">Import comprehensive business data and connect external systems</p>
+          <h1 className="text-2xl font-bold text-gray-900">Importazione Dati & Integrazione</h1>
+          <p className="text-gray-600">Importa dati aziendali completi e connetti sistemi esterni</p>
         </div>
         <Badge className="bg-blue-100 text-blue-800">
           <Database className="h-3 w-3 mr-1" />
-          Enterprise Data Management
+          Gestione Dati Aziendali
         </Badge>
       </div>
 
       <Tabs defaultValue="upload" className="space-y-6">
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="upload">Business Data Upload</TabsTrigger>
-          <TabsTrigger value="integration">System Integration</TabsTrigger>
-          <TabsTrigger value="status">Connection Status</TabsTrigger>
+          <TabsTrigger value="upload">Caricamento Dati Aziendali</TabsTrigger>
+          <TabsTrigger value="integration">Integrazione Sistemi</TabsTrigger>
+          <TabsTrigger value="status">Stato Connessioni</TabsTrigger>
         </TabsList>
 
         <TabsContent value="upload" className="space-y-6">
@@ -389,23 +587,23 @@ const DataImport = ({ user, onDataUpdate }: DataImportProps) => {
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <Upload className="h-5 w-5" />
-                <span>Upload Complete Business Data</span>
+                <span>Carica Dati Finanziari Completi</span>
               </CardTitle>
               <CardDescription>
-                Upload Excel files with separate columns: Column A (Description) and Column B (Value)
+                Carica file Excel con P&L, Balance Sheet e dati mensili
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-4">
-                  <h3 className="font-medium">Upload Business File</h3>
+                  <h3 className="font-medium">Carica File Finanziario</h3>
                   <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
                     <FileSpreadsheet className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                     <p className="text-gray-600 mb-4">
-                      Upload your business data Excel file
+                      Carica il tuo file Excel con i dati finanziari
                     </p>
                     <p className="text-sm text-gray-500 mb-4">
-                      Use the template format: Column A (Description), Column B (Value)
+                      Include: P&L Annuale, Balance Sheet, Dati Mensili
                     </p>
                     <input
                       ref={fileInputRef}
@@ -419,14 +617,14 @@ const DataImport = ({ user, onDataUpdate }: DataImportProps) => {
                       disabled={isUploading}
                       className="bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700"
                     >
-                      {isUploading ? "Processing..." : "Choose Business File"}
+                      {isUploading ? "Elaborando..." : "Scegli File Finanziario"}
                     </Button>
                   </div>
                   
                   {isUploading && (
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
-                        <span>Processing business data...</span>
+                        <span>Elaborando dati finanziari...</span>
                         <span>{uploadProgress}%</span>
                       </div>
                       <Progress value={uploadProgress} />
@@ -435,17 +633,17 @@ const DataImport = ({ user, onDataUpdate }: DataImportProps) => {
                 </div>
 
                 <div className="space-y-4">
-                  <h3 className="font-medium">Excel Template</h3>
+                  <h3 className="font-medium">Template Excel Professionale</h3>
                   <div className="space-y-3">
                     <div className="p-4 bg-gradient-to-r from-blue-50 to-green-50 rounded-lg border border-blue-200">
-                      <h4 className="font-medium text-blue-900 mb-2">Proper Excel Format</h4>
+                      <h4 className="font-medium text-blue-900 mb-2">Formato Template Completo</h4>
                       <ul className="text-sm text-blue-800 space-y-1">
-                        <li>• Column A: Description (e.g., "Total Revenue")</li>
-                        <li>• Column B: Value (e.g., "500000")</li>
-                        <li>• Includes Company Info & Financial Data</li>
-                        <li>• Monthly Revenue & Expense Breakdown</li>
-                        <li>• Balance Sheet Information</li>
-                        <li>• Properly formatted for Excel reading</li>
+                        <li>• <strong>P&L Annuale:</strong> Ricavi, Costi, Utili</li>
+                        <li>• <strong>Balance Sheet:</strong> Attività, Passività, Patrimonio</li>
+                        <li>• <strong>Dati Mensili:</strong> Breakdown mensile dettagliato</li>
+                        <li>• <strong>Info Aziendali:</strong> Nome, Settore, Anno fiscale</li>
+                        <li>• <strong>Formato Professionale:</strong> Compatibile con sistemi contabili</li>
+                        <li>• <strong>Analisi Automatica:</strong> Calcoli e ratio automatici</li>
                       </ul>
                     </div>
                   </div>
@@ -456,7 +654,7 @@ const DataImport = ({ user, onDataUpdate }: DataImportProps) => {
                     className="w-full border-blue-200 hover:bg-blue-50"
                   >
                     <Download className="h-4 w-4 mr-2" />
-                    Download Excel Template (Fixed Format)
+                    Scarica Template Finanziario Completo
                   </Button>
                 </div>
               </div>
@@ -466,12 +664,13 @@ const DataImport = ({ user, onDataUpdate }: DataImportProps) => {
                   <div className="flex items-start space-x-3">
                     <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
                     <div>
-                      <h4 className="font-medium text-green-900">Last Business Data Import</h4>
+                      <h4 className="font-medium text-green-900">Ultima Importazione Dati</h4>
                       <p className="text-sm text-green-700 mt-1">
                         File: {user.financialData.importedData.fileName}<br />
-                        Date: {new Date(user.financialData.importedData.importDate).toLocaleDateString()}<br />
-                        Records Processed: {user.financialData.importedData.recordsProcessed}<br />
-                        Revenue Data: €{user.financialData.importedData.totalRevenue?.toLocaleString() || 'N/A'}
+                        Data: {new Date(user.financialData.importedData.importDate).toLocaleDateString()}<br />
+                        {user.financialData.importedData.companyName && `Azienda: ${user.financialData.importedData.companyName}`}<br />
+                        Fogli Processati: {user.financialData.importedData.recordsProcessed}<br />
+                        Ricavi: €{user.financialData.importedData.totalRevenue?.toLocaleString() || 'N/A'}
                       </p>
                     </div>
                   </div>
