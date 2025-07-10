@@ -2,11 +2,12 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
 import { 
   TrendingUp, TrendingDown, DollarSign, PieChart, BarChart3, 
   AlertCircle, CheckCircle, Calendar, Leaf, Building2, 
   Globe, Target, Zap, Brain, Shield, User, Factory,
-  Users, Briefcase, TrendingUpDown
+  Users, Briefcase, TrendingUpDown, Upload, FileSpreadsheet
 } from "lucide-react";
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,

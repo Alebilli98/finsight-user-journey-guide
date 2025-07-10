@@ -1,4 +1,3 @@
-
 import { useState, useRef } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -91,7 +90,6 @@ const DataImport = ({ user, onDataUpdate }: DataImportProps) => {
       annualExpenses: 0,
       currentSavings: 0,
       emergencyFund: 0,
-      totalLiabilities: 0,
       housingExpenses: 0,
       foodExpenses: 0,
       transportExpenses: 0,
