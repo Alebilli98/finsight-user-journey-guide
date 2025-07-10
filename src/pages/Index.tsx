@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -39,6 +38,18 @@ const Index = () => {
         setShowOnboarding(true);
       }
     }
+  }, []);
+
+  // Listen for navigation events from Analytics component
+  useEffect(() => {
+    const handleNavigate = (event: CustomEvent) => {
+      setActiveSection(event.detail);
+    };
+
+    window.addEventListener('navigate-to-section', handleNavigate as EventListener);
+    return () => {
+      window.removeEventListener('navigate-to-section', handleNavigate as EventListener);
+    };
   }, []);
 
   const handleLogin = () => {
@@ -120,7 +131,7 @@ const Index = () => {
       case "dashboard":
         return <Dashboard user={user} />;
       case "analytics":
-        return <Analytics />;
+        return <Analytics user={user} />;
       case "reports":
         return <Reports />;
       case "ai-solution":

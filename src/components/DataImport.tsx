@@ -1,4 +1,3 @@
-
 import { useState, useRef } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,6 +11,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import * as XLSX from 'xlsx';
 
 interface DataImportProps {
   user: any;
@@ -28,6 +28,111 @@ const DataImport = ({ user, onDataUpdate }: DataImportProps) => {
   });
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+
+  const parseFinancialData = (data: any[]) => {
+    const result = {
+      monthlyIncome: 0,
+      monthlyExpenses: 0,
+      totalAssets: 0,
+      totalLiabilities: 0,
+      currentSavings: 0,
+      emergencyFund: 0,
+      housingExpenses: 0,
+      foodExpenses: 0,
+      transportExpenses: 0,
+      utilitiesExpenses: 0,
+      entertainmentExpenses: 0,
+      otherExpenses: 0,
+      annualRevenue: 0,
+      annualExpenses: 0,
+      grossProfit: 0,
+      netIncome: 0,
+      monthlyData: [] as any[]
+    };
+
+    // Parse the data based on the template structure
+    data.forEach((row, index) => {
+      const keys = Object.keys(row);
+      const values = Object.values(row);
+      
+      // Look for financial summary data
+      if (keys[0]?.toLowerCase().includes('total revenue') || keys[0]?.toLowerCase().includes('revenue')) {
+        const value = parseFloat(String(values[1] || values[0]).replace(/[^0-9.-]/g, ''));
+        if (!isNaN(value)) {
+          result.annualRevenue = value;
+          result.monthlyIncome = Math.round(value / 12);
+        }
+      }
+      
+      if (keys[0]?.toLowerCase().includes('operating expenses') || keys[0]?.toLowerCase().includes('expenses')) {
+        const value = parseFloat(String(values[1] || values[0]).replace(/[^0-9.-]/g, ''));
+        if (!isNaN(value)) {
+          result.annualExpenses = value;
+          result.monthlyExpenses = Math.round(value / 12);
+        }
+      }
+      
+      if (keys[0]?.toLowerCase().includes('net income')) {
+        const value = parseFloat(String(values[1] || values[0]).replace(/[^0-9.-]/g, ''));
+        if (!isNaN(value)) result.netIncome = value;
+      }
+      
+      if (keys[0]?.toLowerCase().includes('gross profit')) {
+        const value = parseFloat(String(values[1] || values[0]).replace(/[^0-9.-]/g, ''));
+        if (!isNaN(value)) result.grossProfit = value;
+      }
+      
+      // Assets and liabilities
+      if (keys[0]?.toLowerCase().includes('total assets') || keys[0]?.toLowerCase().includes('assets')) {
+        const value = parseFloat(String(values[1] || values[0]).replace(/[^0-9.-]/g, ''));
+        if (!isNaN(value)) result.totalAssets = value;
+      }
+      
+      if (keys[0]?.toLowerCase().includes('total liabilities') || keys[0]?.toLowerCase().includes('liabilities')) {
+        const value = parseFloat(String(values[1] || values[0]).replace(/[^0-9.-]/g, ''));
+        if (!isNaN(value)) result.totalLiabilities = value;
+      }
+      
+      if (keys[0]?.toLowerCase().includes('cash') && keys[0]?.toLowerCase().includes('equivalents')) {
+        const value = parseFloat(String(values[1] || values[0]).replace(/[^0-9.-]/g, ''));
+        if (!isNaN(value)) {
+          result.currentSavings = value;
+          result.emergencyFund = value;
+        }
+      }
+      
+      // Monthly breakdown data
+      if (keys[0]?.toLowerCase() === 'month' && keys.length > 3) {
+        // This is likely the monthly breakdown header, parse subsequent rows
+        const monthlyBreakdown = data.slice(index + 1, index + 13).map(monthRow => {
+          const monthValues = Object.values(monthRow);
+          return {
+            month: monthValues[0],
+            revenue: parseFloat(String(monthValues[1] || 0).replace(/[^0-9.-]/g, '')) || 0,
+            expenses: parseFloat(String(monthValues[2] || 0).replace(/[^0-9.-]/g, '')) || 0,
+            marketing: parseFloat(String(monthValues[3] || 0).replace(/[^0-9.-]/g, '')) || 0,
+            personnel: parseFloat(String(monthValues[4] || 0).replace(/[^0-9.-]/g, '')) || 0
+          };
+        }).filter(item => item.month && typeof item.month === 'string');
+        
+        if (monthlyBreakdown.length > 0) {
+          result.monthlyData = monthlyBreakdown;
+        }
+      }
+    });
+
+    // Calculate expense categories based on typical business percentages
+    if (result.monthlyExpenses > 0) {
+      result.housingExpenses = Math.round(result.monthlyExpenses * 0.25); // Office/rent
+      result.foodExpenses = Math.round(result.monthlyExpenses * 0.10); // Business meals
+      result.transportExpenses = Math.round(result.monthlyExpenses * 0.15); // Business travel
+      result.utilitiesExpenses = Math.round(result.monthlyExpenses * 0.10); // Utilities
+      result.entertainmentExpenses = Math.round(result.monthlyExpenses * 0.05); // Entertainment
+      result.otherExpenses = result.monthlyExpenses - (result.housingExpenses + result.foodExpenses + result.transportExpenses + result.utilitiesExpenses + result.entertainmentExpenses);
+    }
+
+    return result;
+  };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -48,56 +153,87 @@ const DataImport = ({ user, onDataUpdate }: DataImportProps) => {
     setIsUploading(true);
     setUploadProgress(0);
 
-    const interval = setInterval(() => {
-      setUploadProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          processFileData(file);
-          return 100;
-        }
-        return prev + 10;
-      });
-    }, 200);
-  };
-
-  const processFileData = async (file: File) => {
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const sampleData = {
-        transactions: Math.floor(Math.random() * 500) + 100,
-        totalRevenue: Math.floor(Math.random() * 500000) + 200000,
-        totalExpenses: Math.floor(Math.random() * 400000) + 150000,
-        categories: ['Revenue', 'COGS', 'Operating Expenses', 'Marketing', 'Personnel', 'Technology']
-      };
+      const interval = setInterval(() => {
+        setUploadProgress(prev => {
+          if (prev >= 90) {
+            clearInterval(interval);
+            return 90;
+          }
+          return prev + 15;
+        });
+      }, 200);
 
+      // Read the file
+      const arrayBuffer = await file.arrayBuffer();
+      const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+      
+      // Get the first worksheet
+      const worksheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[worksheetName];
+      
+      // Convert to JSON
+      const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+      
+      // Convert array format to object format for easier parsing
+      const dataObjects = jsonData.slice(1).map((row: any) => {
+        const obj: any = {};
+        jsonData[0].forEach((header: any, index: number) => {
+          obj[header] = row[index];
+        });
+        return obj;
+      }).filter(obj => Object.values(obj).some(val => val !== undefined && val !== ''));
+
+      clearInterval(interval);
+      setUploadProgress(100);
+
+      // Parse the financial data
+      const parsedData = parseFinancialData(dataObjects);
+      
+      // Update user financial data
       const updatedFinancialData = {
         ...user.financialData,
+        ...parsedData,
         importedData: {
           fileName: file.name,
           importDate: new Date().toISOString(),
-          ...sampleData
+          recordsProcessed: dataObjects.length,
+          totalRevenue: parsedData.annualRevenue,
+          totalExpenses: parsedData.annualExpenses
         },
-        monthlyIncome: Math.round(sampleData.totalRevenue / 12),
-        monthlyExpenses: Math.round(sampleData.totalExpenses / 12),
         lastDataUpdate: new Date().toISOString()
       };
 
       const updatedUser = {
         ...user,
-        financialData: updatedFinancialData
+        financialData: updatedFinancialData,
+        // Update direct user properties for immediate dashboard reflection
+        monthlyIncome: parsedData.monthlyIncome,
+        monthlyExpenses: parsedData.monthlyExpenses,
+        totalAssets: parsedData.totalAssets,
+        totalLiabilities: parsedData.totalLiabilities,
+        currentSavings: parsedData.currentSavings,
+        emergencyFund: parsedData.emergencyFund,
+        housingExpenses: parsedData.housingExpenses,
+        foodExpenses: parsedData.foodExpenses,
+        transportExpenses: parsedData.transportExpenses,
+        utilitiesExpenses: parsedData.utilitiesExpenses,
+        entertainmentExpenses: parsedData.entertainmentExpenses,
+        otherExpenses: parsedData.otherExpenses
       };
 
       onDataUpdate(updatedUser);
       
       toast({
         title: "Data Imported Successfully!",
-        description: `Processed ${sampleData.transactions} transactions from ${file.name}`,
+        description: `Processed ${dataObjects.length} records from ${file.name}. Revenue: €${parsedData.annualRevenue.toLocaleString()}`,
       });
+
     } catch (error) {
+      console.error('File parsing error:', error);
       toast({
         title: "Import Failed",
-        description: "There was an error processing your file. Please try again.",
+        description: "Error processing the file. Please check the format and try again.",
         variant: "destructive"
       });
     } finally {
@@ -321,7 +457,7 @@ Total Investments,85000,100%`;
                       <p className="text-sm text-green-700 mt-1">
                         File: {user.financialData.importedData.fileName}<br />
                         Date: {new Date(user.financialData.importedData.importDate).toLocaleDateString()}<br />
-                        Records Processed: {user.financialData.importedData.transactions}<br />
+                        Records Processed: {user.financialData.importedData.recordsProcessed}<br />
                         Revenue Data: €{user.financialData.importedData.totalRevenue?.toLocaleString() || 'N/A'}
                       </p>
                     </div>
