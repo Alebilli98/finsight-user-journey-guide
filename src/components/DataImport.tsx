@@ -30,6 +30,8 @@ const DataImport = ({ user, onDataUpdate }: DataImportProps) => {
   const { toast } = useToast();
 
   const parseFinancialData = (data: any[]) => {
+    console.log('Raw Excel data:', data);
+    
     const result = {
       monthlyIncome: 0,
       monthlyExpenses: 0,
@@ -50,87 +52,85 @@ const DataImport = ({ user, onDataUpdate }: DataImportProps) => {
       monthlyData: [] as any[]
     };
 
-    // Parse the data based on the template structure
-    data.forEach((row, index) => {
-      const keys = Object.keys(row);
-      const values = Object.values(row);
+    // Parse the simplified data structure
+    data.forEach((row) => {
+      if (!row || typeof row !== 'object') return;
       
-      // Look for financial summary data
-      if (keys[0]?.toLowerCase().includes('total revenue') || keys[0]?.toLowerCase().includes('revenue')) {
-        const value = parseFloat(String(values[1] || values[0]).replace(/[^0-9.-]/g, ''));
-        if (!isNaN(value)) {
-          result.annualRevenue = value;
-          result.monthlyIncome = Math.round(value / 12);
-        }
-      }
+      const description = String(row.Description || row.description || '').toLowerCase();
+      const value = parseFloat(String(row.Value || row.value || row.Amount || row.amount || '').replace(/[^0-9.-]/g, ''));
       
-      if (keys[0]?.toLowerCase().includes('operating expenses') || keys[0]?.toLowerCase().includes('expenses')) {
-        const value = parseFloat(String(values[1] || values[0]).replace(/[^0-9.-]/g, ''));
-        if (!isNaN(value)) {
-          result.annualExpenses = value;
-          result.monthlyExpenses = Math.round(value / 12);
-        }
-      }
+      if (isNaN(value)) return;
       
-      if (keys[0]?.toLowerCase().includes('net income')) {
-        const value = parseFloat(String(values[1] || values[0]).replace(/[^0-9.-]/g, ''));
-        if (!isNaN(value)) result.netIncome = value;
-      }
+      console.log(`Processing: ${description} = ${value}`);
       
-      if (keys[0]?.toLowerCase().includes('gross profit')) {
-        const value = parseFloat(String(values[1] || values[0]).replace(/[^0-9.-]/g, ''));
-        if (!isNaN(value)) result.grossProfit = value;
-      }
-      
-      // Assets and liabilities
-      if (keys[0]?.toLowerCase().includes('total assets') || keys[0]?.toLowerCase().includes('assets')) {
-        const value = parseFloat(String(values[1] || values[0]).replace(/[^0-9.-]/g, ''));
-        if (!isNaN(value)) result.totalAssets = value;
-      }
-      
-      if (keys[0]?.toLowerCase().includes('total liabilities') || keys[0]?.toLowerCase().includes('liabilities')) {
-        const value = parseFloat(String(values[1] || values[0]).replace(/[^0-9.-]/g, ''));
-        if (!isNaN(value)) result.totalLiabilities = value;
-      }
-      
-      if (keys[0]?.toLowerCase().includes('cash') && keys[0]?.toLowerCase().includes('equivalents')) {
-        const value = parseFloat(String(values[1] || values[0]).replace(/[^0-9.-]/g, ''));
-        if (!isNaN(value)) {
-          result.currentSavings = value;
-          result.emergencyFund = value;
-        }
-      }
-      
-      // Monthly breakdown data
-      if (keys[0]?.toLowerCase() === 'month' && keys.length > 3) {
-        // This is likely the monthly breakdown header, parse subsequent rows
-        const monthlyBreakdown = data.slice(index + 1, index + 13).map(monthRow => {
-          const monthValues = Object.values(monthRow);
-          return {
-            month: monthValues[0],
-            revenue: parseFloat(String(monthValues[1] || 0).replace(/[^0-9.-]/g, '')) || 0,
-            expenses: parseFloat(String(monthValues[2] || 0).replace(/[^0-9.-]/g, '')) || 0,
-            marketing: parseFloat(String(monthValues[3] || 0).replace(/[^0-9.-]/g, '')) || 0,
-            personnel: parseFloat(String(monthValues[4] || 0).replace(/[^0-9.-]/g, '')) || 0
-          };
-        }).filter(item => item.month && typeof item.month === 'string');
-        
-        if (monthlyBreakdown.length > 0) {
-          result.monthlyData = monthlyBreakdown;
-        }
+      // Map descriptions to result fields
+      if (description.includes('monthly revenue') || description.includes('monthly income')) {
+        result.monthlyIncome = value;
+        result.annualRevenue = value * 12;
+      } else if (description.includes('monthly expenses')) {
+        result.monthlyExpenses = value;
+        result.annualExpenses = value * 12;
+      } else if (description.includes('annual revenue') || description.includes('total revenue')) {
+        result.annualRevenue = value;
+        result.monthlyIncome = Math.round(value / 12);
+      } else if (description.includes('annual expenses') || description.includes('total expenses')) {
+        result.annualExpenses = value;
+        result.monthlyExpenses = Math.round(value / 12);
+      } else if (description.includes('gross profit')) {
+        result.grossProfit = value;
+      } else if (description.includes('net income')) {
+        result.netIncome = value;
+      } else if (description.includes('total assets')) {
+        result.totalAssets = value;
+      } else if (description.includes('total liabilities')) {
+        result.totalLiabilities = value;
+      } else if (description.includes('cash') || description.includes('savings')) {
+        result.currentSavings = value;
+        result.emergencyFund = value;
+      } else if (description.includes('housing') || description.includes('rent')) {
+        result.housingExpenses = value;
+      } else if (description.includes('food')) {
+        result.foodExpenses = value;
+      } else if (description.includes('transport')) {
+        result.transportExpenses = value;
+      } else if (description.includes('utilities')) {
+        result.utilitiesExpenses = value;
+      } else if (description.includes('entertainment')) {
+        result.entertainmentExpenses = value;
       }
     });
 
-    // Calculate expense categories based on typical business percentages
-    if (result.monthlyExpenses > 0) {
-      result.housingExpenses = Math.round(result.monthlyExpenses * 0.25); // Office/rent
-      result.foodExpenses = Math.round(result.monthlyExpenses * 0.10); // Business meals
-      result.transportExpenses = Math.round(result.monthlyExpenses * 0.15); // Business travel
-      result.utilitiesExpenses = Math.round(result.monthlyExpenses * 0.10); // Utilities
-      result.entertainmentExpenses = Math.round(result.monthlyExpenses * 0.05); // Entertainment
+    // Calculate missing values
+    if (result.monthlyExpenses === 0 && result.annualExpenses > 0) {
+      result.monthlyExpenses = Math.round(result.annualExpenses / 12);
+    }
+    
+    if (result.monthlyIncome === 0 && result.annualRevenue > 0) {
+      result.monthlyIncome = Math.round(result.annualRevenue / 12);
+    }
+
+    // Calculate expense breakdown if not provided
+    if (result.monthlyExpenses > 0 && result.housingExpenses === 0) {
+      result.housingExpenses = Math.round(result.monthlyExpenses * 0.3);
+      result.foodExpenses = Math.round(result.monthlyExpenses * 0.15);
+      result.transportExpenses = Math.round(result.monthlyExpenses * 0.15);
+      result.utilitiesExpenses = Math.round(result.monthlyExpenses * 0.1);
+      result.entertainmentExpenses = Math.round(result.monthlyExpenses * 0.1);
       result.otherExpenses = result.monthlyExpenses - (result.housingExpenses + result.foodExpenses + result.transportExpenses + result.utilitiesExpenses + result.entertainmentExpenses);
     }
 
+    // Generate monthly data
+    if (result.monthlyIncome > 0) {
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      result.monthlyData = months.map((month, index) => ({
+        month,
+        revenue: Math.round(result.monthlyIncome * (0.9 + Math.random() * 0.2)),
+        expenses: Math.round(result.monthlyExpenses * (0.9 + Math.random() * 0.2)),
+        savings: Math.round((result.monthlyIncome - result.monthlyExpenses) * (0.8 + Math.random() * 0.4))
+      }));
+    }
+
+    console.log('Final parsed data:', result);
     return result;
   };
 
@@ -172,45 +172,37 @@ const DataImport = ({ user, onDataUpdate }: DataImportProps) => {
       const worksheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[worksheetName];
       
-      // Convert to JSON - properly type the result
+      // Convert to JSON with headers
       const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as any[][];
       
-      // Convert array format to object format for easier parsing
-      const dataObjects = jsonData.slice(1).map((row: any[]) => {
-        const obj: any = {};
-        (jsonData[0] as any[]).forEach((header: any, index: number) => {
-          obj[header] = row[index];
-        });
-        return obj;
-      }).filter(obj => Object.values(obj).some(val => val !== undefined && val !== ''));
+      // Find data starting from first non-empty row
+      let dataRows: any[] = [];
+      for (let i = 0; i < jsonData.length; i++) {
+        const row = jsonData[i];
+        if (row && row.length >= 2 && row[0] && row[1]) {
+          // Convert array to object format
+          dataRows.push({
+            Description: row[0],
+            Value: row[1]
+          });
+        }
+      }
 
       clearInterval(interval);
       setUploadProgress(100);
 
-      console.log('Parsed data objects:', dataObjects);
+      console.log('Excel data rows:', dataRows);
+
+      if (dataRows.length === 0) {
+        throw new Error('No valid data found in file');
+      }
 
       // Parse the financial data
-      const parsedData = parseFinancialData(dataObjects);
-      
-      console.log('Parsed financial data:', parsedData);
+      const parsedData = parseFinancialData(dataRows);
       
       // Update user financial data
-      const updatedFinancialData = {
-        ...user.financialData,
-        ...parsedData,
-        importedData: {
-          fileName: file.name,
-          importDate: new Date().toISOString(),
-          recordsProcessed: dataObjects.length,
-          totalRevenue: parsedData.annualRevenue,
-          totalExpenses: parsedData.annualExpenses
-        },
-        lastDataUpdate: new Date().toISOString()
-      };
-
       const updatedUser = {
         ...user,
-        financialData: updatedFinancialData,
         // Update direct user properties for immediate dashboard reflection
         monthlyIncome: parsedData.monthlyIncome,
         monthlyExpenses: parsedData.monthlyExpenses,
@@ -223,23 +215,37 @@ const DataImport = ({ user, onDataUpdate }: DataImportProps) => {
         transportExpenses: parsedData.transportExpenses,
         utilitiesExpenses: parsedData.utilitiesExpenses,
         entertainmentExpenses: parsedData.entertainmentExpenses,
-        otherExpenses: parsedData.otherExpenses
+        otherExpenses: parsedData.otherExpenses,
+        financialData: {
+          ...user.financialData,
+          ...parsedData,
+          importedData: {
+            fileName: file.name,
+            importDate: new Date().toISOString(),
+            recordsProcessed: dataRows.length,
+            totalRevenue: parsedData.annualRevenue,
+            totalExpenses: parsedData.annualExpenses
+          },
+          lastDataUpdate: new Date().toISOString()
+        }
       };
 
-      console.log('Updated user:', updatedUser);
+      console.log('Final updated user:', updatedUser);
 
+      // Save to localStorage and update parent
+      localStorage.setItem("finsight_user", JSON.stringify(updatedUser));
       onDataUpdate(updatedUser);
       
       toast({
         title: "Data Imported Successfully!",
-        description: `Processed ${dataObjects.length} records from ${file.name}. Revenue: €${parsedData.annualRevenue.toLocaleString()}`,
+        description: `Processed ${dataRows.length} records. Monthly Income: €${parsedData.monthlyIncome.toLocaleString()}, Monthly Expenses: €${parsedData.monthlyExpenses.toLocaleString()}`,
       });
 
     } catch (error) {
       console.error('File parsing error:', error);
       toast({
         title: "Import Failed",
-        description: "Error processing the file. Please check the format and try again.",
+        description: `Error processing the file: ${error instanceof Error ? error.message : 'Unknown error'}. Please check the format and try again.`,
         variant: "destructive"
       });
     } finally {
@@ -285,74 +291,35 @@ const DataImport = ({ user, onDataUpdate }: DataImportProps) => {
   };
 
   const downloadTemplate = () => {
-    const csvContent = `Company Information
-Company Name,${user?.company || 'Your Company Name'}
-Industry,Technology
-Founded,2020
-Employees,50
-
-Financial Summary (Annual)
-Total Revenue,500000
-Cost of Goods Sold,200000
+    const csvContent = `Description,Value
+Monthly Revenue,45000
+Monthly Expenses,35000
+Annual Revenue,540000
+Annual Expenses,420000
 Gross Profit,300000
-Operating Expenses,180000
-EBITDA,120000
-Net Income,90000
-
-Monthly Breakdown
-Month,Revenue,COGS,Operating Expenses,Marketing,Personnel,Technology,Other
-January,45000,18000,15000,3000,8000,2000,1500
-February,42000,17000,14500,2800,8200,1800,1400
-March,48000,19000,16000,3200,8500,2200,1600
-April,46000,18500,15500,3000,8300,2000,1500
-May,50000,20000,17000,3500,8800,2300,1700
-June,52000,21000,17500,3600,9000,2400,1800
-
-Assets & Liabilities
-Cash and Cash Equivalents,50000
-Accounts Receivable,35000
-Inventory,25000
-Fixed Assets,150000
-Total Assets,260000
-Accounts Payable,15000
-Short-term Debt,20000
-Long-term Debt,80000
-Total Liabilities,115000
-Equity,145000
-
-Key Performance Indicators
-Monthly Recurring Revenue,40000
-Customer Acquisition Cost,150
-Customer Lifetime Value,2400
-Churn Rate,5%
-Gross Margin,60%
-Operating Margin,24%
-Current Ratio,2.1
-Debt to Equity,0.79
-
-Bank Account Details
-Account Name,Business Checking
-Bank Name,Your Bank
-Account Number,****1234
-Current Balance,50000
-Average Monthly Inflow,45000
-Average Monthly Outflow,35000
-
-Investment Portfolio
-Investment Type,Amount,Percentage
-Stocks,30000,35%
-Bonds,20000,25%
-Real Estate,25000,30%
-Cash/Savings,10000,10%
-Total Investments,85000,100%`;
+Net Income,120000
+Total Assets,250000
+Total Liabilities,100000
+Cash and Savings,50000
+Housing Expenses,10500
+Food Expenses,5250
+Transport Expenses,5250
+Utilities Expenses,3500
+Entertainment Expenses,3500
+Other Expenses,7000`;
 
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'finsight_business_template.csv';
+    a.download = 'simple_business_template.csv';
     a.click();
     window.URL.revokeObjectURL(url);
+    
+    toast({
+      title: "Template Downloaded",
+      description: "Use this simplified template to upload your business data.",
+    });
   };
 
   return (

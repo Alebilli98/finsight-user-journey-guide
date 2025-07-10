@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -34,12 +33,12 @@ const UserProfile = ({ user, onUserUpdate }: UserProfileProps) => {
   });
 
   const [financialData, setFinancialData] = useState({
-    monthlyRevenue: "",
-    employees: "",
-    businessType: "",
-    accountingSystem: "",
-    fiscalYearEnd: "",
-    currency: "EUR"
+    monthlyRevenue: user.financialData?.monthlyRevenue || user.monthlyIncome || "",
+    employees: user.financialData?.employees || "",
+    businessType: user.financialData?.businessType || "",
+    accountingSystem: user.financialData?.accountingSystem || "",
+    fiscalYearEnd: user.financialData?.fiscalYearEnd || "",
+    currency: user.financialData?.currency || "EUR"
   });
 
   const { toast } = useToast();
@@ -60,17 +59,36 @@ const UserProfile = ({ user, onUserUpdate }: UserProfileProps) => {
   };
 
   const handleFinancialSave = () => {
+    const monthlyRevenue = parseFloat(financialData.monthlyRevenue) || 0;
+    const employees = parseFloat(financialData.employees) || 0;
+    
     const updatedUser = {
       ...user,
-      financialData
+      // Update both financialData and direct properties for immediate dashboard reflection
+      monthlyIncome: monthlyRevenue,
+      financialData: {
+        ...user.financialData,
+        ...financialData,
+        monthlyRevenue: monthlyRevenue,
+        employees: employees,
+        lastDataUpdate: new Date().toISOString()
+      }
     };
     
     localStorage.setItem("finsight_user", JSON.stringify(updatedUser));
+    
+    // Also update users array
+    const savedUsers = JSON.parse(localStorage.getItem("finsight_users") || "[]");
+    const updatedUsers = savedUsers.map((u: any) => 
+      u.email === updatedUser.email ? updatedUser : u
+    );
+    localStorage.setItem("finsight_users", JSON.stringify(updatedUsers));
+    
     onUserUpdate(updatedUser);
     
     toast({
       title: "Business Data Saved",
-      description: "Your business information has been updated.",
+      description: `Your business information has been updated. Monthly Revenue: €${monthlyRevenue.toLocaleString()}`,
     });
   };
 
