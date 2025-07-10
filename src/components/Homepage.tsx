@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { 
   TrendingUp, Shield, Zap, Globe, Users, CheckCircle,
-  BarChart3, Brain, CreditCard, ArrowRight, Star, Building2
+  BarChart3, Brain, CreditCard, ArrowRight, Star, Building2, Play
 } from "lucide-react";
 import PricingSection from "./PricingSection";
 import AboutSection from "./AboutSection";
@@ -22,23 +22,23 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
   const features = [
     {
       icon: BarChart3,
-      title: "Real-time Dashboard",
-      description: "Monitor your financial health with intuitive visualizations and key performance indicators."
+      title: "Dashboard in Tempo Reale",
+      description: "Monitora la salute finanziaria della tua azienda con visualizzazioni intuitive e indicatori chiave di performance."
     },
     {
       icon: Brain,
-      title: "AI-Powered Insights",
-      description: "Get personalized recommendations and predictive analytics tailored to your business."
+      title: "Insights Powered by AI",
+      description: "Ricevi raccomandazioni personalizzate e analisi predittive su misura per la tua attività."
     },
     {
       icon: Shield,
-      title: "Secure & Compliant",
-      description: "Enterprise-grade security with full GDPR compliance and Dubai Free Zone regulations."
+      title: "Sicuro e Conforme",
+      description: "Sicurezza di livello enterprise con piena conformità GDPR e regolamenti Dubai Free Zone."
     },
     {
       icon: CreditCard,
-      title: "Funding Readiness",
-      description: "Prepare for investment with comprehensive financial reports and projections."
+      title: "Preparazione Finanziamenti",
+      description: "Preparati per gli investimenti con report finanziari completi e proiezioni."
     }
   ];
 
@@ -46,23 +46,16 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
     {
       name: "Marco Rossi",
       company: "TechStart Milano",
-      quote: "FinSight has revolutionized how we manage our finances. The AI insights are incredibly accurate.",
+      quote: "FinSight ha rivoluzionato il modo in cui gestiamo le nostre finanze. Gli insights AI sono incredibilmente accurati.",
       rating: 5
     },
     {
       name: "Sarah Al-Ahmad",
       company: "Dubai Innovations",
-      quote: "Finally, a financial platform built specifically for startups. The dashboards are amazing!",
+      quote: "Finalmente, una piattaforma finanziaria costruita specificamente per le startup. Le dashboard sono incredibili!",
       rating: 5
     }
   ];
-
-  const scrollToSection = (section: string) => {
-    const element = document.getElementById(section);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
 
   const renderContent = () => {
     switch (activeSection) {
@@ -80,15 +73,15 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
               <div className="container mx-auto px-4 text-center">
                 <Badge className="mb-6 bg-blue-100 text-blue-800">
                   <Building2 className="h-3 w-3 mr-1" />
-                  Dubai, UAE Based
+                  Basato a Dubai, UAE
                 </Badge>
                 <h1 className="text-5xl font-bold text-gray-900 mb-6">
-                  Unleash Your <span className="text-blue-600">Startup's</span> Financial Potential
+                  Libera il Potenziale <span className="text-blue-600">Finanziario</span> della Tua Startup
                 </h1>
                 <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-                  Empowering startups and SMEs to compete with larger companies through 
-                  cutting-edge financial analysis and AI-powered advice. Transform your 
-                  financial management and unlock your business potential.
+                  Diamo potere alle startup e PMI per competere con aziende più grandi attraverso 
+                  analisi finanziarie all'avanguardia e consigli powered by AI. Trasforma la tua 
+                  gestione finanziaria e sblocca il potenziale del tuo business.
                 </p>
                 <div className="flex justify-center space-x-4">
                   <Button 
@@ -96,12 +89,73 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
                     onClick={onSignup}
                     className="bg-gradient-to-r from-blue-600 to-green-600 px-8 py-3"
                   >
-                    Start Free Trial
+                    Inizia Prova Gratuita
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                   <Button variant="outline" size="lg" onClick={onLogin}>
-                    Login to Account
+                    Accedi al Tuo Account
                   </Button>
+                </div>
+              </div>
+            </section>
+
+            {/* Video Tutorial Section */}
+            <section className="py-20 bg-gray-50">
+              <div className="container mx-auto px-4">
+                <div className="text-center mb-16">
+                  <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                    Scopri FinSight in Azione
+                  </h2>
+                  <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                    Guarda come FinSight trasforma la gestione finanziaria della tua azienda 
+                    con un tour completo della piattaforma.
+                  </p>
+                </div>
+
+                <div className="max-w-4xl mx-auto">
+                  <Card className="overflow-hidden">
+                    <div className="relative bg-gradient-to-br from-blue-600 to-green-600 aspect-video">
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="text-center text-white">
+                          <Play className="h-16 w-16 mx-auto mb-4 bg-white/20 rounded-full p-4" />
+                          <h3 className="text-xl font-semibold mb-2">Tutorial Completo FinSight</h3>
+                          <p className="text-blue-100 mb-4">Durata: 8 minuti</p>
+                          <Button 
+                            variant="secondary" 
+                            size="lg"
+                            className="bg-white text-blue-600 hover:bg-gray-100"
+                          >
+                            <Play className="h-4 w-4 mr-2" />
+                            Guarda il Video
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                </div>
+
+                <div className="grid md:grid-cols-3 gap-6 mt-12 max-w-4xl mx-auto">
+                  <Card>
+                    <CardContent className="p-4 text-center">
+                      <BarChart3 className="h-8 w-8 text-blue-600 mx-auto mb-2" />
+                      <h4 className="font-semibold mb-1">Dashboard Finanziaria</h4>
+                      <p className="text-sm text-gray-600">Visualizza KPI e metriche in tempo reale</p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="p-4 text-center">
+                      <Brain className="h-8 w-8 text-green-600 mx-auto mb-2" />
+                      <h4 className="font-semibold mb-1">AI Analytics</h4>
+                      <p className="text-sm text-gray-600">Insights predittivi e raccomandazioni</p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="p-4 text-center">
+                      <CreditCard className="h-8 w-8 text-purple-600 mx-auto mb-2" />
+                      <h4 className="font-semibold mb-1">Report Avanzati</h4>
+                      <p className="text-sm text-gray-600">Documenti pronti per investitori</p>
+                    </CardContent>
+                  </Card>
                 </div>
               </div>
             </section>
@@ -111,11 +165,11 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
               <div className="container mx-auto px-4">
                 <div className="text-center mb-16">
                   <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                    Everything You Need to Master Your Finances
+                    Tutto Quello che Ti Serve per Padroneggiare le Tue Finanze
                   </h2>
                   <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                    Our comprehensive platform provides all the tools and insights you need 
-                    to make informed financial decisions and drive growth.
+                    La nostra piattaforma completa fornisce tutti gli strumenti e insights necessari 
+                    per prendere decisioni finanziarie informate e guidare la crescita.
                   </p>
                 </div>
 
@@ -145,7 +199,7 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
               <div className="container mx-auto px-4">
                 <div className="text-center mb-16">
                   <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                    Trusted by Growing Companies
+                    Scelto da Aziende in Crescita
                   </h2>
                 </div>
 
@@ -178,10 +232,10 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
             <section className="py-20 bg-gradient-to-r from-blue-600 to-green-600 text-white">
               <div className="container mx-auto px-4 text-center">
                 <h2 className="text-3xl font-bold mb-4">
-                  Ready to Transform Your Financial Management?
+                  Pronto a Trasformare la Tua Gestione Finanziaria?
                 </h2>
                 <p className="text-xl mb-8 opacity-90">
-                  Join hundreds of startups already using FinSight to drive growth and make better decisions.
+                  Unisciti a centinaia di startup che già usano FinSight per guidare la crescita e prendere decisioni migliori.
                 </p>
                 <Button 
                   size="lg" 
@@ -189,7 +243,7 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
                   onClick={onSignup}
                   className="px-8 py-3"
                 >
-                  Get Started Today
+                  Inizia Oggi
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </div>
@@ -214,7 +268,7 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
               </div>
               <div>
                 <h1 className="text-xl font-bold text-gray-900">FinSight</h1>
-                <p className="text-xs text-gray-500">Your Financial Guide</p>
+                <p className="text-xs text-gray-500">La Tua Guida Finanziaria</p>
               </div>
             </div>
 
@@ -229,28 +283,28 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
                 onClick={() => setActiveSection('about')}
                 className={`transition-colors ${activeSection === 'about' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
               >
-                About
+                Chi Siamo
               </button>
               <button 
                 onClick={() => setActiveSection('pricing')}
                 className={`transition-colors ${activeSection === 'pricing' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
               >
-                Pricing
+                Prezzi
               </button>
               <button 
                 onClick={() => setActiveSection('contact')}
                 className={`transition-colors ${activeSection === 'contact' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
               >
-                Contact
+                Contatti
               </button>
             </nav>
 
             <div className="flex items-center space-x-3">
               <Button variant="ghost" onClick={onLogin}>
-                Login
+                Accedi
               </Button>
               <Button onClick={onSignup} className="bg-gradient-to-r from-blue-600 to-green-600">
-                Sign Up Free
+                Registrati Gratis
               </Button>
             </div>
           </div>
@@ -273,46 +327,46 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
                 </div>
                 <div>
                   <h3 className="font-bold">FinSight</h3>
-                  <p className="text-xs text-gray-400">Your Financial Guide</p>
+                  <p className="text-xs text-gray-400">La Tua Guida Finanziaria</p>
                 </div>
               </div>
               <p className="text-gray-400 text-sm">
-                Empowering startups and SMEs with AI-powered financial intelligence.
+                Diamo potere alle startup e PMI con intelligenza finanziaria powered by AI.
               </p>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4">Product</h4>
+              <h4 className="font-semibold mb-4">Prodotto</h4>
               <ul className="space-y-2 text-sm text-gray-400">
                 <li><button onClick={() => setActiveSection('home')} className="hover:text-white transition-colors">Dashboard</button></li>
                 <li><button onClick={() => setActiveSection('home')} className="hover:text-white transition-colors">Analytics</button></li>
                 <li><button onClick={() => setActiveSection('home')} className="hover:text-white transition-colors">AI Insights</button></li>
-                <li><button onClick={() => setActiveSection('home')} className="hover:text-white transition-colors">Reports</button></li>
+                <li><button onClick={() => setActiveSection('home')} className="hover:text-white transition-colors">Report</button></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4">Company</h4>
+              <h4 className="font-semibold mb-4">Azienda</h4>
               <ul className="space-y-2 text-sm text-gray-400">
-                <li><button onClick={() => setActiveSection('about')} className="hover:text-white transition-colors">About</button></li>
-                <li><button onClick={() => setActiveSection('contact')} className="hover:text-white transition-colors">Careers</button></li>
-                <li><button onClick={() => setActiveSection('contact')} className="hover:text-white transition-colors">Contact</button></li>
-                <li><button onClick={() => setActiveSection('contact')} className="hover:text-white transition-colors">Support</button></li>
+                <li><button onClick={() => setActiveSection('about')} className="hover:text-white transition-colors">Chi Siamo</button></li>
+                <li><button onClick={() => setActiveSection('contact')} className="hover:text-white transition-colors">Carriere</button></li>
+                <li><button onClick={() => setActiveSection('contact')} className="hover:text-white transition-colors">Contatti</button></li>
+                <li><button onClick={() => setActiveSection('contact')} className="hover:text-white transition-colors">Supporto</button></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4">Legal</h4>
+              <h4 className="font-semibold mb-4">Legale</h4>
               <ul className="space-y-2 text-sm text-gray-400">
                 <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Termini di Servizio</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">GDPR</a></li>
               </ul>
             </div>
           </div>
 
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400">
-            <p>&copy; 2024 FinSight. All rights reserved. Dubai International Free Zone Authority (IFZA)</p>
+            <p>&copy; 2024 FinSight. Tutti i diritti riservati. Dubai International Free Zone Authority (IFZA)</p>
           </div>
         </div>
       </footer>

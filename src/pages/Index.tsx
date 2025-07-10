@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -72,8 +73,8 @@ const Index = () => {
     } else {
       setActiveSection("dashboard");
       toast({
-        title: `Welcome back, ${userData.firstName}!`,
-        description: "Your financial dashboard is ready.",
+        title: `Bentornato, ${userData.firstName}!`,
+        description: "La tua dashboard finanziaria è pronta.",
       });
     }
   };
@@ -94,8 +95,8 @@ const Index = () => {
     setShowOnboarding(false);
     setActiveSection("dashboard");
     toast({
-      title: `Welcome to FinSight, ${user.firstName}!`,
-      description: "Your financial transformation journey begins now.",
+      title: `Benvenuto in FinSight, ${user.firstName}!`,
+      description: "Il tuo viaggio di trasformazione finanziaria inizia ora.",
     });
   };
 
@@ -106,8 +107,8 @@ const Index = () => {
     setActiveSection("dashboard");
     setShowOnboarding(false);
     toast({
-      title: "Logged Out",
-      description: "You have been successfully logged out.",
+      title: "Disconnesso",
+      description: "Sei stato disconnesso con successo.",
     });
   };
 
@@ -166,7 +167,7 @@ const Index = () => {
     );
   }
 
-  // Show authenticated app
+  // Show authenticated app with proper layout
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
       <SidebarProvider>
@@ -176,7 +177,7 @@ const Index = () => {
             setActiveSection={setActiveSection}
           />
           
-          <div className="flex-1 flex flex-col">
+          <div className="flex-1 flex flex-col min-w-0">
             <Header 
               isOnboarded={!showOnboarding}
               user={user}
@@ -184,8 +185,10 @@ const Index = () => {
               onProfile={() => setActiveSection("profile")}
             />
             
-            <main className="flex-1 container mx-auto px-4 py-8">
-              {renderContent()}
+            <main className="flex-1 p-4 overflow-auto">
+              <div className="max-w-7xl mx-auto">
+                {renderContent()}
+              </div>
             </main>
           </div>
         </div>

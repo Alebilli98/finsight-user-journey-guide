@@ -5,20 +5,23 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { 
   TrendingUp, TrendingDown, DollarSign, PieChart, BarChart3, 
-  AlertCircle, CheckCircle, Calendar, Leaf, Building2, 
-  Globe, Target, Zap, Brain, Shield, User, Factory,
-  Users, Briefcase, TrendingUpDown, Upload, FileSpreadsheet
+  AlertCircle, CheckCircle, Calendar, Building2, 
+  Users, Briefcase, TrendingUpDown, Upload, FileSpreadsheet,
+  Calculator, Activity
 } from "lucide-react";
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  LineChart, Line, PieChart as RechartsPieChart, Pie, Cell, AreaChart, Area
+  LineChart, Line, AreaChart, Area
 } from "recharts";
+import { useState } from "react";
 
 interface DashboardProps {
   user?: any;
 }
 
 const Dashboard = ({ user }: DashboardProps) => {
+  const [showCogsBreakdown, setShowCogsBreakdown] = useState(false);
+
   // Get user's actual data or use defaults
   const userData = user || {};
   const financialData = userData.financialData || {};
@@ -44,16 +47,31 @@ const Dashboard = ({ user }: DashboardProps) => {
   
   // P&L Details
   const grossProfit = financialData.grossProfit || (annualRevenue - (financialData.cogs || annualRevenue * 0.4));
+  const cogs = financialData.cogs || (annualRevenue * 0.4);
   const grossMargin = annualRevenue > 0 ? ((grossProfit / annualRevenue) * 100) : 0;
   const netMargin = annualRevenue > 0 ? ((netIncome / annualRevenue) * 100) : 0;
   const ebitda = grossProfit - (financialData.totalPersonnelCosts || annualExpenses * 0.6);
   const ebitdaMargin = annualRevenue > 0 ? ((ebitda / annualRevenue) * 100) : 0;
+
+  // Working Capital calculation
+  const currentAssets = financialData.currentAssets || (totalAssets * 0.6);
+  const currentLiabilities = financialData.currentLiabilities || (totalLiabilities * 0.7);
+  const workingCapital = currentAssets - currentLiabilities;
 
   // Calculate metrics from real data
   const savingsRate = annualRevenue > 0 ? ((netIncome) / annualRevenue * 100) : 0;
   const debtToEquity = totalEquity > 0 ? (totalLiabilities / totalEquity) : 0;
   const returnOnAssets = totalAssets > 0 ? ((netIncome / totalAssets) * 100) : 0;
   const returnOnEquity = totalEquity > 0 ? ((netIncome / totalEquity) * 100) : 0;
+
+  // COGS breakdown for modal
+  const cogsBreakdown = {
+    materialCosts: cogs * 0.45,
+    laborCosts: cogs * 0.35,
+    overheadCosts: cogs * 0.20,
+    totalCogs: cogs,
+    cogsPercentage: annualRevenue > 0 ? ((cogs / annualRevenue) * 100) : 0
+  };
 
   // Generate charts with real data
   const monthlyData = financialData.monthlyData && financialData.monthlyData.length > 0 
@@ -65,82 +83,6 @@ const Dashboard = ({ user }: DashboardProps) => {
         savings: monthlyNetIncome * (0.8 + (index * 0.05))
       }));
 
-  // Financial Health Score
-  const calculateHealthScore = () => {
-    let score = 0;
-    let maxScore = 0;
-    
-    if (grossMargin > 30) score += 25; else if (grossMargin > 15) score += 15; else if (grossMargin > 0) score += 5;
-    maxScore += 25;
-    
-    if (netMargin > 15) score += 25; else if (netMargin > 5) score += 15; else if (netMargin > 0) score += 5;
-    maxScore += 25;
-    
-    if (debtToEquity < 0.5) score += 25; else if (debtToEquity < 1) score += 15; else if (debtToEquity < 2) score += 5;
-    maxScore += 25;
-    
-    if (returnOnAssets > 10) score += 25; else if (returnOnAssets > 5) score += 15; else if (returnOnAssets > 0) score += 5;
-    maxScore += 25;
-    
-    return Math.round((score / maxScore) * 100);
-  };
-  
-  const healthScore = calculateHealthScore();
-
-  // AI insights based on actual data
-  const generateAIInsights = () => {
-    const insights = [];
-    
-    if (grossMargin > 40) {
-      insights.push({
-        title: "Eccellente Margine Lordo",
-        insight: `Il tuo margine lordo del ${grossMargin.toFixed(1)}% è eccellente. Continua a ottimizzare la struttura dei costi.`,
-        confidence: 95,
-        type: "positive"
-      });
-    } else if (grossMargin < 20) {
-      insights.push({
-        title: "Margine Lordo da Migliorare",
-        insight: `Il margine lordo del ${grossMargin.toFixed(1)}% è sotto la media. Considera di ottimizzare i costi o aumentare i prezzi.`,
-        confidence: 88,
-        type: "opportunity"
-      });
-    }
-
-    if (netMargin > 10) {
-      insights.push({
-        title: "Ottima Redditività",
-        insight: `Margine netto del ${netMargin.toFixed(1)}% indica un'azienda molto redditizia. Considera investimenti per la crescita.`,
-        confidence: 92,
-        type: "positive"
-      });
-    } else if (netMargin < 5) {
-      insights.push({
-        title: "Migliorare l'Efficienza Operativa",
-        insight: `Margine netto del ${netMargin.toFixed(1)}% suggerisce di rivedere i costi operativi e aumentare l'efficienza.`,
-        confidence: 85,
-        type: "opportunity"
-      });
-    }
-
-    if (debtToEquity > 2) {
-      insights.push({
-        title: "Alto Livello di Indebitamento",
-        insight: `Rapporto debiti/patrimonio di ${debtToEquity.toFixed(2)} è elevato. Priorità alla riduzione del debito.`,
-        confidence: 90,
-        type: "warning"
-      });
-    }
-
-    return insights.length > 0 ? insights : [{
-      title: "Completa il Tuo Profilo",
-      insight: "Importa i tuoi dati finanziari nella sezione Importazione Dati per ottenere insight personalizzati basati su AI.",
-      confidence: 100,
-      type: "neutral"
-    }];
-  };
-
-  const aiInsights = generateAIInsights();
   const hasRealData = annualRevenue > 0 || totalAssets > 0;
 
   return (
@@ -158,7 +100,7 @@ const Dashboard = ({ user }: DashboardProps) => {
             {companyName}
           </Badge>
           <Badge className="bg-blue-100 text-blue-800">
-            <Factory className="h-3 w-3 mr-1" />
+            <Briefcase className="h-3 w-3 mr-1" />
             {industry}
           </Badge>
           <div className="flex items-center space-x-2 text-sm text-gray-500">
@@ -172,7 +114,7 @@ const Dashboard = ({ user }: DashboardProps) => {
       {hasRealData && (
         <Card className="bg-gradient-to-r from-blue-50 to-green-50 border-blue-200">
           <CardContent className="p-6">
-            <div className="grid md:grid-cols-4 gap-6">
+            <div className="grid md:grid-cols-3 gap-6">
               <div className="text-center">
                 <Building2 className="h-8 w-8 text-blue-600 mx-auto mb-2" />
                 <h3 className="font-semibold text-gray-900">{companyName}</h3>
@@ -184,15 +126,10 @@ const Dashboard = ({ user }: DashboardProps) => {
                 <p className="text-sm text-gray-600">{yearEnd}</p>
               </div>
               <div className="text-center">
-                <Target className="h-8 w-8 text-purple-600 mx-auto mb-2" />
-                <h3 className="font-semibold text-gray-900">Health Score</h3>
-                <p className="text-sm text-gray-600">{healthScore}/100</p>
-              </div>
-              <div className="text-center">
-                <Shield className="h-8 w-8 text-orange-600 mx-auto mb-2" />
-                <h3 className="font-semibold text-gray-900">Stato</h3>
-                <Badge className={healthScore > 75 ? 'bg-green-100 text-green-800' : healthScore > 50 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}>
-                  {healthScore > 75 ? 'Eccellente' : healthScore > 50 ? 'Buono' : 'Da Migliorare'}
+                <Activity className="h-8 w-8 text-orange-600 mx-auto mb-2" />
+                <h3 className="font-semibold text-gray-900">Stato Operativo</h3>
+                <Badge className={netIncome > 0 ? 'bg-green-100 text-green-800' : netIncome === 0 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}>
+                  {netIncome > 0 ? 'Profittevole' : netIncome === 0 ? 'Pareggio' : 'In Perdita'}
                 </Badge>
               </div>
             </div>
@@ -201,7 +138,7 @@ const Dashboard = ({ user }: DashboardProps) => {
       )}
 
       {/* Key Financial Metrics */}
-      <div className="grid md:grid-cols-4 gap-6">
+      <div className="grid md:grid-cols-5 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Ricavi Annuali</CardTitle>
@@ -276,61 +213,116 @@ const Dashboard = ({ user }: DashboardProps) => {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card 
+          className="cursor-pointer hover:shadow-md transition-shadow"
+          onClick={() => setShowCogsBreakdown(true)}
+        >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Liquidità</CardTitle>
-            <Target className="h-4 w-4 text-orange-600" />
+            <CardTitle className="text-sm font-medium">COGS</CardTitle>
+            <Calculator className="h-4 w-4 text-orange-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-600">€{cashAndEquivalents.toLocaleString()}</div>
+            <div className="text-2xl font-bold text-orange-600">€{cogs.toLocaleString()}</div>
             <p className="text-xs text-gray-500 flex items-center mt-1">
-              <CheckCircle className="h-3 w-3 mr-1" />
-              {monthlyExpenses > 0 ? `${(cashAndEquivalents / monthlyExpenses).toFixed(1)} mesi` : 'Capacità di copertura'}
+              <span className="text-sm">Clicca per dettagli</span>
             </p>
-            {totalAssets > 0 && (
+            {annualRevenue > 0 && (
               <div className="mt-2">
                 <Badge variant="outline" className="text-xs">
-                  {((cashAndEquivalents / totalAssets) * 100).toFixed(1)}% degli asset
+                  {((cogs / annualRevenue) * 100).toFixed(1)}% dei ricavi
                 </Badge>
               </div>
             )}
           </CardContent>
         </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Working Capital</CardTitle>
+            <TrendingUpDown className="h-4 w-4 text-indigo-600" />
+          </CardHeader>
+          <CardContent>
+            <div className={`text-2xl font-bold ${workingCapital >= 0 ? 'text-indigo-600' : 'text-red-600'}`}>
+              €{workingCapital.toLocaleString()}
+            </div>
+            <p className="text-xs text-gray-500 flex items-center mt-1">
+              {workingCapital > 0 ? (
+                <>
+                  <CheckCircle className="h-3 w-3 mr-1" />
+                  Liquidità positiva
+                </>
+              ) : (
+                <>
+                  <AlertCircle className="h-3 w-3 mr-1" />
+                  Attenzione liquidità
+                </>
+              )}
+            </p>
+            <div className="mt-2">
+              <Badge variant="outline" className="text-xs">
+                Attività - Passività correnti
+              </Badge>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
-      {/* AI Insights Section */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Brain className="h-5 w-5 text-blue-600" />
-            <span>Insight AI Personalizzati</span>
-          </CardTitle>
-          <CardDescription>Raccomandazioni basate sui tuoi dati finanziari</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid md:grid-cols-3 gap-4">
-            {aiInsights.map((insight, index) => (
-              <div 
-                key={index}
-                className={`p-4 rounded-lg border ${
-                  insight.type === 'positive' ? 'bg-green-50 border-green-200' :
-                  insight.type === 'opportunity' ? 'bg-blue-50 border-blue-200' :
-                  insight.type === 'warning' ? 'bg-orange-50 border-orange-200' :
-                  'bg-gray-50 border-gray-200'
-                }`}
+      {/* COGS Breakdown Modal */}
+      {showCogsBreakdown && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowCogsBreakdown(false)}>
+          <Card className="w-full max-w-2xl mx-4" onClick={(e) => e.stopPropagation()}>
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <Calculator className="h-5 w-5 text-orange-600" />
+                <span>Breakdown Costo del Venduto (COGS)</span>
+              </CardTitle>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="absolute top-4 right-4"
+                onClick={() => setShowCogsBreakdown(false)}
               >
-                <div className="flex items-start justify-between mb-2">
-                  <h4 className="font-medium text-gray-900">{insight.title}</h4>
-                  <Badge variant="secondary" className="text-xs">
-                    {insight.confidence}% precisione
-                  </Badge>
+                ✕
+              </Button>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium">Costi Materiali</span>
+                    <span className="font-bold">€{cogsBreakdown.materialCosts.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium">Costi del Lavoro</span>
+                    <span className="font-bold">€{cogsBreakdown.laborCosts.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium">Costi Generali</span>
+                    <span className="font-bold">€{cogsBreakdown.overheadCosts.toLocaleString()}</span>
+                  </div>
+                  <hr />
+                  <div className="flex justify-between items-center text-lg">
+                    <span className="font-semibold">COGS Totale</span>
+                    <span className="font-bold text-orange-600">€{cogsBreakdown.totalCogs.toLocaleString()}</span>
+                  </div>
                 </div>
-                <p className="text-sm text-gray-700">{insight.insight}</p>
+                <div className="bg-orange-50 p-4 rounded-lg">
+                  <h4 className="font-semibold text-orange-900 mb-3">Percentuale sui Ricavi</h4>
+                  <div className="text-3xl font-bold text-orange-600 mb-2">
+                    {cogsBreakdown.cogsPercentage.toFixed(1)}%
+                  </div>
+                  <Progress value={cogsBreakdown.cogsPercentage} className="mb-2" />
+                  <p className="text-sm text-orange-700">
+                    {cogsBreakdown.cogsPercentage < 60 ? 'Eccellente controllo costi' : 
+                     cogsBreakdown.cogsPercentage < 70 ? 'Buon controllo costi' : 
+                     'Considerare ottimizzazione costi'}
+                  </p>
+                </div>
               </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       {/* Financial Performance Charts */}
       {hasRealData && monthlyData.length > 0 && (
@@ -462,9 +454,79 @@ const Dashboard = ({ user }: DashboardProps) => {
                 }}
                 variant="outline"
               >
-                <User className="h-4 w-4 mr-2" />
+                <Users className="h-4 w-4 mr-2" />
                 Aggiorna Profilo
               </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* AI Insights Section - Moved to the end */}
+      {hasRealData && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <BarChart3 className="h-5 w-5 text-blue-600" />
+              <span>Insight AI Personalizzati</span>
+            </CardTitle>
+            <CardDescription>Raccomandazioni basate sui tuoi dati finanziari</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid md:grid-cols-3 gap-4">
+              {grossMargin > 40 ? (
+                <div className="p-4 rounded-lg border bg-green-50 border-green-200">
+                  <div className="flex items-start justify-between mb-2">
+                    <h4 className="font-medium text-gray-900">Eccellente Margine Lordo</h4>
+                    <Badge variant="secondary" className="text-xs">95% precisione</Badge>
+                  </div>
+                  <p className="text-sm text-gray-700">Il tuo margine lordo del {grossMargin.toFixed(1)}% è eccellente. Continua a ottimizzare la struttura dei costi.</p>
+                </div>
+              ) : (
+                <div className="p-4 rounded-lg border bg-blue-50 border-blue-200">
+                  <div className="flex items-start justify-between mb-2">
+                    <h4 className="font-medium text-gray-900">Ottimizza Margine Lordo</h4>
+                    <Badge variant="secondary" className="text-xs">88% precisione</Badge>
+                  </div>
+                  <p className="text-sm text-gray-700">Margine lordo del {grossMargin.toFixed(1)}%. Considera di rivedere i costi diretti o la strategia di pricing.</p>
+                </div>
+              )}
+
+              {workingCapital > 0 ? (
+                <div className="p-4 rounded-lg border bg-green-50 border-green-200">
+                  <div className="flex items-start justify-between mb-2">
+                    <h4 className="font-medium text-gray-900">Liquidità Sana</h4>
+                    <Badge variant="secondary" className="text-xs">92% precisione</Badge>
+                  </div>
+                  <p className="text-sm text-gray-700">Working capital positivo di €{workingCapital.toLocaleString()} indica una buona gestione della liquidità.</p>
+                </div>
+              ) : (
+                <div className="p-4 rounded-lg border bg-orange-50 border-orange-200">
+                  <div className="flex items-start justify-between mb-2">
+                    <h4 className="font-medium text-gray-900">Attenzione Liquidità</h4>
+                    <Badge variant="secondary" className="text-xs">90% precisione</Badge>
+                  </div>
+                  <p className="text-sm text-gray-700">Working capital negativo. Priorità al miglioramento della gestione del capitale circolante.</p>
+                </div>
+              )}
+
+              {netMargin > 10 ? (
+                <div className="p-4 rounded-lg border bg-green-50 border-green-200">
+                  <div className="flex items-start justify-between mb-2">
+                    <h4 className="font-medium text-gray-900">Ottima Redditività</h4>
+                    <Badge variant="secondary" className="text-xs">94% precisione</Badge>
+                  </div>
+                  <p className="text-sm text-gray-700">Margine netto del {netMargin.toFixed(1)}% indica un'azienda molto redditizia. Considera investimenti per la crescita.</p>
+                </div>
+              ) : (
+                <div className="p-4 rounded-lg border bg-blue-50 border-blue-200">
+                  <div className="flex items-start justify-between mb-2">
+                    <h4 className="font-medium text-gray-900">Migliora Efficienza</h4>
+                    <Badge variant="secondary" className="text-xs">85% precisione</Badge>
+                  </div>
+                  <p className="text-sm text-gray-700">Margine netto del {netMargin.toFixed(1)}% suggerisce di rivedere i costi operativi e aumentare l'efficienza.</p>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
