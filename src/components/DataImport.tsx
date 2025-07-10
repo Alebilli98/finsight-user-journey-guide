@@ -172,13 +172,13 @@ const DataImport = ({ user, onDataUpdate }: DataImportProps) => {
       const worksheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[worksheetName];
       
-      // Convert to JSON
-      const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+      // Convert to JSON - properly type the result
+      const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as any[][];
       
       // Convert array format to object format for easier parsing
-      const dataObjects = jsonData.slice(1).map((row: any) => {
+      const dataObjects = jsonData.slice(1).map((row: any[]) => {
         const obj: any = {};
-        jsonData[0].forEach((header: any, index: number) => {
+        (jsonData[0] as any[]).forEach((header: any, index: number) => {
           obj[header] = row[index];
         });
         return obj;
@@ -187,8 +187,12 @@ const DataImport = ({ user, onDataUpdate }: DataImportProps) => {
       clearInterval(interval);
       setUploadProgress(100);
 
+      console.log('Parsed data objects:', dataObjects);
+
       // Parse the financial data
       const parsedData = parseFinancialData(dataObjects);
+      
+      console.log('Parsed financial data:', parsedData);
       
       // Update user financial data
       const updatedFinancialData = {
@@ -221,6 +225,8 @@ const DataImport = ({ user, onDataUpdate }: DataImportProps) => {
         entertainmentExpenses: parsedData.entertainmentExpenses,
         otherExpenses: parsedData.otherExpenses
       };
+
+      console.log('Updated user:', updatedUser);
 
       onDataUpdate(updatedUser);
       
