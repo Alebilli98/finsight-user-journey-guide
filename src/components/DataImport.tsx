@@ -52,28 +52,38 @@ const DataImport = ({ user, onDataUpdate }: DataImportProps) => {
       monthlyData: [] as any[]
     };
 
-    // Parse the simplified data structure
+    // Parse the data structure - looking for rows with Description in column A and Value in column B
     data.forEach((row) => {
       if (!row || typeof row !== 'object') return;
       
-      const description = String(row.Description || row.description || '').toLowerCase();
-      const value = parseFloat(String(row.Value || row.value || row.Amount || row.amount || '').replace(/[^0-9.-]/g, ''));
+      // Handle both array format [Description, Value] and object format {A: Description, B: Value}
+      let description = '';
+      let value = 0;
       
-      if (isNaN(value)) return;
+      if (Array.isArray(row)) {
+        description = String(row[0] || '').toLowerCase();
+        value = parseFloat(String(row[1] || '').replace(/[^0-9.-]/g, ''));
+      } else {
+        // Object format from Excel (A, B columns)
+        description = String(row.A || row.Description || row.description || '').toLowerCase();
+        value = parseFloat(String(row.B || row.Value || row.value || row.Amount || row.amount || '').replace(/[^0-9.-]/g, ''));
+      }
+      
+      if (isNaN(value) || !description) return;
       
       console.log(`Processing: ${description} = ${value}`);
       
       // Map descriptions to result fields
-      if (description.includes('monthly revenue') || description.includes('monthly income')) {
+      if (description.includes('total revenue') || description.includes('annual revenue')) {
+        result.annualRevenue = value;
+        result.monthlyIncome = Math.round(value / 12);
+      } else if (description.includes('monthly revenue') || description.includes('monthly income')) {
         result.monthlyIncome = value;
         result.annualRevenue = value * 12;
       } else if (description.includes('monthly expenses')) {
         result.monthlyExpenses = value;
         result.annualExpenses = value * 12;
-      } else if (description.includes('annual revenue') || description.includes('total revenue')) {
-        result.annualRevenue = value;
-        result.monthlyIncome = Math.round(value / 12);
-      } else if (description.includes('annual expenses') || description.includes('total expenses')) {
+      } else if (description.includes('total expenses') || description.includes('annual expenses')) {
         result.annualExpenses = value;
         result.monthlyExpenses = Math.round(value / 12);
       } else if (description.includes('gross profit')) {
@@ -97,16 +107,38 @@ const DataImport = ({ user, onDataUpdate }: DataImportProps) => {
         result.utilitiesExpenses = value;
       } else if (description.includes('entertainment')) {
         result.entertainmentExpenses = value;
+      } else if (description.includes('operating expenses')) {
+        result.monthlyExpenses = Math.round(value / 12);
+        result.annualExpenses = value;
+      } else if (description.includes('cost of goods sold') || description.includes('cogs')) {
+        // COGS is part of expenses but handled separately for gross profit calculation
+        const cogs = value;
+        if (result.annualRevenue > 0) {
+          result.grossProfit = result.annualRevenue - cogs;
+        }
+      } else if (description.includes('ebitda')) {
+        // EBITDA can help estimate other financial metrics
+        const ebitda = value;
+        if (result.netIncome === 0) {
+          result.netIncome = Math.round(ebitda * 0.75); // Rough estimate
+        }
       }
     });
 
-    // Calculate missing values
+    // Calculate missing values using business logic
     if (result.monthlyExpenses === 0 && result.annualExpenses > 0) {
       result.monthlyExpenses = Math.round(result.annualExpenses / 12);
     }
     
     if (result.monthlyIncome === 0 && result.annualRevenue > 0) {
       result.monthlyIncome = Math.round(result.annualRevenue / 12);
+    }
+
+    // If we have gross profit and revenue, we can estimate COGS and operating expenses
+    if (result.grossProfit > 0 && result.annualRevenue > 0 && result.annualExpenses === 0) {
+      const estimatedCOGS = result.annualRevenue - result.grossProfit;
+      result.annualExpenses = estimatedCOGS + (result.netIncome > 0 ? (result.grossProfit - result.netIncome) : result.grossProfit * 0.6);
+      result.monthlyExpenses = Math.round(result.annualExpenses / 12);
     }
 
     // Calculate expense breakdown if not provided
@@ -119,7 +151,7 @@ const DataImport = ({ user, onDataUpdate }: DataImportProps) => {
       result.otherExpenses = result.monthlyExpenses - (result.housingExpenses + result.foodExpenses + result.transportExpenses + result.utilitiesExpenses + result.entertainmentExpenses);
     }
 
-    // Generate monthly data
+    // Generate monthly data for charts
     if (result.monthlyIncome > 0) {
       const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
       result.monthlyData = months.map((month, index) => ({
@@ -172,33 +204,20 @@ const DataImport = ({ user, onDataUpdate }: DataImportProps) => {
       const worksheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[worksheetName];
       
-      // Convert to JSON with headers
-      const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as any[][];
+      // Convert to JSON - this will create objects with A, B, C properties for columns
+      const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 'A', defval: '' });
       
-      // Find data starting from first non-empty row
-      let dataRows: any[] = [];
-      for (let i = 0; i < jsonData.length; i++) {
-        const row = jsonData[i];
-        if (row && row.length >= 2 && row[0] && row[1]) {
-          // Convert array to object format
-          dataRows.push({
-            Description: row[0],
-            Value: row[1]
-          });
-        }
-      }
+      console.log('Excel parsed data:', jsonData);
 
       clearInterval(interval);
       setUploadProgress(100);
 
-      console.log('Excel data rows:', dataRows);
-
-      if (dataRows.length === 0) {
+      if (!jsonData || jsonData.length === 0) {
         throw new Error('No valid data found in file');
       }
 
       // Parse the financial data
-      const parsedData = parseFinancialData(dataRows);
+      const parsedData = parseFinancialData(jsonData as any[]);
       
       // Update user financial data
       const updatedUser = {
@@ -222,7 +241,7 @@ const DataImport = ({ user, onDataUpdate }: DataImportProps) => {
           importedData: {
             fileName: file.name,
             importDate: new Date().toISOString(),
-            recordsProcessed: dataRows.length,
+            recordsProcessed: jsonData.length,
             totalRevenue: parsedData.annualRevenue,
             totalExpenses: parsedData.annualExpenses
           },
@@ -238,7 +257,7 @@ const DataImport = ({ user, onDataUpdate }: DataImportProps) => {
       
       toast({
         title: "Data Imported Successfully!",
-        description: `Processed ${dataRows.length} records. Monthly Income: €${parsedData.monthlyIncome.toLocaleString()}, Monthly Expenses: €${parsedData.monthlyExpenses.toLocaleString()}`,
+        description: `Processed ${jsonData.length} records. Annual Revenue: €${parsedData.annualRevenue.toLocaleString()}, Monthly Income: €${parsedData.monthlyIncome.toLocaleString()}`,
       });
 
     } catch (error) {
@@ -291,34 +310,57 @@ const DataImport = ({ user, onDataUpdate }: DataImportProps) => {
   };
 
   const downloadTemplate = () => {
-    const csvContent = `Description,Value
-Monthly Revenue,45000
-Monthly Expenses,35000
-Annual Revenue,540000
-Annual Expenses,420000
-Gross Profit,300000
-Net Income,120000
-Total Assets,250000
-Total Liabilities,100000
-Cash and Savings,50000
-Housing Expenses,10500
-Food Expenses,5250
-Transport Expenses,5250
-Utilities Expenses,3500
-Entertainment Expenses,3500
-Other Expenses,7000`;
+    // Create a proper Excel file with separate columns
+    const templateData = [
+      ['Description', 'Value'],
+      ['Company Information', ''],
+      ['Company Name', 'Your Company Name'],
+      ['Industry', 'Technology'],
+      ['Founded', '2020'],
+      ['Employees', '50'],
+      ['', ''],
+      ['Financial Summary (Annual)', ''],
+      ['Total Revenue', '500000'],
+      ['Cost of Goods Sold', '200000'], 
+      ['Gross Profit', '300000'],
+      ['Operating Expenses', '180000'],
+      ['EBITDA', '120000'],
+      ['Net Income', '90000'],
+      ['', ''],
+      ['Balance Sheet', ''],
+      ['Total Assets', '250000'],
+      ['Total Liabilities', '100000'],
+      ['Cash and Savings', '50000'],
+      ['', ''],
+      ['Monthly Breakdown', ''],
+      ['Monthly Revenue', '41667'],
+      ['Monthly Expenses', '35000'],
+      ['Housing Expenses', '10500'],
+      ['Food Expenses', '5250'],
+      ['Transport Expenses', '5250'],
+      ['Utilities Expenses', '3500'],
+      ['Entertainment Expenses', '3500'],
+      ['Other Expenses', '7000']
+    ];
 
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'simple_business_template.csv';
-    a.click();
-    window.URL.revokeObjectURL(url);
+    // Create workbook and worksheet
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(templateData);
+    
+    // Set column widths
+    ws['!cols'] = [
+      { width: 25 }, // Description column
+      { width: 15 }  // Value column
+    ];
+    
+    XLSX.utils.book_append_sheet(wb, ws, 'Business Data');
+    
+    // Write the file
+    XLSX.writeFile(wb, 'business_template.xlsx');
     
     toast({
       title: "Template Downloaded",
-      description: "Use this simplified template to upload your business data.",
+      description: "Use this Excel template with separate columns for Description and Value.",
     });
   };
 
@@ -350,7 +392,7 @@ Other Expenses,7000`;
                 <span>Upload Complete Business Data</span>
               </CardTitle>
               <CardDescription>
-                Upload comprehensive CSV or Excel files containing your complete business financials, KPIs, and operational data
+                Upload Excel files with separate columns: Column A (Description) and Column B (Value)
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -360,10 +402,10 @@ Other Expenses,7000`;
                   <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
                     <FileSpreadsheet className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                     <p className="text-gray-600 mb-4">
-                      Upload your complete business data file
+                      Upload your business data Excel file
                     </p>
                     <p className="text-sm text-gray-500 mb-4">
-                      Supports comprehensive financial statements, P&L, balance sheets, cash flow, and KPIs
+                      Use the template format: Column A (Description), Column B (Value)
                     </p>
                     <input
                       ref={fileInputRef}
@@ -393,19 +435,17 @@ Other Expenses,7000`;
                 </div>
 
                 <div className="space-y-4">
-                  <h3 className="font-medium">Professional Template</h3>
+                  <h3 className="font-medium">Excel Template</h3>
                   <div className="space-y-3">
                     <div className="p-4 bg-gradient-to-r from-blue-50 to-green-50 rounded-lg border border-blue-200">
-                      <h4 className="font-medium text-blue-900 mb-2">Complete Business Template</h4>
+                      <h4 className="font-medium text-blue-900 mb-2">Proper Excel Format</h4>
                       <ul className="text-sm text-blue-800 space-y-1">
-                        <li>• Financial Statements (P&L, Balance Sheet)</li>
+                        <li>• Column A: Description (e.g., "Total Revenue")</li>
+                        <li>• Column B: Value (e.g., "500000")</li>
+                        <li>• Includes Company Info & Financial Data</li>
                         <li>• Monthly Revenue & Expense Breakdown</li>
-                        <li>• Key Performance Indicators (KPIs)</li>
-                        <li>• Asset & Liability Management</li>
-                        <li>• Cash Flow Analysis</li>
-                        <li>• Investment Portfolio Details</li>
-                        <li>• Bank Account Information</li>
-                        <li>• Business Metrics & Ratios</li>
+                        <li>• Balance Sheet Information</li>
+                        <li>• Properly formatted for Excel reading</li>
                       </ul>
                     </div>
                   </div>
@@ -416,7 +456,7 @@ Other Expenses,7000`;
                     className="w-full border-blue-200 hover:bg-blue-50"
                   >
                     <Download className="h-4 w-4 mr-2" />
-                    Download Professional Business Template
+                    Download Excel Template (Fixed Format)
                   </Button>
                 </div>
               </div>
