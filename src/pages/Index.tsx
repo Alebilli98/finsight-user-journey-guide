@@ -1,9 +1,7 @@
+
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { useSession, signOut } from "next-auth/react";
+import { useNavigate } from 'react-router-dom';
 import { useToast } from "@/hooks/use-toast";
-import { authOptions } from "@/lib/auth";
-import { getServerSession } from "next-auth/next";
 
 import AppSidebar from "@/components/AppSidebar";
 import Header from "@/components/Header";
@@ -12,26 +10,21 @@ import Analytics from "@/components/Analytics";
 import Reports from "@/components/Reports";
 import DataImport from "@/components/DataImport";
 import AISolution from "@/components/AISolution";
-import Lending from "@/components/Lending";
-import CalendarPage from "@/components/CalendarPage";
+import LendingSolution from "@/components/LendingSolution";
+import Calendar from "@/components/Calendar";
 import Packages from "@/components/Packages";
 import { SidebarProvider } from "@/components/ui/sidebar";
 
 export default function Index() {
   const { toast } = useToast();
-  const { data: session, status } = useSession();
-  const router = useRouter();
+  const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState('dashboard');
-  const [user, setUser] = useState<any>(null);
-
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push('/login');
-    } else if (status === "authenticated") {
-      // Fetch user data or perform other actions
-      setUser(session.user);
-    }
-  }, [status, router, session]);
+  const [user, setUser] = useState<any>({
+    firstName: 'Mario',
+    lastName: 'Rossi',
+    email: 'mario.rossi@example.com',
+    plan: 'Premier'
+  });
 
   const renderContent = () => {
     switch (activeSection) {
@@ -48,17 +41,17 @@ export default function Index() {
                   onDataImport={(data: any) => {
                     console.log("Data imported:", data);
                     toast({
-                      title: "Data Imported",
-                      description: "The data has been successfully imported.",
+                      title: "Dati Importati",
+                      description: "I dati sono stati importati con successo.",
                     });
                   }}
                 />;
       case 'ai-solution':
         return <AISolution />;
       case 'lending':
-        return <Lending />;
+        return <LendingSolution />;
       case 'calendar':
-        return <CalendarPage />;
+        return <Calendar />;
       case 'packages':
         return <Packages />;
       default:
@@ -67,21 +60,16 @@ export default function Index() {
   };
 
   const handleLogout = async () => {
-    await signOut();
-    router.push('/login');
+    navigate('/login');
   };
 
   const handleProfileUpdate = (updatedUser: any) => {
     setUser(updatedUser);
     toast({
-      title: "Profile Updated",
-      description: "Your profile has been successfully updated.",
+      title: "Profilo Aggiornato",
+      description: "Il tuo profilo è stato aggiornato con successo.",
     });
   };
-
-  if (status === "loading") {
-    return <div>Loading...</div>;
-  }
 
   return (
     <>
@@ -91,9 +79,10 @@ export default function Index() {
           
           <div className="flex-1 flex flex-col min-w-0">
             <Header 
+              isOnboarded={true}
               user={user} 
               onLogout={handleLogout}
-              onProfileUpdate={handleProfileUpdate}
+              onProfile={handleProfileUpdate}
             />
             
             <main className="flex-1 p-6 overflow-auto">
@@ -104,23 +93,4 @@ export default function Index() {
       </SidebarProvider>
     </>
   );
-}
-
-export async function getServerSideProps(context: any) {
-  const session = await getServerSession(context.req, context.res, authOptions);
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: {
-      session,
-    },
-  };
 }
