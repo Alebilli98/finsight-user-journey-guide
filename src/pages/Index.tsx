@@ -71,6 +71,12 @@ export default function Index() {
     });
   };
 
+  const handleProfile = () => {
+    // For now, this just opens profile functionality
+    // In the future, this could open a modal or navigate to a profile page
+    console.log("Profile clicked");
+  };
+
   return (
     <>
       <SidebarProvider>
@@ -82,7 +88,7 @@ export default function Index() {
               isOnboarded={true}
               user={user} 
               onLogout={handleLogout}
-              onProfile={handleProfileUpdate}
+              onProfile={handleProfile}
             />
             
             <main className="flex-1 p-6 overflow-auto">
