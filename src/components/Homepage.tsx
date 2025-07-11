@@ -108,28 +108,30 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
                   </h2>
                   <p className="text-lg text-gray-600 max-w-2xl mx-auto">
                     Guarda come FinSight trasforma la gestione finanziaria della tua azienda 
-                    con un tour completo della piattaforma.
+                    con un breve tour della piattaforma.
                   </p>
                 </div>
 
                 <div className="max-w-4xl mx-auto">
                   <Card className="overflow-hidden">
                     <div className="relative bg-gradient-to-br from-blue-600 to-green-600 aspect-video">
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="text-center text-white">
-                          <Play className="h-16 w-16 mx-auto mb-4 bg-white/20 rounded-full p-4" />
-                          <h3 className="text-xl font-semibold mb-2">Tutorial Completo FinSight</h3>
-                          <p className="text-blue-100 mb-4">Durata: 8 minuti</p>
-                          <Button 
-                            variant="secondary" 
-                            size="lg"
-                            className="bg-white text-blue-600 hover:bg-gray-100"
-                          >
-                            <Play className="h-4 w-4 mr-2" />
-                            Guarda il Video
-                          </Button>
+                      <video
+                        className="w-full h-full object-cover"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                      >
+                        <source src="/placeholder-video.mp4" type="video/mp4" />
+                        {/* Fallback content if video fails to load */}
+                        <div className="absolute inset-0 flex items-center justify-center text-white">
+                          <div className="text-center">
+                            <Play className="h-16 w-16 mx-auto mb-4 bg-white/20 rounded-full p-4" />
+                            <h3 className="text-xl font-semibold mb-2">Demo FinSight</h3>
+                            <p className="text-blue-100 mb-4">Video dimostrativo - 15 secondi</p>
+                          </div>
                         </div>
-                      </div>
+                      </video>
                     </div>
                   </Card>
                 </div>

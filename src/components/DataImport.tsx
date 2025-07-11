@@ -24,87 +24,50 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
   const downloadTemplate = () => {
     // Create template data structure
     const templateData = {
-      'Informazioni Azienda': [
-        ['Nome Azienda', 'La Tua Azienda Srl'],
-        ['Codice Fiscale', '12345678901'],
-        ['Partita IVA', 'IT12345678901'],
-        ['Settore', 'Tecnologia'],
-        ['Numero Dipendenti', '50'],
-        ['Anno di Costituzione', '2020'],
-        ['Sede Legale', 'Milano, Italia'],
-        ['Email', 'info@tuaazienda.it'],
-        ['Telefono', '+39 02 1234567'],
-        ['Sito Web', 'www.tuaazienda.it']
+      'Company Info': [
+        ['Field', 'Value', 'Notes'],
+        ['Company Name', 'Your Company Ltd', ''],
+        ['Tax ID', '12345678901', ''],
+        ['VAT Number', 'IT12345678901', ''],
+        ['Industry', 'Technology', ''],
+        ['Employees', '50', 'Number of employees'],
+        ['Founded Year', '2020', ''],
+        ['Headquarters', 'Milan, Italy', ''],
+        ['Email', 'info@yourcompany.com', ''],
+        ['Phone', '+39 02 1234567', ''],
+        ['Website', 'www.yourcompany.com', '']
       ],
-      'Conto Economico': [
-        ['Descrizione', 'Valore (€)', 'Note'],
-        ['Ricavi delle Vendite', '1200000', 'Ricavi principali'],
-        ['Altri Ricavi', '50000', 'Ricavi secondari'],
-        ['Totale Ricavi', '1250000', ''],
-        ['Costo del Venduto (COGS)', '480000', 'Costi diretti'],
-        ['Utile Lordo', '770000', 'Ricavi - COGS'],
-        ['Spese Operative', '', ''],
-        ['- Stipendi e Contributi', '300000', ''],
-        ['- Affitti e Utilities', '60000', ''],
-        ['- Marketing e Pubblicità', '80000', ''],
-        ['- Spese Amministrative', '40000', ''],
-        ['- Altre Spese Operative', '50000', ''],
-        ['Totale Spese Operative', '530000', ''],
-        ['EBITDA', '240000', 'Utile Lordo - Spese Operative'],
-        ['Ammortamenti', '25000', ''],
-        ['EBIT', '215000', 'EBITDA - Ammortamenti'],
-        ['Interessi Passivi', '15000', ''],
-        ['Utile ante Imposte', '200000', 'EBIT - Interessi'],
-        ['Imposte', '48000', '24% sull\'utile ante imposte'],
-        ['Utile Netto', '152000', 'Utile finale']
+      'Income Statement': [
+        ['Item', 'Amount (€)', 'Notes'],
+        ['Revenue', '1200000', 'Total sales revenue'],
+        ['Cost of Goods Sold', '480000', 'Direct costs'],
+        ['Gross Profit', '720000', 'Revenue - COGS'],
+        ['Operating Expenses', '450000', 'Total operational costs'],
+        ['EBITDA', '270000', 'Earnings before interest, taxes, depreciation'],
+        ['Depreciation', '25000', 'Asset depreciation'],
+        ['EBIT', '245000', 'Operating profit'],
+        ['Interest Expense', '15000', 'Cost of debt'],
+        ['Tax Expense', '55200', 'Corporate taxes'],
+        ['Net Income', '174800', 'Final profit']
       ],
-      'Stato Patrimoniale': [
-        ['ATTIVITÀ', 'Valore (€)', 'Note'],
-        ['ATTIVITÀ CORRENTI', '', ''],
-        ['Cassa e Equivalenti', '150000', 'Liquidità immediata'],
-        ['Crediti Commerciali', '200000', 'Crediti vs clienti'],
-        ['Rimanenze', '80000', 'Scorte di magazzino'],
-        ['Altri Crediti', '30000', 'Altri crediti a breve'],
-        ['Totale Attività Correnti', '460000', ''],
-        ['ATTIVITÀ NON CORRENTI', '', ''],
-        ['Immobilizzazioni Materiali', '250000', 'Macchinari, attrezzature'],
-        ['Immobilizzazioni Immateriali', '50000', 'Software, brevetti'],
-        ['Investimenti', '40000', 'Partecipazioni'],
-        ['Totale Attività Non Correnti', '340000', ''],
-        ['TOTALE ATTIVITÀ', '800000', ''],
-        ['', '', ''],
-        ['PASSIVITÀ E PATRIMONIO', 'Valore (€)', 'Note'],
-        ['PASSIVITÀ CORRENTI', '', ''],
-        ['Debiti Commerciali', '120000', 'Debiti vs fornitori'],
-        ['Debiti Finanziari a Breve', '50000', 'Prestiti a breve termine'],
-        ['Altri Debiti', '80000', 'Stipendi, tasse, etc.'],
-        ['Totale Passività Correnti', '250000', ''],
-        ['PASSIVITÀ NON CORRENTI', '', ''],
-        ['Debiti Finanziari a Lungo', '150000', 'Mutui, finanziamenti'],
-        ['Altri Debiti a Lungo', '20000', 'Altri debiti a lungo termine'],
-        ['Totale Passività Non Correnti', '170000', ''],
-        ['TOTALE PASSIVITÀ', '420000', ''],
-        ['PATRIMONIO NETTO', '', ''],
-        ['Capitale Sociale', '100000', 'Capitale versato'],
-        ['Riserve', '128000', 'Utili non distribuiti'],
-        ['Utile dell\'Esercizio', '152000', 'Utile corrente'],
-        ['Totale Patrimonio Netto', '380000', ''],
-        ['TOTALE PASSIVITÀ E PATRIMONIO', '800000', 'Deve essere = Totale Attività']
-      ],
-      'Dati Mensili': [
-        ['Mese', 'Ricavi (€)', 'Costi (€)', 'Utile Lordo (€)', 'Spese Operative (€)', 'EBITDA (€)', 'Note'],
-        ['Gennaio', '100000', '40000', '60000', '45000', '15000', ''],
-        ['Febbraio', '95000', '38000', '57000', '44000', '13000', ''],
-        ['Marzo', '110000', '44000', '66000', '46000', '20000', ''],
-        ['Aprile', '105000', '42000', '63000', '45000', '18000', ''],
-        ['Maggio', '115000', '46000', '69000', '47000', '22000', ''],
-        ['Giugno', '120000', '48000', '72000', '48000', '24000', ''],
-        ['Luglio', '108000', '43200', '64800', '46000', '18800', ''],
-        ['Agosto', '85000', '34000', '51000', '42000', '9000', 'Mese di ferie'],
-        ['Settembre', '112000', '44800', '67200', '47000', '20200', ''],
-        ['Ottobre', '118000', '47200', '70800', '48000', '22800', ''],
-        ['Novembre', '125000', '50000', '75000', '49000', '26000', ''],
-        ['Dicembre', '122000', '48800', '73200', '48000', '25200', 'Bonus natalizi inclusi']
+      'Balance Sheet': [
+        ['Item', 'Amount (€)', 'Category'],
+        ['Cash & Cash Equivalents', '150000', 'Current Assets'],
+        ['Accounts Receivable', '200000', 'Current Assets'],
+        ['Inventory', '80000', 'Current Assets'],
+        ['Total Current Assets', '430000', 'Assets'],
+        ['Property, Plant & Equipment', '250000', 'Fixed Assets'],
+        ['Intangible Assets', '50000', 'Fixed Assets'],
+        ['Total Fixed Assets', '300000', 'Assets'],
+        ['Total Assets', '730000', 'Assets'],
+        ['Accounts Payable', '120000', 'Current Liabilities'],
+        ['Short-term Debt', '50000', 'Current Liabilities'],
+        ['Total Current Liabilities', '170000', 'Liabilities'],
+        ['Long-term Debt', '150000', 'Long-term Liabilities'],
+        ['Total Liabilities', '320000', 'Liabilities'],
+        ['Share Capital', '100000', 'Equity'],
+        ['Retained Earnings', '310000', 'Equity'],
+        ['Total Equity', '410000', 'Equity']
       ]
     };
 
@@ -127,7 +90,7 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
     });
 
     // Save file
-    XLSX.writeFile(wb, 'Template_Dati_Aziendali.xlsx');
+    XLSX.writeFile(wb, 'FinSight_Data_Template.xlsx');
     
     toast({
       title: "Template Scaricato",
@@ -188,41 +151,41 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
       };
 
       // Process Company Info sheet
-      if (workbook.SheetNames.includes('Informazioni Azienda')) {
-        const companySheet = workbook.Sheets['Informazioni Azienda'];
+      if (workbook.SheetNames.includes('Company Info')) {
+        const companySheet = workbook.Sheets['Company Info'];
         const companyData = XLSX.utils.sheet_to_json(companySheet, { header: 1 }) as any[][];
         
         companyData.forEach((row: any[]) => {
           if (row[0] && row[1]) {
             switch (row[0].toString().toLowerCase()) {
-              case 'nome azienda':
+              case 'company name':
                 extractedData.companyInfo.name = row[1];
                 break;
-              case 'codice fiscale':
+              case 'tax id':
                 extractedData.companyInfo.taxCode = row[1];
                 break;
-              case 'partita iva':
+              case 'vat number':
                 extractedData.companyInfo.vatNumber = row[1];
                 break;
-              case 'settore':
+              case 'industry':
                 extractedData.companyInfo.sector = row[1];
                 break;
-              case 'numero dipendenti':
+              case 'employees':
                 extractedData.companyInfo.employees = parseInt(row[1]) || 0;
                 break;
-              case 'anno di costituzione':
+              case 'founded year':
                 extractedData.companyInfo.foundingYear = row[1];
                 break;
-              case 'sede legale':
+              case 'headquarters':
                 extractedData.companyInfo.headquarters = row[1];
                 break;
               case 'email':
                 extractedData.companyInfo.email = row[1];
                 break;
-              case 'telefono':
+              case 'phone':
                 extractedData.companyInfo.phone = row[1];
                 break;
-              case 'sito web':
+              case 'website':
                 extractedData.companyInfo.website = row[1];
                 break;
             }
@@ -230,31 +193,27 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
         });
       }
 
-      // Process P&L sheet
-      if (workbook.SheetNames.includes('Conto Economico')) {
-        const plSheet = workbook.Sheets['Conto Economico'];
+      // Process Income Statement sheet
+      if (workbook.SheetNames.includes('Income Statement')) {
+        const plSheet = workbook.Sheets['Income Statement'];
         const plData = XLSX.utils.sheet_to_json(plSheet, { header: 1 }) as any[][];
         
         plData.forEach((row: any[]) => {
           if (row[0] && row[1] && typeof row[1] === 'number') {
             const description = row[0].toString().toLowerCase();
-            if (description.includes('ricavi delle vendite')) {
+            if (description.includes('revenue')) {
               extractedData.profitLoss.revenue = row[1];
-            } else if (description.includes('altri ricavi')) {
-              extractedData.profitLoss.otherRevenue = row[1];
-            } else if (description.includes('totale ricavi')) {
-              extractedData.profitLoss.totalRevenue = row[1];
-            } else if (description.includes('costo del venduto') || description.includes('cogs')) {
+            } else if (description.includes('cost of goods sold')) {
               extractedData.profitLoss.cogs = row[1];
-            } else if (description.includes('utile lordo')) {
+            } else if (description.includes('gross profit')) {
               extractedData.profitLoss.grossProfit = row[1];
-            } else if (description.includes('totale spese operative')) {
+            } else if (description.includes('operating expenses')) {
               extractedData.profitLoss.operatingExpenses = row[1];
             } else if (description.includes('ebitda')) {
               extractedData.profitLoss.ebitda = row[1];
             } else if (description.includes('ebit')) {
               extractedData.profitLoss.ebit = row[1];
-            } else if (description.includes('utile netto')) {
+            } else if (description.includes('net income')) {
               extractedData.profitLoss.netIncome = row[1];
             }
           }
@@ -262,49 +221,26 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
       }
 
       // Process Balance Sheet
-      if (workbook.SheetNames.includes('Stato Patrimoniale')) {
-        const bsSheet = workbook.Sheets['Stato Patrimoniale'];
+      if (workbook.SheetNames.includes('Balance Sheet')) {
+        const bsSheet = workbook.Sheets['Balance Sheet'];
         const bsData = XLSX.utils.sheet_to_json(bsSheet, { header: 1 }) as any[][];
         
         bsData.forEach((row: any[]) => {
           if (row[0] && row[1] && typeof row[1] === 'number') {
             const description = row[0].toString().toLowerCase();
-            if (description.includes('totale attività correnti')) {
+            if (description.includes('total current assets')) {
               extractedData.balanceSheet.currentAssets = row[1];
-            } else if (description.includes('totale attività non correnti')) {
+            } else if (description.includes('total fixed assets')) {
               extractedData.balanceSheet.nonCurrentAssets = row[1];
-            } else if (description.includes('totale attività') && !description.includes('correnti')) {
+            } else if (description.includes('total assets')) {
               extractedData.balanceSheet.totalAssets = row[1];
-            } else if (description.includes('totale passività correnti')) {
+            } else if (description.includes('total current liabilities')) {
               extractedData.balanceSheet.currentLiabilities = row[1];
-            } else if (description.includes('totale passività non correnti')) {
-              extractedData.balanceSheet.nonCurrentLiabilities = row[1];
-            } else if (description.includes('totale passività') && !description.includes('correnti')) {
+            } else if (description.includes('total liabilities') && !description.includes('current')) {
               extractedData.balanceSheet.totalLiabilities = row[1];
-            } else if (description.includes('totale patrimonio netto')) {
+            } else if (description.includes('total equity')) {
               extractedData.balanceSheet.equity = row[1];
             }
-          }
-        });
-      }
-
-      // Process Monthly Data
-      if (workbook.SheetNames.includes('Dati Mensili')) {
-        const monthlySheet = workbook.Sheets['Dati Mensili'];
-        const monthlyData = XLSX.utils.sheet_to_json(monthlySheet, { header: 1 }) as any[][];
-        
-        // Skip header row
-        monthlyData.slice(1).forEach((row: any[]) => {
-          if (row[0] && row[1]) {
-            extractedData.monthlyData.push({
-              month: row[0],
-              revenue: parseFloat(row[1]) || 0,
-              costs: parseFloat(row[2]) || 0,
-              grossProfit: parseFloat(row[3]) || 0,
-              operatingExpenses: parseFloat(row[4]) || 0,
-              ebitda: parseFloat(row[5]) || 0,
-              notes: row[6] || ''
-            });
           }
         });
       }
@@ -356,8 +292,74 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Importazione Dati</h1>
-        <p className="text-gray-600">Importa i tuoi dati finanziari utilizzando il nostro template Excel</p>
+        <p className="text-gray-600">Importa i tuoi dati finanziari e collega i tuoi gestionali</p>
       </div>
+
+      {/* Integration Options */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <Upload className="h-5 w-5" />
+            <span>Integrazioni Gestionali</span>
+          </CardTitle>
+          <CardDescription>
+            Collega direttamente i tuoi software gestionali per l'importazione automatica dei dati
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[
+              { name: 'QuickBooks', status: 'available', color: 'blue' },
+              { name: 'Xero', status: 'available', color: 'green' },
+              { name: 'SAP', status: 'available', color: 'purple' },
+              { name: 'Oracle', status: 'available', color: 'red' },
+              { name: 'Sage 50', status: 'available', color: 'orange' },
+              { name: 'Zucchetti', status: 'available', color: 'teal' }
+            ].map((integration) => (
+              <Card key={integration.name} className="hover:shadow-md transition-shadow cursor-pointer">
+                <CardContent className="p-4 text-center">
+                  <div className={`h-12 w-12 bg-${integration.color}-100 rounded-lg mx-auto mb-3 flex items-center justify-center`}>
+                    <span className={`text-${integration.color}-600 font-semibold text-lg`}>
+                      {integration.name.charAt(0)}
+                    </span>
+                  </div>
+                  <h4 className="font-medium text-gray-900 mb-1">{integration.name}</h4>
+                  <Badge 
+                    variant="outline" 
+                    className={`bg-${integration.color}-50 text-${integration.color}-700 border-${integration.color}-200`}
+                  >
+                    Disponibile
+                  </Badge>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full mt-3"
+                    onClick={() => toast({
+                      title: "Integrazione in Sviluppo",
+                      description: `L'integrazione con ${integration.name} sarà disponibile a breve.`,
+                    })}
+                  >
+                    Connetti
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          
+          <div className="bg-blue-50 p-4 rounded-lg">
+            <div className="flex items-start space-x-3">
+              <Info className="h-5 w-5 text-blue-600 mt-0.5" />
+              <div>
+                <h4 className="font-medium text-blue-900">Integrazioni Automatiche</h4>
+                <p className="text-sm text-blue-700 mt-1">
+                  Una volta collegate, le integrazioni sincronizzeranno automaticamente i tuoi dati 
+                  finanziari ogni notte, mantenendo sempre aggiornate le tue analisi e report.
+                </p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Template Download */}
       <Card>
@@ -367,7 +369,7 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
             <span>Scarica Template Excel</span>
           </CardTitle>
           <CardDescription>
-            Scarica il nostro template strutturato per importare i tuoi dati aziendali
+            Scarica il nostro template strutturato per importare manualmente i tuoi dati
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -377,10 +379,9 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
               <div>
                 <h4 className="font-medium text-blue-900">Il template include:</h4>
                 <ul className="text-sm text-blue-700 mt-2 space-y-1">
-                  <li>• Foglio "Informazioni Azienda" - Dati anagrafici della tua azienda</li>
-                  <li>• Foglio "Conto Economico" - Ricavi, costi e risultato economico</li>
-                  <li>• Foglio "Stato Patrimoniale" - Attività, passività e patrimonio netto</li>
-                  <li>• Foglio "Dati Mensili" - Trend mensili per analisi temporali</li>
+                  <li>• Foglio "Company Info" - Informazioni aziendali</li>
+                  <li>• Foglio "Income Statement" - Conto economico</li>
+                  <li>• Foglio "Balance Sheet" - Stato patrimoniale</li>
                 </ul>
               </div>
             </div>
@@ -494,7 +495,7 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
                 <div className="bg-green-50 p-4 rounded-lg">
                   <h5 className="font-medium text-green-900">Ricavi Totali</h5>
                   <p className="text-2xl font-bold text-green-600">
-                    {formatCurrency(importedData.profitLoss.totalRevenue)}
+                    {formatCurrency(importedData.profitLoss.revenue)}
                   </p>
                 </div>
                 <div className="bg-blue-50 p-4 rounded-lg">
@@ -537,13 +538,6 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
                   <Badge className="bg-green-100 text-green-800">
                     <CheckCircle className="h-3 w-3 mr-1" />
                     Completo
-                  </Badge>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Dati Mensili</span>
-                  <Badge className="bg-green-100 text-green-800">
-                    <CheckCircle className="h-3 w-3 mr-1" />
-                    {importedData.monthlyData.length} mesi
                   </Badge>
                 </div>
               </div>
