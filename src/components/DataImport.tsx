@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,7 +7,13 @@ import { useToast } from '@/hooks/use-toast';
 import { Upload, FileSpreadsheet, Download, CheckCircle, AlertCircle, Info } from 'lucide-react';
 import * as XLSX from 'xlsx';
 
-const DataImport = ({ onDataImport }: { onDataImport?: (data: any) => void }) => {
+interface DataImportProps {
+  user?: any;
+  onDataUpdate?: (updatedUser: any) => void;
+  onDataImport?: (data: any) => void;
+}
+
+const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [importStatus, setImportStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -306,6 +311,16 @@ const DataImport = ({ onDataImport }: { onDataImport?: (data: any) => void }) =>
 
       setImportedData(extractedData);
       setImportStatus('success');
+      
+      // Update user data if callback provided
+      if (onDataUpdate && user) {
+        const updatedUser = {
+          ...user,
+          importedData: extractedData,
+          lastDataImport: new Date().toISOString()
+        };
+        onDataUpdate(updatedUser);
+      }
       
       // Call the callback with imported data
       if (onDataImport) {
