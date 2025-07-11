@@ -5,10 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { 
   Calendar as CalendarIcon, Clock, Plus, Edit, Trash2, 
-  User, MapPin, Video, Phone, ChevronLeft, ChevronRight 
+  User, MapPin, Video, Phone, ChevronLeft, ChevronRight,
+  Bell, Repeat, Users, FileText, CheckSquare, Star
 } from "lucide-react";
 
 interface Event {
@@ -16,43 +18,56 @@ interface Event {
   title: string;
   date: string;
   time: string;
-  type: 'meeting' | 'call' | 'deadline' | 'reminder';
+  type: 'meeting' | 'call' | 'deadline' | 'reminder' | 'task' | 'review';
   description?: string;
   location?: string;
   attendees?: string[];
+  priority?: 'low' | 'medium' | 'high';
+  recurring?: boolean;
+  completed?: boolean;
+  category?: string;
 }
 
 const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [showEventForm, setShowEventForm] = useState(false);
+  const [editingEvent, setEditingEvent] = useState<Event | null>(null);
+  const [viewMode, setViewMode] = useState<'month' | 'week' | 'day'>('month');
+  const [filterCategory, setFilterCategory] = useState<string>('all');
   const [events, setEvents] = useState<Event[]>([
     {
       id: '1',
-      title: 'Financial Review Meeting',
+      title: 'Riunione Revisione Finanziaria',
       date: '2024-01-15',
       time: '10:00',
       type: 'meeting',
-      description: 'Monthly financial performance review',
-      location: 'Conference Room A',
-      attendees: ['team@company.com']
+      description: 'Revisione mensile delle performance finanziarie',
+      location: 'Sala Conferenze A',
+      attendees: ['team@company.com'],
+      priority: 'high',
+      category: 'Finanza'
     },
     {
       id: '2',
-      title: 'Investor Call',
+      title: 'Chiamata con Investitori',
       date: '2024-01-18',
       time: '14:30',
       type: 'call',
-      description: 'Q4 results discussion with investors',
-      attendees: ['investor@fund.com']
+      description: 'Discussione risultati Q4 con gli investitori',
+      attendees: ['investor@fund.com'],
+      priority: 'high',
+      category: 'Investimenti'
     },
     {
       id: '3',
-      title: 'Tax Filing Deadline',
+      title: 'Scadenza Dichiarazione Fiscale',
       date: '2024-01-31',
       time: '23:59',
       type: 'deadline',
-      description: 'Submit Q4 tax documents'
+      description: 'Invio documenti fiscali Q4',
+      priority: 'high',
+      category: 'Fiscale'
     }
   ]);
   
@@ -63,7 +78,10 @@ const Calendar = () => {
     type: 'meeting' as Event['type'],
     description: '',
     location: '',
-    attendees: ''
+    attendees: '',
+    priority: 'medium' as Event['priority'],
+    recurring: false,
+    category: ''
   });
 
   const { toast } = useToast();
@@ -76,11 +94,13 @@ const Calendar = () => {
   const daysInMonth = lastDayOfMonth.getDate();
 
   const monthNames = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
+    'Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno',
+    'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'
   ];
 
-  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const dayNames = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'];
+
+  const eventCategories = ['Finanza', 'Investimenti', 'Fiscale', 'Operazioni', 'Marketing', 'HR', 'Legale'];
 
   const navigateMonth = (direction: 'prev' | 'next') => {
     const newDate = new Date(currentDate);
@@ -97,7 +117,12 @@ const Calendar = () => {
   };
 
   const getEventsForDate = (date: string) => {
-    return events.filter(event => event.date === date);
+    return events.filter(event => {
+      if (filterCategory !== 'all' && event.category !== filterCategory) {
+        return false;
+      }
+      return event.date === date;
+    });
   };
 
   const handleDateClick = (day: number) => {
@@ -109,25 +134,43 @@ const Calendar = () => {
   const handleAddEvent = () => {
     if (!newEvent.title || !newEvent.date || !newEvent.time) {
       toast({
-        title: "Missing Information",
-        description: "Please fill in title, date, and time.",
+        title: "Informazioni Mancanti",
+        description: "Inserisci titolo, data e orario.",
         variant: "destructive"
       });
       return;
     }
 
     const event: Event = {
-      id: Date.now().toString(),
+      id: editingEvent ? editingEvent.id : Date.now().toString(),
       title: newEvent.title,
       date: newEvent.date,
       time: newEvent.time,
       type: newEvent.type,
       description: newEvent.description,
       location: newEvent.location,
-      attendees: newEvent.attendees ? newEvent.attendees.split(',').map(email => email.trim()) : []
+      attendees: newEvent.attendees ? newEvent.attendees.split(',').map(email => email.trim()) : [],
+      priority: newEvent.priority,
+      recurring: newEvent.recurring,
+      category: newEvent.category,
+      completed: false
     };
 
-    setEvents(prev => [...prev, event]);
+    if (editingEvent) {
+      setEvents(prev => prev.map(e => e.id === editingEvent.id ? event : e));
+      toast({
+        title: "Evento Aggiornato",
+        description: "L'evento è stato modificato con successo.",
+      });
+    } else {
+      setEvents(prev => [...prev, event]);
+      toast({
+        title: "Evento Aggiunto",
+        description: "Il tuo evento è stato aggiunto al calendario.",
+      });
+    }
+
+    // Reset form
     setNewEvent({
       title: '',
       date: '',
@@ -135,22 +178,44 @@ const Calendar = () => {
       type: 'meeting',
       description: '',
       location: '',
-      attendees: ''
+      attendees: '',
+      priority: 'medium',
+      recurring: false,
+      category: ''
     });
     setShowEventForm(false);
-    
-    toast({
-      title: "Event Added",
-      description: "Your event has been successfully added to the calendar.",
+    setEditingEvent(null);
+  };
+
+  const handleEditEvent = (event: Event) => {
+    setEditingEvent(event);
+    setNewEvent({
+      title: event.title,
+      date: event.date,
+      time: event.time,
+      type: event.type,
+      description: event.description || '',
+      location: event.location || '',
+      attendees: event.attendees?.join(', ') || '',
+      priority: event.priority || 'medium',
+      recurring: event.recurring || false,
+      category: event.category || ''
     });
+    setShowEventForm(true);
   };
 
   const handleDeleteEvent = (eventId: string) => {
     setEvents(prev => prev.filter(event => event.id !== eventId));
     toast({
-      title: "Event Deleted",
-      description: "The event has been removed from your calendar.",
+      title: "Evento Eliminato",
+      description: "L'evento è stato rimosso dal calendario.",
     });
+  };
+
+  const handleToggleComplete = (eventId: string) => {
+    setEvents(prev => prev.map(event => 
+      event.id === eventId ? { ...event, completed: !event.completed } : event
+    ));
   };
 
   const getEventTypeColor = (type: Event['type']) => {
@@ -159,6 +224,8 @@ const Calendar = () => {
       case 'call': return 'bg-green-100 text-green-800';
       case 'deadline': return 'bg-red-100 text-red-800';
       case 'reminder': return 'bg-yellow-100 text-yellow-800';
+      case 'task': return 'bg-purple-100 text-purple-800';
+      case 'review': return 'bg-orange-100 text-orange-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
@@ -168,8 +235,19 @@ const Calendar = () => {
       case 'meeting': return User;
       case 'call': return Phone;
       case 'deadline': return Clock;
-      case 'reminder': return CalendarIcon;
+      case 'reminder': return Bell;
+      case 'task': return CheckSquare;
+      case 'review': return FileText;
       default: return CalendarIcon;
+    }
+  };
+
+  const getPriorityColor = (priority: Event['priority']) => {
+    switch (priority) {
+      case 'high': return 'text-red-500';
+      case 'medium': return 'text-yellow-500';
+      case 'low': return 'text-green-500';
+      default: return 'text-gray-500';
     }
   };
 
@@ -204,17 +282,22 @@ const Calendar = () => {
           {day}
         </div>
         <div className="space-y-1 mt-1">
-          {dayEvents.slice(0, 2).map(event => (
-            <div
-              key={event.id}
-              className="text-xs p-1 rounded bg-blue-100 text-blue-800 truncate"
-              title={event.title}
-            >
-              {event.time} {event.title}
-            </div>
-          ))}
+          {dayEvents.slice(0, 2).map(event => {
+            const Icon = getEventTypeIcon(event.type);
+            return (
+              <div
+                key={event.id}
+                className={`text-xs p-1 rounded flex items-center space-x-1 ${getEventTypeColor(event.type)} ${event.completed ? 'opacity-50 line-through' : ''}`}
+                title={event.title}
+              >
+                <Icon className="h-2 w-2" />
+                <span className="truncate">{event.time} {event.title}</span>
+                {event.priority === 'high' && <Star className="h-2 w-2 text-red-500" />}
+              </div>
+            );
+          })}
           {dayEvents.length > 2 && (
-            <div className="text-xs text-gray-500">+{dayEvents.length - 2} more</div>
+            <div className="text-xs text-gray-500">+{dayEvents.length - 2} altri</div>
           )}
         </div>
       </div>
@@ -226,13 +309,26 @@ const Calendar = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Calendar</h1>
-          <p className="text-gray-600">Manage your financial meetings and deadlines</p>
+          <h1 className="text-2xl font-bold text-gray-900">Calendario</h1>
+          <p className="text-gray-600">Gestisci i tuoi appuntamenti finanziari e scadenze</p>
         </div>
-        <Button onClick={() => setShowEventForm(true)} className="bg-blue-600">
-          <Plus className="h-4 w-4 mr-2" />
-          Add Event
-        </Button>
+        <div className="flex items-center space-x-2">
+          <Select value={filterCategory} onValueChange={setFilterCategory}>
+            <SelectTrigger className="w-40">
+              <SelectValue placeholder="Filtra categoria" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Tutte le categorie</SelectItem>
+              {eventCategories.map(category => (
+                <SelectItem key={category} value={category}>{category}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Button onClick={() => setShowEventForm(true)} className="bg-blue-600">
+            <Plus className="h-4 w-4 mr-2" />
+            Aggiungi Evento
+          </Button>
+        </div>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-6">
@@ -252,13 +348,15 @@ const Calendar = () => {
                     <ChevronRight className="h-4 w-4" />
                   </Button>
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setCurrentDate(new Date())}
-                >
-                  Today
-                </Button>
+                <div className="flex items-center space-x-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentDate(new Date())}
+                  >
+                    Oggi
+                  </Button>
+                </div>
               </div>
             </CardHeader>
             <CardContent>
@@ -282,8 +380,8 @@ const Calendar = () => {
           {/* Upcoming Events */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Upcoming Events</CardTitle>
-              <CardDescription>Your next scheduled events</CardDescription>
+              <CardTitle className="text-lg">Prossimi Eventi</CardTitle>
+              <CardDescription>I tuoi prossimi appuntamenti programmati</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
@@ -294,34 +392,66 @@ const Calendar = () => {
                   .map(event => {
                     const EventIcon = getEventTypeIcon(event.type);
                     return (
-                      <div key={event.id} className="p-3 border border-gray-200 rounded-lg">
+                      <div key={event.id} className={`p-3 border border-gray-200 rounded-lg ${event.completed ? 'opacity-60' : ''}`}>
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <div className="flex items-center space-x-2 mb-2">
                               <EventIcon className="h-4 w-4 text-gray-500" />
-                              <span className="font-medium text-sm">{event.title}</span>
+                              <span className={`font-medium text-sm ${event.completed ? 'line-through' : ''}`}>
+                                {event.title}
+                              </span>
+                              {event.priority === 'high' && (
+                                <Star className={`h-3 w-3 ${getPriorityColor(event.priority)}`} />
+                              )}
                             </div>
                             <div className="text-xs text-gray-600 space-y-1">
-                              <div>{event.date} at {event.time}</div>
+                              <div>{event.date} alle {event.time}</div>
                               {event.location && (
                                 <div className="flex items-center">
                                   <MapPin className="h-3 w-3 mr-1" />
                                   {event.location}
                                 </div>
                               )}
+                              {event.category && (
+                                <Badge variant="outline" className="text-xs">
+                                  {event.category}
+                                </Badge>
+                              )}
                             </div>
                             <Badge className={`mt-2 ${getEventTypeColor(event.type)}`} variant="secondary">
-                              {event.type}
+                              {event.type === 'meeting' ? 'Riunione' : 
+                               event.type === 'call' ? 'Chiamata' :
+                               event.type === 'deadline' ? 'Scadenza' :
+                               event.type === 'reminder' ? 'Promemoria' :
+                               event.type === 'task' ? 'Attività' : 'Revisione'}
                             </Badge>
                           </div>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleDeleteEvent(event.id)}
-                            className="text-red-500 hover:text-red-700"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+                          <div className="flex flex-col space-y-1">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleToggleComplete(event.id)}
+                              className={event.completed ? 'text-green-600' : 'text-gray-400'}
+                            >
+                              <CheckSquare className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleEditEvent(event)}
+                              className="text-blue-500 hover:text-blue-700"
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleDeleteEvent(event.id)}
+                              className="text-red-500 hover:text-red-700"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
                         </div>
                       </div>
                     );
@@ -329,7 +459,7 @@ const Calendar = () => {
                 {events.length === 0 && (
                   <div className="text-center py-6 text-gray-500">
                     <CalendarIcon className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                    <p>No events scheduled</p>
+                    <p>Nessun evento programmato</p>
                   </div>
                 )}
               </div>
@@ -340,22 +470,24 @@ const Calendar = () => {
           {showEventForm && (
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Add New Event</CardTitle>
-                <CardDescription>Schedule a new event or deadline</CardDescription>
+                <CardTitle className="text-lg">
+                  {editingEvent ? 'Modifica Evento' : 'Aggiungi Nuovo Evento'}
+                </CardTitle>
+                <CardDescription>Programma un nuovo evento o scadenza</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Title *</label>
+                  <label className="block text-sm font-medium mb-1">Titolo *</label>
                   <Input
                     value={newEvent.title}
                     onChange={(e) => setNewEvent(prev => ({ ...prev, title: e.target.value }))}
-                    placeholder="Event title"
+                    placeholder="Titolo evento"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium mb-1">Date *</label>
+                    <label className="block text-sm font-medium mb-1">Data *</label>
                     <Input
                       type="date"
                       value={newEvent.date}
@@ -363,7 +495,7 @@ const Calendar = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-1">Time *</label>
+                    <label className="block text-sm font-medium mb-1">Orario *</label>
                     <Input
                       type="time"
                       value={newEvent.time}
@@ -372,41 +504,73 @@ const Calendar = () => {
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium mb-1">Type</label>
-                  <select
-                    value={newEvent.type}
-                    onChange={(e) => setNewEvent(prev => ({ ...prev, type: e.target.value as Event['type'] }))}
-                    className="w-full p-2 border border-gray-300 rounded-md"
-                  >
-                    <option value="meeting">Meeting</option>
-                    <option value="call">Call</option>
-                    <option value="deadline">Deadline</option>
-                    <option value="reminder">Reminder</option>
-                  </select>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Tipo</label>
+                    <Select value={newEvent.type} onValueChange={(value: Event['type']) => setNewEvent(prev => ({ ...prev, type: value }))}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="meeting">Riunione</SelectItem>
+                        <SelectItem value="call">Chiamata</SelectItem>
+                        <SelectItem value="deadline">Scadenza</SelectItem>
+                        <SelectItem value="reminder">Promemoria</SelectItem>
+                        <SelectItem value="task">Attività</SelectItem>
+                        <SelectItem value="review">Revisione</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Priorità</label>
+                    <Select value={newEvent.priority} onValueChange={(value: Event['priority']) => setNewEvent(prev => ({ ...prev, priority: value }))}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="low">Bassa</SelectItem>
+                        <SelectItem value="medium">Media</SelectItem>
+                        <SelectItem value="high">Alta</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-1">Location</label>
+                  <label className="block text-sm font-medium mb-1">Categoria</label>
+                  <Select value={newEvent.category} onValueChange={(value) => setNewEvent(prev => ({ ...prev, category: value }))}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleziona categoria" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {eventCategories.map(category => (
+                        <SelectItem key={category} value={category}>{category}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1">Luogo</label>
                   <Input
                     value={newEvent.location}
                     onChange={(e) => setNewEvent(prev => ({ ...prev, location: e.target.value }))}
-                    placeholder="Meeting location or video link"
+                    placeholder="Luogo riunione o link video"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-1">Description</label>
+                  <label className="block text-sm font-medium mb-1">Descrizione</label>
                   <Textarea
                     value={newEvent.description}
                     onChange={(e) => setNewEvent(prev => ({ ...prev, description: e.target.value }))}
-                    placeholder="Event description"
+                    placeholder="Descrizione evento"
                     className="min-h-[80px]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-1">Attendees</label>
+                  <label className="block text-sm font-medium mb-1">Partecipanti</label>
                   <Input
                     value={newEvent.attendees}
                     onChange={(e) => setNewEvent(prev => ({ ...prev, attendees: e.target.value }))}
@@ -414,13 +578,39 @@ const Calendar = () => {
                   />
                 </div>
 
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="recurring"
+                    checked={newEvent.recurring}
+                    onChange={(e) => setNewEvent(prev => ({ ...prev, recurring: e.target.checked }))}
+                    className="rounded border-gray-300"
+                  />
+                  <label htmlFor="recurring" className="text-sm font-medium">Evento ricorrente</label>
+                </div>
+
                 <div className="flex space-x-2">
                   <Button onClick={handleAddEvent} className="flex-1">
                     <Plus className="h-4 w-4 mr-2" />
-                    Add Event
+                    {editingEvent ? 'Aggiorna Evento' : 'Aggiungi Evento'}
                   </Button>
-                  <Button variant="outline" onClick={() => setShowEventForm(false)}>
-                    Cancel
+                  <Button variant="outline" onClick={() => {
+                    setShowEventForm(false);
+                    setEditingEvent(null);
+                    setNewEvent({
+                      title: '',
+                      date: '',
+                      time: '',
+                      type: 'meeting',
+                      description: '',
+                      location: '',
+                      attendees: '',
+                      priority: 'medium',
+                      recurring: false,
+                      category: ''
+                    });
+                  }}>
+                    Annulla
                   </Button>
                 </div>
               </CardContent>

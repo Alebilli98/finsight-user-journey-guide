@@ -34,12 +34,12 @@ const Analytics = ({ user }: AnalyticsProps) => {
   const ebitdaMargin = annualRevenue > 0 ? (((netIncome + (annualExpenses * 0.1)) / annualRevenue) * 100) : 0;
 
   const profitabilityData = userData.financialData?.monthlyData || [
-    { month: "Jan", grossMargin: Math.max(0, grossMargin - 5), netMargin: Math.max(0, netMargin - 3), ebitda: Math.max(0, ebitdaMargin - 4) },
+    { month: "Gen", grossMargin: Math.max(0, grossMargin - 5), netMargin: Math.max(0, netMargin - 3), ebitda: Math.max(0, ebitdaMargin - 4) },
     { month: "Feb", grossMargin: Math.max(0, grossMargin - 3), netMargin: Math.max(0, netMargin - 2), ebitda: Math.max(0, ebitdaMargin - 3) },
     { month: "Mar", grossMargin: Math.max(0, grossMargin - 4), netMargin: Math.max(0, netMargin - 3), ebitda: Math.max(0, ebitdaMargin - 4) },
     { month: "Apr", grossMargin: Math.max(0, grossMargin - 2), netMargin: Math.max(0, netMargin - 1), ebitda: Math.max(0, ebitdaMargin - 2) },
-    { month: "May", grossMargin: Math.max(0, grossMargin), netMargin: Math.max(0, netMargin + 1), ebitda: Math.max(0, ebitdaMargin) },
-    { month: "Jun", grossMargin: Math.max(0, grossMargin + 2), netMargin: Math.max(0, netMargin + 2), ebitda: Math.max(0, ebitdaMargin + 2) },
+    { month: "Mag", grossMargin: Math.max(0, grossMargin), netMargin: Math.max(0, netMargin + 1), ebitda: Math.max(0, ebitdaMargin) },
+    { month: "Giu", grossMargin: Math.max(0, grossMargin + 2), netMargin: Math.max(0, netMargin + 2), ebitda: Math.max(0, ebitdaMargin + 2) },
   ];
 
   // Calculate efficiency ratios from real data
@@ -47,12 +47,19 @@ const Analytics = ({ user }: AnalyticsProps) => {
   const inventoryTurnover = annualRevenue > 0 ? 8.5 : 0; // Placeholder as inventory data not available
   const receivablesTurnover = annualRevenue > 0 ? 12.3 : 0; // Placeholder
   const workingCapital = (totalAssets - totalLiabilities) > 0 ? 2.1 : 0;
+  const payablesTurnover = annualExpenses > 0 ? 9.4 : 0;
+  const cashConversionCycle = inventoryTurnover > 0 ? (365/inventoryTurnover) + (365/receivablesTurnover) - (365/payablesTurnover) : 0;
+  const fixedAssetTurnover = totalAssets > 0 ? (annualRevenue / (totalAssets * 0.6)) : 0;
+  const totalAssetTurnover = totalAssets > 0 ? (annualRevenue / totalAssets) : 0;
 
   const efficiencyData = [
-    { metric: "Asset Turnover", current: assetTurnover, industry: 1.5, benchmark: 2.0 },
-    { metric: "Inventory Turnover", current: inventoryTurnover, industry: 6.2, benchmark: 10.0 },
-    { metric: "Receivables Turnover", current: receivablesTurnover, industry: 9.8, benchmark: 15.0 },
-    { metric: "Working Capital", current: workingCapital, industry: 1.8, benchmark: 2.5 },
+    { metric: "Rotazione Attività", current: assetTurnover, industry: 1.5, benchmark: 2.0 },
+    { metric: "Rotazione Scorte", current: inventoryTurnover, industry: 6.2, benchmark: 10.0 },
+    { metric: "Rotazione Crediti", current: receivablesTurnover, industry: 9.8, benchmark: 15.0 },
+    { metric: "Capitale Circolante", current: workingCapital, industry: 1.8, benchmark: 2.5 },
+    { metric: "Rotazione Debiti", current: payablesTurnover, industry: 8.5, benchmark: 12.0 },
+    { metric: "Ciclo Conversione", current: cashConversionCycle, industry: 45, benchmark: 30 },
+    { metric: "Rotazione Immobilizzi", current: fixedAssetTurnover, industry: 2.3, benchmark: 3.5 },
   ];
 
   // Calculate leverage ratios from real data
@@ -75,13 +82,13 @@ const Analytics = ({ user }: AnalyticsProps) => {
 
   const ratioCards = [
     { 
-      title: "Current Ratio", 
+      title: "Indice Corrente", 
       value: currentRatio.toFixed(2), 
       change: currentRatio > 2 ? "+0.12" : "-0.08", 
       status: currentRatio > 2 ? "good" : "warning" 
     },
     { 
-      title: "Quick Ratio", 
+      title: "Indice Secco", 
       value: quickRatio.toFixed(2), 
       change: quickRatio > 1.5 ? "+0.08" : "-0.05", 
       status: quickRatio > 1.5 ? "good" : "warning" 
@@ -107,12 +114,12 @@ const Analytics = ({ user }: AnalyticsProps) => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Advanced Analytics</h1>
-          <p className="text-gray-600">Deep dive into your financial performance metrics</p>
+          <h1 className="text-2xl font-bold text-gray-900">Analisi Avanzata</h1>
+          <p className="text-gray-600">Analisi approfondita delle tue metriche di performance finanziaria</p>
         </div>
         <Button variant="outline" className="flex items-center space-x-2">
           <Zap className="h-4 w-4" />
-          <span>Export Analysis</span>
+          <span>Esporta Analisi</span>
         </Button>
       </div>
 
@@ -121,9 +128,9 @@ const Analytics = ({ user }: AnalyticsProps) => {
           <CardContent className="p-6">
             <div className="text-center">
               <Calculator className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-blue-900 mb-2">No Financial Data Available</h3>
+              <h3 className="text-lg font-semibold text-blue-900 mb-2">Nessun Dato Finanziario Disponibile</h3>
               <p className="text-blue-700 mb-4">
-                Import your business data or update your profile to see personalized analytics and insights.
+                Importa i tuoi dati aziendali o aggiorna il tuo profilo per vedere analisi personalizzate e insights.
               </p>
               <div className="flex gap-2 justify-center">
                 <Button 
@@ -133,7 +140,7 @@ const Analytics = ({ user }: AnalyticsProps) => {
                   }}
                   className="bg-blue-600 hover:bg-blue-700"
                 >
-                  Import Data
+                  Importa Dati
                 </Button>
                 <Button 
                   onClick={() => {
@@ -142,7 +149,7 @@ const Analytics = ({ user }: AnalyticsProps) => {
                   }}
                   variant="outline"
                 >
-                  Update Profile
+                  Aggiorna Profilo
                 </Button>
               </div>
             </div>
@@ -184,7 +191,7 @@ const Analytics = ({ user }: AnalyticsProps) => {
                       : 'text-orange-600 border-orange-300'
                   }
                 >
-                  {ratio.status}
+                  {ratio.status === 'excellent' ? 'eccellente' : ratio.status === 'good' ? 'buono' : 'attenzione'}
                 </Badge>
               </div>
             </CardContent>
@@ -195,11 +202,11 @@ const Analytics = ({ user }: AnalyticsProps) => {
       {/* Detailed Analysis Tabs */}
       <Card>
         <CardHeader>
-          <CardTitle>Financial Analysis</CardTitle>
+          <CardTitle>Analisi Finanziaria</CardTitle>
           <CardDescription>
             {hasRealData 
-              ? "Comprehensive analysis based on your imported data" 
-              : "Sample analysis - import your data for personalized insights"
+              ? "Analisi completa basata sui tuoi dati importati" 
+              : "Analisi di esempio - importa i tuoi dati per insights personalizzati"
             }
           </CardDescription>
         </CardHeader>
@@ -208,15 +215,15 @@ const Analytics = ({ user }: AnalyticsProps) => {
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="profitability" className="flex items-center space-x-2">
                 <TrendingUp className="h-4 w-4" />
-                <span>Profitability</span>
+                <span>Redditività</span>
               </TabsTrigger>
               <TabsTrigger value="efficiency" className="flex items-center space-x-2">
                 <Calculator className="h-4 w-4" />
-                <span>Efficiency</span>
+                <span>Efficienza</span>
               </TabsTrigger>
               <TabsTrigger value="leverage" className="flex items-center space-x-2">
                 <Target className="h-4 w-4" />
-                <span>Leverage</span>
+                <span>Leva Finanziaria</span>
               </TabsTrigger>
             </TabsList>
 
@@ -224,24 +231,24 @@ const Analytics = ({ user }: AnalyticsProps) => {
               <div className="space-y-6">
                 <div className="grid md:grid-cols-3 gap-4">
                   <div className="bg-green-50 p-4 rounded-lg">
-                    <h4 className="font-medium text-green-900">Gross Margin</h4>
+                    <h4 className="font-medium text-green-900">Margine Lordo</h4>
                     <p className="text-2xl font-bold text-green-600">{Math.max(0, grossMargin).toFixed(1)}%</p>
                     <p className="text-sm text-green-700">
-                      {hasRealData ? "Based on your data" : "Sample data"}
+                      {hasRealData ? "Basato sui tuoi dati" : "Dati di esempio"}
                     </p>
                   </div>
                   <div className="bg-blue-50 p-4 rounded-lg">
-                    <h4 className="font-medium text-blue-900">Net Margin</h4>
+                    <h4 className="font-medium text-blue-900">Margine Netto</h4>
                     <p className="text-2xl font-bold text-blue-600">{Math.max(0, netMargin).toFixed(1)}%</p>
                     <p className="text-sm text-blue-700">
-                      {hasRealData ? "Based on your data" : "Sample data"}
+                      {hasRealData ? "Basato sui tuoi dati" : "Dati di esempio"}
                     </p>
                   </div>
                   <div className="bg-purple-50 p-4 rounded-lg">
-                    <h4 className="font-medium text-purple-900">EBITDA Margin</h4>
+                    <h4 className="font-medium text-purple-900">Margine EBITDA</h4>
                     <p className="text-2xl font-bold text-purple-600">{Math.max(0, ebitdaMargin).toFixed(1)}%</p>
                     <p className="text-sm text-purple-700">
-                      {hasRealData ? "Based on your data" : "Sample data"}
+                      {hasRealData ? "Basato sui tuoi dati" : "Dati di esempio"}
                     </p>
                   </div>
                 </div>
@@ -257,21 +264,21 @@ const Analytics = ({ user }: AnalyticsProps) => {
                       dataKey="grossMargin" 
                       stroke="#10b981" 
                       strokeWidth={2}
-                      name="Gross Margin %"
+                      name="Margine Lordo %"
                     />
                     <Line 
                       type="monotone" 
                       dataKey="netMargin" 
                       stroke="#3b82f6" 
                       strokeWidth={2}
-                      name="Net Margin %"
+                      name="Margine Netto %"
                     />
                     <Line 
                       type="monotone" 
                       dataKey="ebitda" 
                       stroke="#8b5cf6" 
                       strokeWidth={2}
-                      name="EBITDA Margin %"
+                      name="Margine EBITDA %"
                     />
                   </LineChart>
                 </ResponsiveContainer>
@@ -280,14 +287,14 @@ const Analytics = ({ user }: AnalyticsProps) => {
 
             <TabsContent value="efficiency" className="mt-6">
               <div className="space-y-6">
-                <ResponsiveContainer width="100%" height={300}>
+                <ResponsiveContainer width="100%" height={350}>
                   <BarChart data={efficiencyData} layout="horizontal">
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis type="number" />
-                    <YAxis dataKey="metric" type="category" width={120} />
+                    <YAxis dataKey="metric" type="category" width={150} />
                     <Tooltip />
-                    <Bar dataKey="current" fill="#3b82f6" name="Current" />
-                    <Bar dataKey="industry" fill="#10b981" name="Industry Avg" />
+                    <Bar dataKey="current" fill="#3b82f6" name="Attuale" />
+                    <Bar dataKey="industry" fill="#10b981" name="Media Settore" />
                     <Bar dataKey="benchmark" fill="#f59e0b" name="Benchmark" />
                   </BarChart>
                 </ResponsiveContainer>
@@ -295,20 +302,20 @@ const Analytics = ({ user }: AnalyticsProps) => {
                 <div className="grid md:grid-cols-2 gap-4">
                   <Card>
                     <CardHeader>
-                      <CardTitle className="text-base">Performance vs Industry</CardTitle>
+                      <CardTitle className="text-base">Performance vs Settore</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-3">
                         <div className="flex justify-between">
-                          <span className="text-sm">Above Industry Average</span>
+                          <span className="text-sm">Sopra la Media Settore</span>
                           <Badge className={`${hasRealData && assetTurnover > 1.5 ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
-                            {hasRealData ? (assetTurnover > 1.5 ? '100%' : '50%') : '75%'}
+                            {hasRealData ? (assetTurnover > 1.5 ? '71%' : '43%') : '57%'}
                           </Badge>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-sm">Meeting Benchmarks</span>
+                          <span className="text-sm">Raggiunge i Benchmark</span>
                           <Badge className="bg-blue-100 text-blue-800">
-                            {hasRealData ? '50%' : '50%'}
+                            {hasRealData ? '43%' : '43%'}
                           </Badge>
                         </div>
                       </div>
@@ -317,23 +324,23 @@ const Analytics = ({ user }: AnalyticsProps) => {
 
                   <Card>
                     <CardHeader>
-                      <CardTitle className="text-base">Key Insights</CardTitle>
+                      <CardTitle className="text-base">Insights Chiave</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-2 text-sm">
                         {hasRealData ? (
                           <>
-                            <p>• Asset utilization: {assetTurnover > 1.5 ? 'Strong' : 'Needs improvement'}</p>
-                            <p>• Revenue efficiency: {annualRevenue > monthlyIncome * 10 ? 'Good' : 'Average'}</p>
-                            <p>• Working capital: {workingCapital > 2 ? 'Optimal' : 'Monitor closely'}</p>
-                            <p>• Overall performance: {(assetTurnover + workingCapital) / 2 > 1.8 ? 'Good' : 'Room for improvement'}</p>
+                            <p>• Utilizzo attività: {assetTurnover > 1.5 ? 'Forte' : 'Da migliorare'}</p>
+                            <p>• Efficienza ricavi: {annualRevenue > monthlyIncome * 10 ? 'Buona' : 'Media'}</p>
+                            <p>• Capitale circolante: {workingCapital > 2 ? 'Ottimale' : 'Monitorare'}</p>
+                            <p>• Ciclo conversione: {cashConversionCycle < 40 ? 'Efficiente' : 'Da ottimizzare'}</p>
                           </>
                         ) : (
                           <>
-                            <p>• Import your data for personalized insights</p>
-                            <p>• Asset utilization analysis available</p>
-                            <p>• Revenue efficiency tracking</p>
-                            <p>• Working capital optimization tips</p>
+                            <p>• Importa i tuoi dati per insights personalizzati</p>
+                            <p>• Analisi utilizzo attività disponibile</p>
+                            <p>• Tracking efficienza ricavi</p>
+                            <p>• Consigli ottimizzazione capitale circolante</p>
                           </>
                         )}
                       </div>
@@ -347,24 +354,24 @@ const Analytics = ({ user }: AnalyticsProps) => {
               <div className="space-y-6">
                 <div className="grid md:grid-cols-3 gap-4">
                   <div className="bg-blue-50 p-4 rounded-lg">
-                    <h4 className="font-medium text-blue-900">Debt-to-Equity</h4>
+                    <h4 className="font-medium text-blue-900">Debiti/Patrimonio</h4>
                     <p className="text-2xl font-bold text-blue-600">{Math.max(0, debtToEquity).toFixed(2)}</p>
                     <p className="text-sm text-blue-700">
-                      {debtToEquity < 0.5 ? 'Conservative' : debtToEquity < 1 ? 'Moderate' : 'High leverage'}
+                      {debtToEquity < 0.5 ? 'Conservativo' : debtToEquity < 1 ? 'Moderato' : 'Alta leva'}
                     </p>
                   </div>
                   <div className="bg-green-50 p-4 rounded-lg">
-                    <h4 className="font-medium text-green-900">Interest Coverage</h4>
+                    <h4 className="font-medium text-green-900">Copertura Interessi</h4>
                     <p className="text-2xl font-bold text-green-600">{Math.max(1, interestCoverage).toFixed(1)}x</p>
                     <p className="text-sm text-green-700">
-                      {interestCoverage > 5 ? 'Strong coverage' : interestCoverage > 2 ? 'Adequate' : 'Monitor closely'}
+                      {interestCoverage > 5 ? 'Forte copertura' : interestCoverage > 2 ? 'Adeguata' : 'Monitorare'}
                     </p>
                   </div>
                   <div className="bg-purple-50 p-4 rounded-lg">
-                    <h4 className="font-medium text-purple-900">Debt-to-Assets</h4>
+                    <h4 className="font-medium text-purple-900">Debiti/Attività</h4>
                     <p className="text-2xl font-bold text-purple-600">{Math.max(0, debtToAssets).toFixed(2)}</p>
                     <p className="text-sm text-purple-700">
-                      {debtToAssets < 0.3 ? 'Conservative' : debtToAssets < 0.6 ? 'Moderate' : 'High debt'}
+                      {debtToAssets < 0.3 ? 'Conservativo' : debtToAssets < 0.6 ? 'Moderato' : 'Alto debito'}
                     </p>
                   </div>
                 </div>
@@ -376,15 +383,15 @@ const Analytics = ({ user }: AnalyticsProps) => {
                     <YAxis yAxisId="left" />
                     <YAxis yAxisId="right" orientation="right" />
                     <Tooltip />
-                    <Bar yAxisId="left" dataKey="debtToEquity" fill="#3b82f6" name="Debt-to-Equity" />
-                    <Bar yAxisId="left" dataKey="debtToAssets" fill="#10b981" name="Debt-to-Assets" />
+                    <Bar yAxisId="left" dataKey="debtToEquity" fill="#3b82f6" name="Debiti/Patrimonio" />
+                    <Bar yAxisId="left" dataKey="debtToAssets" fill="#10b981" name="Debiti/Attività" />
                     <Line 
                       yAxisId="right" 
                       type="monotone" 
                       dataKey="interestCoverage" 
                       stroke="#f59e0b" 
                       strokeWidth={2}
-                      name="Interest Coverage"
+                      name="Copertura Interessi"
                     />
                   </ComposedChart>
                 </ResponsiveContainer>
