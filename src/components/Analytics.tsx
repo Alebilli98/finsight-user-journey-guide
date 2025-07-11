@@ -1,14 +1,14 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   LineChart, Line, ComposedChart, Scatter, ScatterChart
 } from "recharts";
-import { TrendingUp, Calculator, Target, Zap } from "lucide-react";
+import { TrendingUp, Calculator, Target, Zap, Info } from "lucide-react";
 
 interface AnalyticsProps {
   user?: any;
@@ -80,6 +80,55 @@ const Analytics = ({ user }: AnalyticsProps) => {
   const roe = (totalAssets - totalLiabilities) > 0 ? ((netIncome / (totalAssets - totalLiabilities)) * 100) : 0;
   const roa = totalAssets > 0 ? ((netIncome / totalAssets) * 100) : 0;
 
+  // Financial ratios with descriptions
+  const profitabilityRatios = [
+    {
+      id: 'roe',
+      title: 'ROE (Return on Equity)',
+      value: `${Math.max(0, roe).toFixed(1)}%`,
+      change: roe > 15 ? "+2.1%" : roe > 0 ? "+0.5%" : "0%",
+      status: roe > 15 ? "excellent" : roe > 5 ? "good" : "warning",
+      description: "Il Return on Equity (ROE) misura la capacità di un'azienda di generare profitti dal capitale proprio degli azionisti.",
+      whatItIs: "Il ROE indica quanto profitto un'azienda genera per ogni euro di capitale proprio investito dagli azionisti. È calcolato dividendo l'utile netto per il patrimonio netto.",
+      whyImportant: "È fondamentale per gli investitori perché mostra l'efficienza con cui l'azienda utilizza il capitale degli azionisti per generare profitti. Un ROE alto indica una gestione efficace del capitale.",
+      benchmark: "• Eccellente: >15%\n• Buono: 10-15%\n• Medio: 5-10%\n• Da migliorare: <5%"
+    },
+    {
+      id: 'roa',
+      title: 'ROA (Return on Assets)',
+      value: `${Math.max(0, roa).toFixed(1)}%`,
+      change: roa > 10 ? "+1.5%" : roa > 0 ? "+0.3%" : "0%",
+      status: roa > 10 ? "excellent" : roa > 3 ? "good" : "warning",
+      description: "Il Return on Assets (ROA) misura l'efficienza con cui un'azienda utilizza le sue attività per generare profitti.",
+      whatItIs: "Il ROA indica quanto profitto un'azienda genera per ogni euro di attività possedute. È calcolato dividendo l'utile netto per il totale delle attività.",
+      whyImportant: "Mostra quanto efficacemente l'azienda converte gli investimenti in attività in profitti netti. È utile per confrontare aziende dello stesso settore.",
+      benchmark: "• Eccellente: >10%\n• Buono: 5-10%\n• Medio: 2-5%\n• Da migliorare: <2%"
+    },
+    {
+      id: 'ros',
+      title: 'ROS (Return on Sales)',
+      value: `${Math.max(0, netMargin).toFixed(1)}%`,
+      change: netMargin > 10 ? "+1.2%" : netMargin > 0 ? "+0.4%" : "0%",
+      status: netMargin > 10 ? "excellent" : netMargin > 5 ? "good" : "warning",
+      description: "Il Return on Sales (ROS) misura la percentuale di profitto che un'azienda ottiene dalle sue vendite.",
+      whatItIs: "Il ROS, anche chiamato margine di profitto netto, indica quanti centesimi di profitto l'azienda genera per ogni euro di vendite. È calcolato dividendo l'utile netto per i ricavi totali.",
+      whyImportant: "Indica l'efficienza operativa dell'azienda e la sua capacità di controllare i costi. Un ROS alto suggerisce una buona gestione dei costi e un forte controllo sui prezzi.",
+      benchmark: "• Eccellente: >10%\n• Buono: 5-10%\n• Medio: 2-5%\n• Da migliorare: <2%"
+    },
+    {
+      id: 'roi',
+      title: 'ROI (Return on Investment)',
+      value: `${Math.max(0, (netIncome / (totalAssets > 0 ? totalAssets : 1) * 100)).toFixed(1)}%`,
+      change: "+0.8%",
+      status: netIncome > totalAssets * 0.08 ? "excellent" : netIncome > totalAssets * 0.05 ? "good" : "warning",
+      description: "Il Return on Investment (ROI) misura l'efficienza di un investimento confrontando il guadagno con il costo dell'investimento.",
+      whatItIs: "Il ROI calcola il rendimento percentuale di un investimento. È espresso come percentuale e mostra quanto si guadagna per ogni euro investito.",
+      whyImportant: "È fondamentale per valutare la redditività degli investimenti e confrontare diverse opportunità di investimento. Aiuta a prendere decisioni informate sulle allocazioni di capitale.",
+      benchmark: "• Eccellente: >12%\n• Buono: 8-12%\n• Medio: 5-8%\n• Da migliorare: <5%"
+    }
+  ];
+
+  // Update ratioCards to include new ratios
   const ratioCards = [
     { 
       title: "Indice Corrente", 
@@ -93,18 +142,7 @@ const Analytics = ({ user }: AnalyticsProps) => {
       change: quickRatio > 1.5 ? "+0.08" : "-0.05", 
       status: quickRatio > 1.5 ? "good" : "warning" 
     },
-    { 
-      title: "ROE", 
-      value: `${Math.max(0, roe).toFixed(1)}%`, 
-      change: roe > 15 ? "+2.1%" : roe > 0 ? "+0.5%" : "0%", 
-      status: roe > 15 ? "excellent" : roe > 5 ? "good" : "warning" 
-    },
-    { 
-      title: "ROA", 
-      value: `${Math.max(0, roa).toFixed(1)}%`, 
-      change: roa > 10 ? "+1.5%" : roa > 0 ? "+0.3%" : "0%", 
-      status: roa > 10 ? "excellent" : roa > 3 ? "good" : "warning" 
-    },
+    ...profitabilityRatios
   ];
 
   // Show message if no real data is available
@@ -157,12 +195,54 @@ const Analytics = ({ user }: AnalyticsProps) => {
         </Card>
       )}
 
-      {/* Key Financial Ratios */}
-      <div className="grid md:grid-cols-4 gap-6">
+      {/* Key Financial Ratios with Info Dialogs */}
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {ratioCards.map((ratio) => (
           <Card key={ratio.title}>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">{ratio.title}</CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm font-medium text-gray-600">{ratio.title}</CardTitle>
+                {profitabilityRatios.find(r => r.title === ratio.title) && (
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                        <Info className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-2xl">
+                      <DialogHeader>
+                        <DialogTitle className="flex items-center space-x-2">
+                          <TrendingUp className="h-5 w-5 text-blue-600" />
+                          <span>{ratio.title}</span>
+                        </DialogTitle>
+                        <DialogDescription>
+                          {profitabilityRatios.find(r => r.title === ratio.title)?.description}
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="space-y-4">
+                        <div>
+                          <h4 className="font-semibold text-gray-900 mb-2">Cosa è</h4>
+                          <p className="text-gray-700 text-sm">
+                            {profitabilityRatios.find(r => r.title === ratio.title)?.whatItIs}
+                          </p>
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-gray-900 mb-2">Perché è importante</h4>
+                          <p className="text-gray-700 text-sm">
+                            {profitabilityRatios.find(r => r.title === ratio.title)?.whyImportant}
+                          </p>
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-gray-900 mb-2">Benchmark di riferimento</h4>
+                          <pre className="text-gray-700 text-sm whitespace-pre-line bg-gray-50 p-3 rounded">
+                            {profitabilityRatios.find(r => r.title === ratio.title)?.benchmark}
+                          </pre>
+                        </div>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                )}
+              </div>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">

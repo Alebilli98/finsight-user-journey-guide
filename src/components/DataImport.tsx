@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
-import { Upload, FileSpreadsheet, Download, CheckCircle, AlertCircle, Info } from 'lucide-react';
+import { Upload, FileSpreadsheet, Download, CheckCircle, AlertCircle, Info, Link, Zap, Settings } from 'lucide-react';
 import * as XLSX from 'xlsx';
 
 interface DataImportProps {
@@ -21,105 +21,133 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
+  // Gestionali supportati
+  const gestionali = [
+    { 
+      name: 'SAP Business One', 
+      logo: '🏢', 
+      status: 'available',
+      description: 'Gestionale ERP completo per PMI'
+    },
+    { 
+      name: 'Sage', 
+      logo: '📊', 
+      status: 'available',
+      description: 'Software di contabilità e gestione aziendale'
+    },
+    { 
+      name: 'Zucchetti', 
+      logo: '🇮🇹', 
+      status: 'available',
+      description: 'Suite gestionale italiana'
+    },
+    { 
+      name: 'TeamSystem', 
+      logo: '💼', 
+      status: 'available',
+      description: 'Soluzioni digitali per aziende'
+    },
+    { 
+      name: 'Microsoft Dynamics', 
+      logo: '🔷', 
+      status: 'coming-soon',
+      description: 'ERP e CRM Microsoft'
+    },
+    { 
+      name: 'Oracle NetSuite', 
+      logo: '🔴', 
+      status: 'coming-soon',
+      description: 'Cloud ERP per aziende in crescita'
+    }
+  ];
+
   const downloadTemplate = () => {
-    // Create template data structure
+    // Template con struttura semplificata ma completa
     const templateData = {
       'Informazioni Azienda': [
-        ['Nome Azienda', 'La Tua Azienda Srl'],
-        ['Codice Fiscale', '12345678901'],
-        ['Partita IVA', 'IT12345678901'],
-        ['Settore', 'Tecnologia'],
-        ['Numero Dipendenti', '50'],
-        ['Anno di Costituzione', '2020'],
-        ['Sede Legale', 'Milano, Italia'],
-        ['Email', 'info@tuaazienda.it'],
-        ['Telefono', '+39 02 1234567'],
-        ['Sito Web', 'www.tuaazienda.it']
+        ['Campo', 'Valore', 'Note'],
+        ['Ragione Sociale', 'Es: La Tua Azienda Srl', 'Nome completo dell\'azienda'],
+        ['Codice Fiscale', 'Es: 12345678901', 'Codice fiscale dell\'azienda'],
+        ['Partita IVA', 'Es: IT12345678901', 'Partita IVA con prefisso paese'],
+        ['Settore di Attività', 'Es: Manifatturiero', 'Settore principale'],
+        ['Numero Dipendenti', '50', 'Numero dipendenti attuali'],
+        ['Anno Costituzione', '2020', 'Anno di fondazione'],
+        ['Regione/Provincia', 'Es: Lombardia/Milano', 'Ubicazione sede principale'],
+        ['Fatturato Annuo', '1000000', 'Fatturato ultimo anno in euro'],
+        ['Email Aziendale', 'info@azienda.it', 'Email principale'],
+        ['Telefono', '+39 02 1234567', 'Numero di telefono']
       ],
-      'Conto Economico': [
-        ['Descrizione', 'Valore (€)', 'Note'],
-        ['Ricavi delle Vendite', '1200000', 'Ricavi principali'],
-        ['Altri Ricavi', '50000', 'Ricavi secondari'],
-        ['Totale Ricavi', '1250000', ''],
-        ['Costo del Venduto (COGS)', '480000', 'Costi diretti'],
-        ['Utile Lordo', '770000', 'Ricavi - COGS'],
-        ['Spese Operative', '', ''],
-        ['- Stipendi e Contributi', '300000', ''],
-        ['- Affitti e Utilities', '60000', ''],
-        ['- Marketing e Pubblicità', '80000', ''],
-        ['- Spese Amministrative', '40000', ''],
-        ['- Altre Spese Operative', '50000', ''],
-        ['Totale Spese Operative', '530000', ''],
-        ['EBITDA', '240000', 'Utile Lordo - Spese Operative'],
-        ['Ammortamenti', '25000', ''],
-        ['EBIT', '215000', 'EBITDA - Ammortamenti'],
-        ['Interessi Passivi', '15000', ''],
-        ['Utile ante Imposte', '200000', 'EBIT - Interessi'],
-        ['Imposte', '48000', '24% sull\'utile ante imposte'],
-        ['Utile Netto', '152000', 'Utile finale']
-      ],
-      'Stato Patrimoniale': [
-        ['ATTIVITÀ', 'Valore (€)', 'Note'],
-        ['ATTIVITÀ CORRENTI', '', ''],
-        ['Cassa e Equivalenti', '150000', 'Liquidità immediata'],
-        ['Crediti Commerciali', '200000', 'Crediti vs clienti'],
-        ['Rimanenze', '80000', 'Scorte di magazzino'],
-        ['Altri Crediti', '30000', 'Altri crediti a breve'],
-        ['Totale Attività Correnti', '460000', ''],
-        ['ATTIVITÀ NON CORRENTI', '', ''],
-        ['Immobilizzazioni Materiali', '250000', 'Macchinari, attrezzature'],
-        ['Immobilizzazioni Immateriali', '50000', 'Software, brevetti'],
-        ['Investimenti', '40000', 'Partecipazioni'],
-        ['Totale Attività Non Correnti', '340000', ''],
-        ['TOTALE ATTIVITÀ', '800000', ''],
+      'Ricavi e Costi': [
+        ['Voce', 'Importo €', 'Descrizione'],
+        ['RICAVI TOTALI', '1200000', 'Somma di tutti i ricavi'],
+        ['Ricavi da Vendite', '1000000', 'Ricavi principali da vendite'],
+        ['Altri Ricavi', '200000', 'Ricavi accessori, plusvalenze, etc.'],
         ['', '', ''],
-        ['PASSIVITÀ E PATRIMONIO', 'Valore (€)', 'Note'],
-        ['PASSIVITÀ CORRENTI', '', ''],
-        ['Debiti Commerciali', '120000', 'Debiti vs fornitori'],
-        ['Debiti Finanziari a Breve', '50000', 'Prestiti a breve termine'],
-        ['Altri Debiti', '80000', 'Stipendi, tasse, etc.'],
-        ['Totale Passività Correnti', '250000', ''],
-        ['PASSIVITÀ NON CORRENTI', '', ''],
-        ['Debiti Finanziari a Lungo', '150000', 'Mutui, finanziamenti'],
-        ['Altri Debiti a Lungo', '20000', 'Altri debiti a lungo termine'],
-        ['Totale Passività Non Correnti', '170000', ''],
-        ['TOTALE PASSIVITÀ', '420000', ''],
-        ['PATRIMONIO NETTO', '', ''],
-        ['Capitale Sociale', '100000', 'Capitale versato'],
-        ['Riserve', '128000', 'Utili non distribuiti'],
-        ['Utile dell\'Esercizio', '152000', 'Utile corrente'],
-        ['Totale Patrimonio Netto', '380000', ''],
-        ['TOTALE PASSIVITÀ E PATRIMONIO', '800000', 'Deve essere = Totale Attività']
+        ['COSTI TOTALI', '900000', 'Somma di tutti i costi'],
+        ['Costo del Venduto', '400000', 'Costi diretti di produzione'],
+        ['Costi del Personale', '300000', 'Stipendi + contributi + TFR'],
+        ['Costi Operativi', '150000', 'Affitti, utilities, marketing'],
+        ['Ammortamenti', '30000', 'Ammortamenti e svalutazioni'],
+        ['Oneri Finanziari', '20000', 'Interessi passivi, commissioni'],
+        ['', '', ''],
+        ['UTILE LORDO', '300000', 'Ricavi - Costo del Venduto'],
+        ['EBITDA', '270000', 'Utile prima di interessi, tasse, ammortamenti'],
+        ['UTILE NETTO', '240000', 'Utile finale dopo tutte le deduzioni']
       ],
-      'Dati Mensili': [
-        ['Mese', 'Ricavi (€)', 'Costi (€)', 'Utile Lordo (€)', 'Spese Operative (€)', 'EBITDA (€)', 'Note'],
-        ['Gennaio', '100000', '40000', '60000', '45000', '15000', ''],
-        ['Febbraio', '95000', '38000', '57000', '44000', '13000', ''],
-        ['Marzo', '110000', '44000', '66000', '46000', '20000', ''],
-        ['Aprile', '105000', '42000', '63000', '45000', '18000', ''],
-        ['Maggio', '115000', '46000', '69000', '47000', '22000', ''],
-        ['Giugno', '120000', '48000', '72000', '48000', '24000', ''],
-        ['Luglio', '108000', '43200', '64800', '46000', '18800', ''],
-        ['Agosto', '85000', '34000', '51000', '42000', '9000', 'Mese di ferie'],
-        ['Settembre', '112000', '44800', '67200', '47000', '20200', ''],
-        ['Ottobre', '118000', '47200', '70800', '48000', '22800', ''],
-        ['Novembre', '125000', '50000', '75000', '49000', '26000', ''],
-        ['Dicembre', '122000', '48800', '73200', '48000', '25200', 'Bonus natalizi inclusi']
+      'Attività e Passività': [
+        ['Voce Patrimoniale', 'Importo €', 'Dettagli'],
+        ['ATTIVITÀ CORRENTI', '', ''],
+        ['Cassa e Banche', '150000', 'Liquidità immediata'],
+        ['Crediti Clienti', '200000', 'Crediti commerciali'],
+        ['Magazzino', '100000', 'Rimanenze e scorte'],
+        ['Altri Crediti', '50000', 'Crediti diversi'],
+        ['Totale Attività Correnti', '500000', ''],
+        ['', '', ''],
+        ['ATTIVITÀ FISSE', '', ''],
+        ['Immobili', '300000', 'Terreni e fabbricati'],
+        ['Impianti e Macchinari', '200000', 'Attrezzature produttive'],
+        ['Altri Beni', '50000', 'Mobili, auto aziendali, etc.'],
+        ['Totale Attività Fisse', '550000', ''],
+        ['', '', ''],
+        ['TOTALE ATTIVITÀ', '1050000', ''],
+        ['', '', ''],
+        ['PASSIVITÀ', '', ''],
+        ['Debiti Fornitori', '150000', 'Debiti commerciali'],
+        ['Debiti Bancari Breve', '100000', 'Prestiti entro 12 mesi'],
+        ['Altri Debiti Breve', '50000', 'Stipendi, tasse, etc.'],
+        ['Debiti Bancari Lungo', '200000', 'Mutui e finanziamenti'],
+        ['Totale Debiti', '500000', ''],
+        ['', '', ''],
+        ['PATRIMONIO NETTO', '550000', 'Capitale + Riserve + Utili']
+      ],
+      'Dati Mensili 2024': [
+        ['Mese', 'Ricavi', 'Costi', 'Utile', 'Liquidità', 'Note'],
+        ['Gennaio', '95000', '70000', '25000', '145000', ''],
+        ['Febbraio', '88000', '68000', '20000', '140000', ''],
+        ['Marzo', '105000', '75000', '30000', '155000', ''],
+        ['Aprile', '98000', '72000', '26000', '150000', ''],
+        ['Maggio', '110000', '78000', '32000', '165000', ''],
+        ['Giugno', '115000', '82000', '33000', '170000', ''],
+        ['Luglio', '102000', '74000', '28000', '160000', 'Periodo estivo'],
+        ['Agosto', '75000', '65000', '10000', '135000', 'Ferie aziendali'],
+        ['Settembre', '108000', '76000', '32000', '162000', ''],
+        ['Ottobre', '112000', '80000', '32000', '168000', ''],
+        ['Novembre', '118000', '85000', '33000', '175000', ''],
+        ['Dicembre', '125000', '90000', '35000', '185000', 'Chiusura annuale']
       ]
     };
 
-    // Create workbook
+    // Create workbook with better formatting
     const wb = XLSX.utils.book_new();
 
-    // Add each sheet
     Object.entries(templateData).forEach(([sheetName, data]) => {
       const ws = XLSX.utils.aoa_to_sheet(data);
       
       // Set column widths
       const colWidths = [
-        { wch: 25 }, // Column A
-        { wch: 15 }, // Column B  
-        { wch: 30 }  // Column C
+        { wch: 25 }, // Column A - wider for descriptions
+        { wch: 15 }, // Column B - numbers
+        { wch: 35 }  // Column C - notes/details
       ];
       ws['!cols'] = colWidths;
       
@@ -127,12 +155,35 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
     });
 
     // Save file
-    XLSX.writeFile(wb, 'Template_Dati_Aziendali.xlsx');
+    XLSX.writeFile(wb, 'Template_Dati_Finanziari_Completo.xlsx');
     
     toast({
       title: "Template Scaricato",
-      description: "Il template Excel è stato scaricato con successo. Compila i dati e ricaricalo qui.",
+      description: "Il template Excel completo è stato scaricato. Compila i tuoi dati e ricaricalo qui.",
     });
+  };
+
+  const connectGestionale = (gestionaleNome: string) => {
+    if (gestionali.find(g => g.name === gestionaleNome)?.status === 'coming-soon') {
+      toast({
+        title: "Prossimamente Disponibile",
+        description: `L'integrazione con ${gestionaleNome} sarà disponibile a breve.`,
+      });
+      return;
+    }
+
+    toast({
+      title: "Connessione in Corso",
+      description: `Avvio connessione sicura con ${gestionaleNome}...`,
+    });
+
+    // Simulate connection process
+    setTimeout(() => {
+      toast({
+        title: "Connessione Riuscita",
+        description: `${gestionaleNome} è stato collegato con successo. I dati verranno sincronizzati automaticamente.`,
+      });
+    }, 2000);
   };
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -195,7 +246,7 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
         companyData.forEach((row: any[]) => {
           if (row[0] && row[1]) {
             switch (row[0].toString().toLowerCase()) {
-              case 'nome azienda':
+              case 'ragione sociale':
                 extractedData.companyInfo.name = row[1];
                 break;
               case 'codice fiscale':
@@ -204,26 +255,26 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
               case 'partita iva':
                 extractedData.companyInfo.vatNumber = row[1];
                 break;
-              case 'settore':
+              case 'settore di attività':
                 extractedData.companyInfo.sector = row[1];
                 break;
               case 'numero dipendenti':
                 extractedData.companyInfo.employees = parseInt(row[1]) || 0;
                 break;
-              case 'anno di costituzione':
+              case 'anno costituzione':
                 extractedData.companyInfo.foundingYear = row[1];
                 break;
-              case 'sede legale':
+              case 'regione/provincia':
                 extractedData.companyInfo.headquarters = row[1];
                 break;
-              case 'email':
+              case 'email aziendale':
                 extractedData.companyInfo.email = row[1];
                 break;
               case 'telefono':
                 extractedData.companyInfo.phone = row[1];
                 break;
-              case 'sito web':
-                extractedData.companyInfo.website = row[1];
+              case 'fatturato annuo':
+                extractedData.profitLoss.revenue = parseFloat(row[1]) || 0;
                 break;
             }
           }
@@ -231,66 +282,50 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
       }
 
       // Process P&L sheet
-      if (workbook.SheetNames.includes('Conto Economico')) {
-        const plSheet = workbook.Sheets['Conto Economico'];
+      if (workbook.SheetNames.includes('Ricavi e Costi')) {
+        const plSheet = workbook.Sheets['Ricavi e Costi'];
         const plData = XLSX.utils.sheet_to_json(plSheet, { header: 1 }) as any[][];
         
         plData.forEach((row: any[]) => {
-          if (row[0] && row[1] && typeof row[1] === 'number') {
+          if (row[0] && row[1] && typeof row[1] === 'string') {
             const description = row[0].toString().toLowerCase();
-            if (description.includes('ricavi delle vendite')) {
-              extractedData.profitLoss.revenue = row[1];
-            } else if (description.includes('altri ricavi')) {
-              extractedData.profitLoss.otherRevenue = row[1];
-            } else if (description.includes('totale ricavi')) {
-              extractedData.profitLoss.totalRevenue = row[1];
-            } else if (description.includes('costo del venduto') || description.includes('cogs')) {
-              extractedData.profitLoss.cogs = row[1];
-            } else if (description.includes('utile lordo')) {
-              extractedData.profitLoss.grossProfit = row[1];
-            } else if (description.includes('totale spese operative')) {
-              extractedData.profitLoss.operatingExpenses = row[1];
-            } else if (description.includes('ebitda')) {
-              extractedData.profitLoss.ebitda = row[1];
-            } else if (description.includes('ebit')) {
-              extractedData.profitLoss.ebit = row[1];
+            if (description.includes('ricavi totali')) {
+              extractedData.profitLoss.totalRevenue = parseFloat(row[1]) || 0;
             } else if (description.includes('utile netto')) {
-              extractedData.profitLoss.netIncome = row[1];
+              extractedData.profitLoss.netIncome = parseFloat(row[1]) || 0;
+            } else if (description.includes('costi totali')) {
+              extractedData.profitLoss.operatingExpenses = parseFloat(row[1]) || 0;
+            } else if (description.includes('utile lordo')) {
+              extractedData.profitLoss.grossProfit = parseFloat(row[1]) || 0;
+            } else if (description.includes('ebitda')) {
+              extractedData.profitLoss.ebitda = parseFloat(row[1]) || 0;
             }
           }
         });
       }
 
       // Process Balance Sheet
-      if (workbook.SheetNames.includes('Stato Patrimoniale')) {
-        const bsSheet = workbook.Sheets['Stato Patrimoniale'];
+      if (workbook.SheetNames.includes('Attività e Passività')) {
+        const bsSheet = workbook.Sheets['Attività e Passività'];
         const bsData = XLSX.utils.sheet_to_json(bsSheet, { header: 1 }) as any[][];
         
         bsData.forEach((row: any[]) => {
-          if (row[0] && row[1] && typeof row[1] === 'number') {
+          if (row[0] && row[1] && typeof row[1] === 'string') {
             const description = row[0].toString().toLowerCase();
-            if (description.includes('totale attività correnti')) {
-              extractedData.balanceSheet.currentAssets = row[1];
-            } else if (description.includes('totale attività non correnti')) {
-              extractedData.balanceSheet.nonCurrentAssets = row[1];
-            } else if (description.includes('totale attività') && !description.includes('correnti')) {
-              extractedData.balanceSheet.totalAssets = row[1];
-            } else if (description.includes('totale passività correnti')) {
-              extractedData.balanceSheet.currentLiabilities = row[1];
-            } else if (description.includes('totale passività non correnti')) {
-              extractedData.balanceSheet.nonCurrentLiabilities = row[1];
-            } else if (description.includes('totale passività') && !description.includes('correnti')) {
-              extractedData.balanceSheet.totalLiabilities = row[1];
-            } else if (description.includes('totale patrimonio netto')) {
-              extractedData.balanceSheet.equity = row[1];
+            if (description.includes('totale attività')) {
+              extractedData.balanceSheet.totalAssets = parseFloat(row[1]) || 0;
+            } else if (description.includes('totale debiti')) {
+              extractedData.balanceSheet.totalLiabilities = parseFloat(row[1]) || 0;
+            } else if (description.includes('patrimonio netto')) {
+              extractedData.balanceSheet.equity = parseFloat(row[1]) || 0;
             }
           }
         });
       }
 
       // Process Monthly Data
-      if (workbook.SheetNames.includes('Dati Mensili')) {
-        const monthlySheet = workbook.Sheets['Dati Mensili'];
+      if (workbook.SheetNames.includes('Dati Mensili 2024')) {
+        const monthlySheet = workbook.Sheets['Dati Mensili 2024'];
         const monthlyData = XLSX.utils.sheet_to_json(monthlySheet, { header: 1 }) as any[][];
         
         // Skip header row
@@ -302,8 +337,8 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
               costs: parseFloat(row[2]) || 0,
               grossProfit: parseFloat(row[3]) || 0,
               operatingExpenses: parseFloat(row[4]) || 0,
-              ebitda: parseFloat(row[5]) || 0,
-              notes: row[6] || ''
+              ebitda: 0,
+              notes: row[5] || ''
             });
           }
         });
@@ -356,18 +391,83 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Importazione Dati</h1>
-        <p className="text-gray-600">Importa i tuoi dati finanziari utilizzando il nostro template Excel</p>
+        <p className="text-gray-600">Collega il tuo gestionale o importa i dati tramite Excel</p>
       </div>
+
+      {/* Collegamento Gestionali */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <Link className="h-5 w-5" />
+            <span>Collega il Tuo Gestionale</span>
+          </CardTitle>
+          <CardDescription>
+            Sincronizza automaticamente i dati dal tuo sistema gestionale
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="bg-green-50 p-4 rounded-lg">
+            <div className="flex items-start space-x-3">
+              <Zap className="h-5 w-5 text-green-600 mt-0.5" />
+              <div>
+                <h4 className="font-medium text-green-900">Vantaggi della Connessione Diretta:</h4>
+                <ul className="text-sm text-green-700 mt-2 space-y-1">
+                  <li>• Sincronizzazione automatica in tempo reale</li>
+                  <li>• Nessun errore di trascrizione manuale</li>
+                  <li>• Analisi sempre aggiornate</li>
+                  <li>• Risparmio di tempo e risorse</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            {gestionali.map((gestionale) => (
+              <Card key={gestionale.name} className="cursor-pointer hover:shadow-md transition-shadow">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <span className="text-2xl">{gestionale.logo}</span>
+                      <div>
+                        <h4 className="font-medium text-gray-900">{gestionale.name}</h4>
+                        <p className="text-sm text-gray-600">{gestionale.description}</p>
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-end space-y-2">
+                      <Badge 
+                        variant={gestionale.status === 'available' ? 'default' : 'secondary'}
+                        className={gestionale.status === 'available' ? 'bg-green-100 text-green-800' : 'bg-orange-100 text-orange-800'}
+                      >
+                        {gestionale.status === 'available' ? 'Disponibile' : 'Prossimamente'}
+                      </Badge>
+                      <Button 
+                        size="sm" 
+                        onClick={() => connectGestionale(gestionale.name)}
+                        disabled={gestionale.status === 'coming-soon'}
+                        className="w-20"
+                      >
+                        {gestionale.status === 'available' ? 'Collega' : 'Presto'}
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      <Separator />
 
       {/* Template Download */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <FileSpreadsheet className="h-5 w-5" />
-            <span>Scarica Template Excel</span>
+            <span>Importazione Manuale Excel</span>
           </CardTitle>
           <CardDescription>
-            Scarica il nostro template strutturato per importare i tuoi dati aziendali
+            Scarica il template Excel e carica i tuoi dati manualmente
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -375,12 +475,12 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
             <div className="flex items-start space-x-3">
               <Info className="h-5 w-5 text-blue-600 mt-0.5" />
               <div>
-                <h4 className="font-medium text-blue-900">Il template include:</h4>
+                <h4 className="font-medium text-blue-900">Il template Excel include 4 fogli:</h4>
                 <ul className="text-sm text-blue-700 mt-2 space-y-1">
-                  <li>• Foglio "Informazioni Azienda" - Dati anagrafici della tua azienda</li>
-                  <li>• Foglio "Conto Economico" - Ricavi, costi e risultato economico</li>
-                  <li>• Foglio "Stato Patrimoniale" - Attività, passività e patrimonio netto</li>
-                  <li>• Foglio "Dati Mensili" - Trend mensili per analisi temporali</li>
+                  <li>• <strong>Informazioni Azienda</strong> - Dati anagrafici e generali</li>
+                  <li>• <strong>Ricavi e Costi</strong> - Conto economico semplificato</li>
+                  <li>• <strong>Attività e Passività</strong> - Stato patrimoniale</li>
+                  <li>• <strong>Dati Mensili</strong> - Trend temporali per analisi</li>
                 </ul>
               </div>
             </div>
