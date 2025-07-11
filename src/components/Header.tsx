@@ -63,11 +63,11 @@ const Header = ({ isOnboarded, user, onLogout, onProfile }: HeaderProps) => {
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={onProfile}>
                       <User className="mr-2 h-4 w-4" />
-                      Profilo
+                      Profile
                     </DropdownMenuItem>
                     <DropdownMenuItem>
                       <Settings className="mr-2 h-4 w-4" />
-                      Impostazioni
+                      Settings
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={onLogout}>
@@ -79,7 +79,7 @@ const Header = ({ isOnboarded, user, onLogout, onProfile }: HeaderProps) => {
               </>
             )}
             <Badge variant="secondary" className="bg-green-100 text-green-800">
-              Piano {user?.plan || "Premier"}
+              {user?.plan || "Premier"} Plan
             </Badge>
           </div>
         </div>

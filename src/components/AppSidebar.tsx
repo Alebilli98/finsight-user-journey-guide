@@ -35,23 +35,23 @@ const AppSidebar = ({ activeSection, setActiveSection }: AppSidebarProps) => {
   ];
 
   return (
-    <Sidebar className={collapsed ? "w-12" : "w-64"} collapsible="icon">
-      <SidebarContent className="p-2">
+    <Sidebar className={collapsed ? "w-16" : "w-72"} collapsible="icon">
+      <SidebarContent className="p-4">
         <SidebarGroup>
-          <SidebarGroupLabel className="flex items-center space-x-2 px-2 py-4 mb-2">
-            <div className="bg-gradient-to-r from-blue-600 to-green-600 p-1.5 rounded-lg">
-              <TrendingUp className="h-4 w-4 text-white" />
+          <SidebarGroupLabel className="flex items-center space-x-3 px-3 py-6 mb-4">
+            <div className="bg-gradient-to-r from-blue-600 to-green-600 p-2.5 rounded-xl">
+              <TrendingUp className="h-6 w-6 text-white" />
             </div>
             {!collapsed && (
               <div>
-                <h1 className="text-lg font-bold text-gray-900">FinSight</h1>
-                <p className="text-xs text-gray-500">La Tua Guida Finanziaria</p>
+                <h1 className="text-xl font-bold text-gray-900">FinSight</h1>
+                <p className="text-sm text-gray-500">Your Financial Guide</p>
               </div>
             )}
           </SidebarGroupLabel>
 
           <SidebarGroupContent>
-            <SidebarMenu className="space-y-1">
+            <SidebarMenu className="space-y-2">
               {navigationItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = activeSection === item.id;
@@ -60,14 +60,14 @@ const AppSidebar = ({ activeSection, setActiveSection }: AppSidebarProps) => {
                   <SidebarMenuItem key={item.id}>
                     <SidebarMenuButton
                       onClick={() => setActiveSection(item.id)}
-                      className={`w-full justify-start py-2 px-3 rounded-md transition-all ${
+                      className={`w-full justify-start py-3 px-4 rounded-lg transition-all ${
                         isActive 
                           ? "bg-blue-100 text-blue-700 font-medium shadow-sm" 
                           : "hover:bg-gray-100 text-gray-700"
                       }`}
                     >
-                      <Icon className="h-4 w-4 flex-shrink-0" />
-                      {!collapsed && <span className="ml-2 text-sm">{item.label}</span>}
+                      <Icon className="h-5 w-5 flex-shrink-0" />
+                      {!collapsed && <span className="ml-3 text-base">{item.label}</span>}
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 );
