@@ -3,11 +3,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { 
   TrendingUp, TrendingDown, DollarSign, PieChart, BarChart3, 
   AlertCircle, CheckCircle, Calendar, Building2, 
   Users, Briefcase, TrendingUpDown, Upload, FileSpreadsheet,
-  Calculator, Activity
+  Calculator, Activity, Info
 } from "lucide-react";
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -85,6 +86,95 @@ const Dashboard = ({ user }: DashboardProps) => {
 
   const hasRealData = annualRevenue > 0 || totalAssets > 0;
 
+  // Financial metrics with descriptions
+  const financialMetrics = [
+    {
+      id: 'revenue',
+      title: 'Ricavi Annuali',
+      value: `€${annualRevenue.toLocaleString()}`,
+      monthlyValue: `€${monthlyRevenue.toLocaleString()}/mese`,
+      icon: DollarSign,
+      color: 'text-green-600',
+      description: "I ricavi annuali rappresentano il totale delle entrate generate dall'azienda in un anno attraverso la vendita di beni o servizi.",
+      whatItIs: "I ricavi sono il denaro che l'azienda incassa dalle vendite prima di detrarre qualsiasi costo. Rappresentano il 'fatturato' dell'azienda.",
+      whyImportant: "È il punto di partenza per valutare le performance aziendali. Mostra la capacità dell'azienda di generare business e crescere nel mercato.",
+      benchmark: "• Crescita annuale >10%: Eccellente\n• Crescita 5-10%: Buona\n• Crescita 0-5%: Stabile\n• Crescita negativa: Attenzione"
+    },
+    {
+      id: 'netIncome',
+      title: 'Utile Netto',
+      value: `€${netIncome.toLocaleString()}`,
+      monthlyValue: `€${monthlyNetIncome.toLocaleString()}/mese`,
+      icon: TrendingUp,
+      color: netIncome >= 0 ? 'text-blue-600' : 'text-red-600',
+      description: "L'utile netto è il profitto finale dell'azienda dopo aver sottratto tutti i costi, tasse e spese dai ricavi totali.",
+      whatItIs: "È il 'guadagno pulito' dell'azienda, quello che rimane ai proprietari dopo aver pagato tutto. È la linea finale del conto economico.",
+      whyImportant: "Indica la vera redditività dell'azienda e la sua capacità di generare valore per gli azionisti. È fondamentale per la sostenibilità a lungo termine.",
+      benchmark: "• >15% dei ricavi: Eccellente\n• 10-15%: Molto buono\n• 5-10%: Buono\n• 0-5%: Accettabile\n• Negativo: Perdite"
+    },
+    {
+      id: 'equity',
+      title: 'Patrimonio Netto',
+      value: `€${totalEquity.toLocaleString()}`,
+      monthlyValue: totalAssets > 0 ? `${((totalEquity / totalAssets) * 100).toFixed(1)}% degli asset` : 'Dati non disponibili',
+      icon: BarChart3,
+      color: totalEquity >= 0 ? 'text-purple-600' : 'text-red-600',
+      description: "Il patrimonio netto rappresenta la differenza tra le attività totali e le passività totali dell'azienda.",
+      whatItIs: "È il valore contabile dell'azienda che appartiene ai proprietari/azionisti. Include capitale versato, riserve e utili non distribuiti.",
+      whyImportant: "Mostra la solidità finanziaria dell'azienda e quanto valore è stato accumulato nel tempo. Un patrimonio netto forte indica stabilità.",
+      benchmark: "• >50% degli asset: Molto solido\n• 30-50%: Solido\n• 20-30%: Accettabile\n• 10-20%: Attenzione\n• <10%: Rischio elevato"
+    },
+    {
+      id: 'workingCapital',
+      title: 'Working Capital',
+      value: `€${workingCapital.toLocaleString()}`,
+      monthlyValue: workingCapital > 0 ? 'Liquidità positiva' : 'Attenzione liquidità',
+      icon: TrendingUpDown,
+      color: workingCapital >= 0 ? 'text-indigo-600' : 'text-red-600',
+      description: "Il capitale circolante è la differenza tra le attività correnti e le passività correnti dell'azienda.",
+      whatItIs: "Rappresenta la liquidità operativa disponibile per gestire le operazioni quotidiane. Include scorte, crediti meno i debiti a breve termine.",
+      whyImportant: "È cruciale per la gestione del flusso di cassa. Un capitale circolante positivo indica che l'azienda può coprire i suoi obblighi a breve termine.",
+      benchmark: "• Ratio >2: Eccellente liquidità\n• Ratio 1.5-2: Buona liquidità\n• Ratio 1-1.5: Sufficiente\n• Ratio <1: Problemi di liquidità"
+    }
+  ];
+
+  // Margin metrics with descriptions
+  const marginMetrics = [
+    {
+      id: 'grossMargin',
+      title: 'Margine Lordo',
+      value: `${Math.max(0, grossMargin).toFixed(1)}%`,
+      color: 'text-green-600',
+      bgColor: 'bg-green-50',
+      description: "Il margine lordo indica quanto rimane dei ricavi dopo aver sottratto i costi diretti di produzione (COGS).",
+      whatItIs: "È calcolato come (Ricavi - Costo del Venduto) / Ricavi × 100. Mostra l'efficienza nella produzione e vendita dei prodotti/servizi.",
+      whyImportant: "Indica quanto l'azienda guadagna su ogni euro di vendita prima dei costi operativi. Un margine alto significa buon controllo dei costi diretti.",
+      benchmark: "• >50%: Eccellente\n• 30-50%: Buono\n• 20-30%: Accettabile\n• 10-20%: Basso\n• <10%: Molto basso"
+    },
+    {
+      id: 'netMargin',
+      title: 'Margine Netto',
+      value: `${Math.max(0, netMargin).toFixed(1)}%`,
+      color: 'text-blue-600',
+      bgColor: 'bg-blue-50',
+      description: "Il margine netto mostra quanto profitto rimane dopo aver dedotto tutti i costi, inclusi quelli operativi e le tasse.",
+      whatItIs: "È calcolato come Utile Netto / Ricavi × 100. È l'indicatore finale di redditività dell'azienda.",
+      whyImportant: "Mostra l'efficienza complessiva dell'azienda nel convertire le vendite in profitti. È fondamentale per valutare la sostenibilità del business.",
+      benchmark: "• >15%: Eccellente\n• 10-15%: Molto buono\n• 5-10%: Buono\n• 2-5%: Accettabile\n• <2%: Basso"
+    },
+    {
+      id: 'ebitdaMargin',
+      title: 'Margine EBITDA',
+      value: `${Math.max(0, ebitdaMargin).toFixed(1)}%`,
+      color: 'text-purple-600',
+      bgColor: 'bg-purple-50',
+      description: "Il margine EBITDA mostra la redditività operativa prima di interessi, tasse, ammortamenti e svalutazioni.",
+      whatItIs: "È calcolato come EBITDA / Ricavi × 100. Misura la performance operativa pura dell'azienda, escludendo elementi finanziari e contabili.",
+      whyImportant: "Permette di confrontare aziende diverse eliminando gli effetti di decisioni finanziarie e contabili. Mostra l'efficienza operativa.",
+      benchmark: "• >25%: Eccellente\n• 15-25%: Buono\n• 10-15%: Accettabile\n• 5-10%: Basso\n• <5%: Molto basso"
+    }
+  ];
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -137,135 +227,127 @@ const Dashboard = ({ user }: DashboardProps) => {
         </Card>
       )}
 
-      {/* Key Financial Metrics */}
-      <div className="grid md:grid-cols-5 gap-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Ricavi Annuali</CardTitle>
-            <DollarSign className="h-4 w-4 text-green-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">€{annualRevenue.toLocaleString()}</div>
-            <p className="text-xs text-gray-500 flex items-center mt-1">
-              <span className="text-sm">€{monthlyRevenue.toLocaleString()}/mese</span>
-            </p>
-            {grossMargin > 0 && (
-              <div className="mt-2">
-                <Badge variant="outline" className="text-xs">
-                  Margine Lordo: {grossMargin.toFixed(1)}%
-                </Badge>
+      {/* Key Financial Metrics with Info Dialogs */}
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {financialMetrics.map((metric) => (
+          <Card key={metric.id}>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">{metric.title}</CardTitle>
+              <div className="flex items-center space-x-2">
+                <metric.icon className={`h-4 w-4 ${metric.color}`} />
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                      <Info className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl">
+                    <DialogHeader>
+                      <DialogTitle className="flex items-center space-x-2">
+                        <metric.icon className={`h-5 w-5 ${metric.color}`} />
+                        <span>{metric.title}</span>
+                      </DialogTitle>
+                      <DialogDescription>
+                        {metric.description}
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <div>
+                        <h4 className="font-semibold text-gray-900 mb-2">Cosa è</h4>
+                        <p className="text-gray-700 text-sm">
+                          {metric.whatItIs}
+                        </p>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 mb-2">Perché è importante</h4>
+                        <p className="text-gray-700 text-sm">
+                          {metric.whyImportant}
+                        </p>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 mb-2">Benchmark di riferimento</h4>
+                        <pre className="text-gray-700 text-sm whitespace-pre-line bg-gray-50 p-3 rounded">
+                          {metric.benchmark}
+                        </pre>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </div>
-            )}
-          </CardContent>
-        </Card>
+            </CardHeader>
+            <CardContent>
+              <div className={`text-2xl font-bold ${metric.color}`}>{metric.value}</div>
+              <p className="text-xs text-gray-500 flex items-center mt-1">
+                <span className="text-sm">{metric.monthlyValue}</span>
+              </p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Utile Netto</CardTitle>
-            <TrendingUp className="h-4 w-4 text-blue-600" />
-          </CardHeader>
-          <CardContent>
-            <div className={`text-2xl font-bold ${netIncome >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
-              €{netIncome.toLocaleString()}
-            </div>
-            <p className="text-xs text-gray-500 flex items-center mt-1">
-              <span className="text-sm">€{monthlyNetIncome.toLocaleString()}/mese</span>
-            </p>
-            {netMargin !== 0 && (
-              <div className="mt-2">
-                <Badge variant="outline" className="text-xs">
-                  Margine Netto: {netMargin.toFixed(1)}%
-                </Badge>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Patrimonio Netto</CardTitle>
-            <BarChart3 className="h-4 w-4 text-purple-600" />
-          </CardHeader>
-          <CardContent>
-            <div className={`text-2xl font-bold ${totalEquity >= 0 ? 'text-purple-600' : 'text-red-600'}`}>
-              €{totalEquity.toLocaleString()}
-            </div>
-            <p className="text-xs text-gray-500 flex items-center mt-1">
-              {totalAssets > 0 ? (
-                <>
-                  <TrendingUp className="h-3 w-3 mr-1" />
-                  {((totalEquity / totalAssets) * 100).toFixed(1)}% degli asset
-                </>
-              ) : (
-                <>
-                  <AlertCircle className="h-3 w-3 mr-1" />
-                  Dati non disponibili
-                </>
-              )}
-            </p>
-            {returnOnEquity !== 0 && (
-              <div className="mt-2">
-                <Badge variant="outline" className="text-xs">
-                  ROE: {returnOnEquity.toFixed(1)}%
-                </Badge>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card 
-          className="cursor-pointer hover:shadow-md transition-shadow"
-          onClick={() => setShowCogsBreakdown(true)}
-        >
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">COGS</CardTitle>
+      {/* COGS Card with breakdown */}
+      <Card 
+        className="cursor-pointer hover:shadow-md transition-shadow"
+        onClick={() => setShowCogsBreakdown(true)}
+      >
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">COGS (Costo del Venduto)</CardTitle>
+          <div className="flex items-center space-x-2">
             <Calculator className="h-4 w-4 text-orange-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-orange-600">€{cogs.toLocaleString()}</div>
-            <p className="text-xs text-gray-500 flex items-center mt-1">
-              <span className="text-sm">Clicca per dettagli</span>
-            </p>
-            {annualRevenue > 0 && (
-              <div className="mt-2">
-                <Badge variant="outline" className="text-xs">
-                  {((cogs / annualRevenue) * 100).toFixed(1)}% dei ricavi
-                </Badge>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Working Capital</CardTitle>
-            <TrendingUpDown className="h-4 w-4 text-indigo-600" />
-          </CardHeader>
-          <CardContent>
-            <div className={`text-2xl font-bold ${workingCapital >= 0 ? 'text-indigo-600' : 'text-red-600'}`}>
-              €{workingCapital.toLocaleString()}
-            </div>
-            <p className="text-xs text-gray-500 flex items-center mt-1">
-              {workingCapital > 0 ? (
-                <>
-                  <CheckCircle className="h-3 w-3 mr-1" />
-                  Liquidità positiva
-                </>
-              ) : (
-                <>
-                  <AlertCircle className="h-3 w-3 mr-1" />
-                  Attenzione liquidità
-                </>
-              )}
-            </p>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={(e) => e.stopPropagation()}>
+                  <Info className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-2xl">
+                <DialogHeader>
+                  <DialogTitle className="flex items-center space-x-2">
+                    <Calculator className="h-5 w-5 text-orange-600" />
+                    <span>COGS - Costo del Venduto</span>
+                  </DialogTitle>
+                  <DialogDescription>
+                    Il COGS rappresenta tutti i costi diretti sostenuti per produrre i beni o servizi venduti dall'azienda.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-2">Cosa è</h4>
+                    <p className="text-gray-700 text-sm">
+                      Include materiali diretti, lavoro diretto e costi di produzione direttamente attribuibili ai prodotti venduti. Non include costi amministrativi o di vendita.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-2">Perché è importante</h4>
+                    <p className="text-gray-700 text-sm">
+                      È fondamentale per calcolare il margine lordo e valutare l'efficienza produttiva. Un COGS ottimizzato aumenta direttamente la redditività.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-2">Benchmark di riferimento</h4>
+                    <pre className="text-gray-700 text-sm whitespace-pre-line bg-gray-50 p-3 rounded">
+                      • <40% ricavi: Eccellente controllo costi{'\n'}• 40-60%: Buon controllo{'\n'}• 60-70%: Accettabile{'\n'}• >70%: Necessaria ottimizzazione
+                    </pre>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold text-orange-600">€{cogs.toLocaleString()}</div>
+          <p className="text-xs text-gray-500 flex items-center mt-1">
+            <span className="text-sm">Clicca per dettagli breakdown</span>
+          </p>
+          {annualRevenue > 0 && (
             <div className="mt-2">
               <Badge variant="outline" className="text-xs">
-                Attività - Passività correnti
+                {((cogs / annualRevenue) * 100).toFixed(1)}% dei ricavi
               </Badge>
             </div>
-          </CardContent>
-        </Card>
-      </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* COGS Breakdown Modal */}
       {showCogsBreakdown && (
@@ -373,54 +455,94 @@ const Dashboard = ({ user }: DashboardProps) => {
 
           <Card>
             <CardHeader>
-              <CardTitle>Indicatori Chiave</CardTitle>
+              <CardTitle className="flex items-center space-x-2">
+                <span>Indicatori Chiave</span>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                      <Info className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl">
+                    <DialogHeader>
+                      <DialogTitle>Indicatori di Performance</DialogTitle>
+                      <DialogDescription>
+                        Questi indicatori mostrano l'efficienza e la redditività dell'azienda attraverso diversi margini di profitto.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <div>
+                        <h4 className="font-semibold text-gray-900 mb-2">Come leggere i margini</h4>
+                        <p className="text-gray-700 text-sm">
+                          I margini mostrano quanta percentuale dei ricavi si trasforma in profitto a diversi livelli: lordo (dopo COGS), EBITDA (dopo costi operativi), netto (finale).
+                        </p>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 mb-2">Importanza del monitoraggio</h4>
+                        <p className="text-gray-700 text-sm">
+                          Monitorare l'evoluzione di questi margini nel tempo permette di identificare trend, problemi e opportunità di miglioramento nella gestione aziendale.
+                        </p>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              </CardTitle>
               <CardDescription>Margini e ratio di performance</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-700">Margine Lordo</span>
-                    <Badge className={grossMargin > 30 ? 'bg-green-100 text-green-800' : grossMargin > 15 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}>
-                      {grossMargin.toFixed(1)}%
-                    </Badge>
-                  </div>
-                  <Progress value={Math.min(100, grossMargin)} className="h-2" />
-                </div>
-                
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-700">Margine Netto</span>
-                    <Badge className={netMargin > 15 ? 'bg-green-100 text-green-800' : netMargin > 5 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}>
-                      {netMargin.toFixed(1)}%
-                    </Badge>
-                  </div>
-                  <Progress value={Math.min(100, Math.max(0, netMargin))} className="h-2" />
-                </div>
-                
-                {ebitdaMargin !== 0 && (
-                  <div className="space-y-3">
+                {marginMetrics.map((margin, index) => (
+                  <div key={margin.id} className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-gray-700">EBITDA Margin</span>
-                      <Badge className={ebitdaMargin > 20 ? 'bg-green-100 text-green-800' : ebitdaMargin > 10 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}>
-                        {ebitdaMargin.toFixed(1)}%
+                      <div className="flex items-center space-x-2">
+                        <span className="text-sm font-medium text-gray-700">{margin.title}</span>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                              <Info className="h-3 w-3 text-gray-400 hover:text-gray-600" />
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-2xl">
+                            <DialogHeader>
+                              <DialogTitle>{margin.title}</DialogTitle>
+                              <DialogDescription>
+                                {margin.description}
+                              </DialogDescription>
+                            </DialogHeader>
+                            <div className="space-y-4">
+                              <div>
+                                <h4 className="font-semibold text-gray-900 mb-2">Cosa è</h4>
+                                <p className="text-gray-700 text-sm">
+                                  {margin.whatItIs}
+                                </p>
+                              </div>
+                              <div>
+                                <h4 className="font-semibold text-gray-900 mb-2">Perché è importante</h4>
+                                <p className="text-gray-700 text-sm">
+                                  {margin.whyImportant}
+                                </p>
+                              </div>
+                              <div>
+                                <h4 className="font-semibold text-gray-900 mb-2">Benchmark di riferimento</h4>
+                                <pre className="text-gray-700 text-sm whitespace-pre-line bg-gray-50 p-3 rounded">
+                                  {margin.benchmark}
+                                </pre>
+                              </div>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+                      </div>
+                      <Badge className={
+                        parseFloat(margin.value) > 30 ? 'bg-green-100 text-green-800' : 
+                        parseFloat(margin.value) > 15 ? 'bg-yellow-100 text-yellow-800' : 
+                        'bg-red-100 text-red-800'
+                      }>
+                        {margin.value}
                       </Badge>
                     </div>
-                    <Progress value={Math.min(100, Math.max(0, ebitdaMargin))} className="h-2" />
+                    <Progress value={Math.min(100, Math.max(0, parseFloat(margin.value)))} className="h-2" />
                   </div>
-                )}
-                
-                {returnOnAssets !== 0 && (
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-gray-700">ROA</span>
-                      <Badge className={returnOnAssets > 10 ? 'bg-green-100 text-green-800' : returnOnAssets > 5 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}>
-                        {returnOnAssets.toFixed(1)}%
-                      </Badge>
-                    </div>
-                    <Progress value={Math.min(100, Math.max(0, returnOnAssets))} className="h-2" />
-                  </div>
-                )}
+                ))}
               </div>
             </CardContent>
           </Card>

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -53,13 +54,76 @@ const Analytics = ({ user }: AnalyticsProps) => {
   const totalAssetTurnover = totalAssets > 0 ? (annualRevenue / totalAssets) : 0;
 
   const efficiencyData = [
-    { metric: "Rotazione Attività", current: assetTurnover, industry: 1.5, benchmark: 2.0 },
-    { metric: "Rotazione Scorte", current: inventoryTurnover, industry: 6.2, benchmark: 10.0 },
-    { metric: "Rotazione Crediti", current: receivablesTurnover, industry: 9.8, benchmark: 15.0 },
-    { metric: "Capitale Circolante", current: workingCapital, industry: 1.8, benchmark: 2.5 },
-    { metric: "Rotazione Debiti", current: payablesTurnover, industry: 8.5, benchmark: 12.0 },
-    { metric: "Ciclo Conversione", current: cashConversionCycle, industry: 45, benchmark: 30 },
-    { metric: "Rotazione Immobilizzi", current: fixedAssetTurnover, industry: 2.3, benchmark: 3.5 },
+    { 
+      metric: "Rotazione Attività", 
+      current: assetTurnover, 
+      industry: 1.5, 
+      benchmark: 2.0,
+      description: "Misura l'efficienza nell'utilizzo delle attività totali per generare ricavi.",
+      whatItIs: "È calcolato come Ricavi / Attività Totali. Indica quanti euro di ricavi genera ogni euro di attività.",
+      whyImportant: "Un valore alto indica un uso efficiente delle risorse aziendali. È fondamentale per valutare la produttività degli investimenti.",
+      benchmark: "• >2.0: Eccellente\n• 1.5-2.0: Buono\n• 1.0-1.5: Medio\n• <1.0: Da migliorare"
+    },
+    { 
+      metric: "Rotazione Scorte", 
+      current: inventoryTurnover, 
+      industry: 6.2, 
+      benchmark: 10.0,
+      description: "Indica quanto frequentemente l'azienda vende e rinnova le sue scorte in un periodo.",
+      whatItIs: "È calcolato come Costo del Venduto / Scorte Medie. Misura l'efficienza nella gestione dell'inventario.",
+      whyImportant: "Un turnover alto indica una gestione efficace delle scorte, riducendo i costi di magazzino e il rischio di obsolescenza.",
+      benchmark: "• >10: Eccellente\n• 6-10: Buono\n• 4-6: Medio\n• <4: Lento"
+    },
+    { 
+      metric: "Rotazione Crediti", 
+      current: receivablesTurnover, 
+      industry: 9.8, 
+      benchmark: 15.0,
+      description: "Misura la velocità con cui l'azienda incassa i crediti dai clienti.",
+      whatItIs: "È calcolato come Ricavi / Crediti Medi. Indica quante volte l'anno si incassano i crediti.",
+      whyImportant: "Un valore alto significa tempi di incasso più rapidi, migliorando il flusso di cassa e riducendo il rischio di crediti inesigibili.",
+      benchmark: "• >15: Eccellente\n• 10-15: Buono\n• 6-10: Medio\n• <6: Lento"
+    },
+    { 
+      metric: "Capitale Circolante", 
+      current: workingCapital, 
+      industry: 1.8, 
+      benchmark: 2.5,
+      description: "Misura la liquidità operativa disponibile per le attività quotidiane.",
+      whatItIs: "È calcolato come Attività Correnti / Passività Correnti. Indica la capacità di coprire gli obblighi a breve termine.",
+      whyImportant: "È essenziale per la gestione del flusso di cassa e la continuità operativa. Un valore troppo basso indica rischi di liquidità.",
+      benchmark: "• >2.5: Molto liquido\n• 2.0-2.5: Buono\n• 1.5-2.0: Sufficiente\n• <1.5: Rischio"
+    },
+    { 
+      metric: "Rotazione Debiti", 
+      current: payablesTurnover, 
+      industry: 8.5, 
+      benchmark: 12.0,
+      description: "Indica la velocità con cui l'azienda paga i suoi fornitori.",
+      whatItIs: "È calcolato come Acquisti / Debiti Medi verso Fornitori. Misura la gestione dei pagamenti ai fornitori.",
+      whyImportant: "Aiuta a ottimizzare il flusso di cassa bilanciando i rapporti con i fornitori e la gestione della liquidità.",
+      benchmark: "• 10-15: Ottimale\n• 8-10: Buono\n• 6-8: Lento\n• <6: Molto lento"
+    },
+    { 
+      metric: "Ciclo Conversione", 
+      current: cashConversionCycle, 
+      industry: 45, 
+      benchmark: 30,
+      description: "Misura il tempo necessario per convertire gli investimenti in inventario in flussi di cassa.",
+      whatItIs: "È la somma dei giorni di inventario e crediti meno i giorni di pagamento ai fornitori. Espresso in giorni.",
+      whyImportant: "Un ciclo più breve significa un flusso di cassa più veloce e minor capitale immobilizzato nelle operazioni.",
+      benchmark: "• <30 giorni: Eccellente\n• 30-45: Buono\n• 45-60: Medio\n• >60: Da migliorare"
+    },
+    { 
+      metric: "Rotazione Immobilizzi", 
+      current: fixedAssetTurnover, 
+      industry: 2.3, 
+      benchmark: 3.5,
+      description: "Misura l'efficienza nell'utilizzo degli asset fissi per generare ricavi.",
+      whatItIs: "È calcolato come Ricavi / Immobilizzazioni Nette. Indica la produttività degli investimenti in asset fissi.",
+      whyImportant: "Un valore alto indica un uso efficiente di impianti, macchinari e altre immobilizzazioni per generare vendite.",
+      benchmark: "• >3.5: Eccellente\n• 2.5-3.5: Buono\n• 1.5-2.5: Medio\n• <1.5: Basso"
+    },
   ];
 
   // Calculate leverage ratios from real data
@@ -72,6 +136,40 @@ const Analytics = ({ user }: AnalyticsProps) => {
     { quarter: "Q2", debtToEquity: Math.max(0, debtToEquity + 0.04), debtToAssets: Math.max(0, debtToAssets + 0.03), interestCoverage: Math.max(1, interestCoverage - 1.3) },
     { quarter: "Q3", debtToEquity: Math.max(0, debtToEquity + 0.02), debtToAssets: Math.max(0, debtToAssets + 0.02), interestCoverage: Math.max(1, interestCoverage - 0.7) },
     { quarter: "Q4", debtToEquity: Math.max(0, debtToEquity), debtToAssets: Math.max(0, debtToAssets), interestCoverage: Math.max(1, interestCoverage) },
+  ];
+
+  // Leverage metrics with descriptions
+  const leverageMetrics = [
+    {
+      id: 'debtToEquity',
+      title: 'Debiti/Patrimonio',
+      value: Math.max(0, debtToEquity).toFixed(2),
+      status: debtToEquity < 0.5 ? 'Conservativo' : debtToEquity < 1 ? 'Moderato' : 'Alta leva',
+      description: "Il rapporto debiti/patrimonio misura la leva finanziaria dell'azienda confrontando i debiti totali con il patrimonio netto.",
+      whatItIs: "È calcolato come Debiti Totali / Patrimonio Netto. Indica quanto debito usa l'azienda rispetto al capitale proprio.",
+      whyImportant: "Mostra il livello di rischio finanziario e la dipendenza da finanziamenti esterni. Un valore troppo alto può indicare rischi di sostenibilità.",
+      benchmark: "• <0.5: Conservativo\n• 0.5-1.0: Moderato\n• 1.0-2.0: Elevato\n• >2.0: Molto rischioso"
+    },
+    {
+      id: 'interestCoverage',
+      title: 'Copertura Interessi',
+      value: Math.max(1, interestCoverage).toFixed(1) + 'x',
+      status: interestCoverage > 5 ? 'Forte copertura' : interestCoverage > 2 ? 'Adeguata' : 'Monitorare',
+      description: "La copertura degli interessi misura la capacità dell'azienda di pagare gli interessi sui debiti con i propri utili.",
+      whatItIs: "È calcolato come EBIT / Interessi Passivi. Indica quante volte l'azienda può coprire gli interessi con i suoi utili operativi.",
+      whyImportant: "È fondamentale per valutare la sostenibilità del debito. Un valore basso indica difficoltà nel servire il debito.",
+      benchmark: "• >5x: Eccellente\n• 3-5x: Buono\n• 2-3x: Sufficiente\n• <2x: Rischio"
+    },
+    {
+      id: 'debtToAssets',
+      title: 'Debiti/Attività',
+      value: Math.max(0, debtToAssets).toFixed(2),
+      status: debtToAssets < 0.3 ? 'Conservativo' : debtToAssets < 0.6 ? 'Moderato' : 'Alto debito',
+      description: "Il rapporto debiti/attività mostra quale percentuale delle attività è finanziata attraverso il debito.",
+      whatItIs: "È calcolato come Debiti Totali / Attività Totali. Indica la proporzione di attività finanziate con debito.",
+      whyImportant: "Mostra la struttura finanziaria e il rischio. Un valore alto indica maggiore dipendenza dal debito per finanziare le attività.",
+      benchmark: "• <0.3: Basso debito\n• 0.3-0.6: Moderato\n• 0.6-0.8: Alto\n• >0.8: Molto alto"
+    }
   ];
 
   // Calculate key ratios from real data
@@ -134,13 +232,21 @@ const Analytics = ({ user }: AnalyticsProps) => {
       title: "Indice Corrente", 
       value: currentRatio.toFixed(2), 
       change: currentRatio > 2 ? "+0.12" : "-0.08", 
-      status: currentRatio > 2 ? "good" : "warning" 
+      status: currentRatio > 2 ? "good" : "warning",
+      description: "L'indice corrente misura la capacità dell'azienda di far fronte agli obblighi a breve termine con le attività correnti.",
+      whatItIs: "È calcolato come Attività Correnti / Passività Correnti. Indica quante volte le attività a breve coprono i debiti a breve.",
+      whyImportant: "È fondamentale per valutare la liquidità e la solvibilità a breve termine. Un valore troppo basso indica rischi di liquidità.",
+      benchmark: "• >2.0: Buona liquidità\n• 1.5-2.0: Sufficiente\n• 1.0-1.5: Attenzione\n• <1.0: Rischio"
     },
     { 
       title: "Indice Secco", 
       value: quickRatio.toFixed(2), 
       change: quickRatio > 1.5 ? "+0.08" : "-0.05", 
-      status: quickRatio > 1.5 ? "good" : "warning" 
+      status: quickRatio > 1.5 ? "good" : "warning",
+      description: "L'indice secco misura la capacità di pagare i debiti a breve termine escludendo le scorte dalle attività correnti.",
+      whatItIs: "È calcolato come (Attività Correnti - Scorte) / Passività Correnti. È più conservativo dell'indice corrente.",
+      whyImportant: "Fornisce una misura più accurata della liquidità immediata, escludendo le scorte che potrebbero essere difficili da convertire rapidamente in cash.",
+      benchmark: "• >1.5: Ottima liquidità\n• 1.0-1.5: Buona\n• 0.7-1.0: Sufficiente\n• <0.7: Insufficiente"
     },
     ...profitabilityRatios
   ];
@@ -202,46 +308,44 @@ const Analytics = ({ user }: AnalyticsProps) => {
             <CardHeader className="pb-2">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-medium text-gray-600">{ratio.title}</CardTitle>
-                {profitabilityRatios.find(r => r.title === ratio.title) && (
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                        <Info className="h-4 w-4 text-gray-400 hover:text-gray-600" />
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-2xl">
-                      <DialogHeader>
-                        <DialogTitle className="flex items-center space-x-2">
-                          <TrendingUp className="h-5 w-5 text-blue-600" />
-                          <span>{ratio.title}</span>
-                        </DialogTitle>
-                        <DialogDescription>
-                          {profitabilityRatios.find(r => r.title === ratio.title)?.description}
-                        </DialogDescription>
-                      </DialogHeader>
-                      <div className="space-y-4">
-                        <div>
-                          <h4 className="font-semibold text-gray-900 mb-2">Cosa è</h4>
-                          <p className="text-gray-700 text-sm">
-                            {profitabilityRatios.find(r => r.title === ratio.title)?.whatItIs}
-                          </p>
-                        </div>
-                        <div>
-                          <h4 className="font-semibold text-gray-900 mb-2">Perché è importante</h4>
-                          <p className="text-gray-700 text-sm">
-                            {profitabilityRatios.find(r => r.title === ratio.title)?.whyImportant}
-                          </p>
-                        </div>
-                        <div>
-                          <h4 className="font-semibold text-gray-900 mb-2">Benchmark di riferimento</h4>
-                          <pre className="text-gray-700 text-sm whitespace-pre-line bg-gray-50 p-3 rounded">
-                            {profitabilityRatios.find(r => r.title === ratio.title)?.benchmark}
-                          </pre>
-                        </div>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                      <Info className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl">
+                    <DialogHeader>
+                      <DialogTitle className="flex items-center space-x-2">
+                        <TrendingUp className="h-5 w-5 text-blue-600" />
+                        <span>{ratio.title}</span>
+                      </DialogTitle>
+                      <DialogDescription>
+                        {ratio.description}
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <div>
+                        <h4 className="font-semibold text-gray-900 mb-2">Cosa è</h4>
+                        <p className="text-gray-700 text-sm">
+                          {ratio.whatItIs}
+                        </p>
                       </div>
-                    </DialogContent>
-                  </Dialog>
-                )}
+                      <div>
+                        <h4 className="font-semibold text-gray-900 mb-2">Perché è importante</h4>
+                        <p className="text-gray-700 text-sm">
+                          {ratio.whyImportant}
+                        </p>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 mb-2">Benchmark di riferimento</h4>
+                        <pre className="text-gray-700 text-sm whitespace-pre-line bg-gray-50 p-3 rounded">
+                          {ratio.benchmark}
+                        </pre>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </div>
             </CardHeader>
             <CardContent>
@@ -311,21 +415,114 @@ const Analytics = ({ user }: AnalyticsProps) => {
               <div className="space-y-6">
                 <div className="grid md:grid-cols-3 gap-4">
                   <div className="bg-green-50 p-4 rounded-lg">
-                    <h4 className="font-medium text-green-900">Margine Lordo</h4>
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-medium text-green-900">Margine Lordo</h4>
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                            <Info className="h-4 w-4 text-green-600 hover:text-green-800" />
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-2xl">
+                          <DialogHeader>
+                            <DialogTitle>Margine Lordo</DialogTitle>
+                            <DialogDescription>
+                              Il margine lordo indica la percentuale di ricavi che rimane dopo aver dedotto i costi diretti di produzione.
+                            </DialogDescription>
+                          </DialogHeader>
+                          <div className="space-y-4">
+                            <div>
+                              <h4 className="font-semibold text-gray-900 mb-2">Come si calcola</h4>
+                              <p className="text-gray-700 text-sm">
+                                (Ricavi - Costo del Venduto) / Ricavi × 100
+                              </p>
+                            </div>
+                            <div>
+                              <h4 className="font-semibold text-gray-900 mb-2">Interpretazione</h4>
+                              <pre className="text-gray-700 text-sm whitespace-pre-line bg-gray-50 p-3 rounded">
+                                • >50%: Eccellente controllo costi{'\n'}• 30-50%: Buon controllo{'\n'}• 20-30%: Accettabile{'\n'}• <20%: Margini sotto pressione
+                              </pre>
+                            </div>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
+                    </div>
                     <p className="text-2xl font-bold text-green-600">{Math.max(0, grossMargin).toFixed(1)}%</p>
                     <p className="text-sm text-green-700">
                       {hasRealData ? "Basato sui tuoi dati" : "Dati di esempio"}
                     </p>
                   </div>
                   <div className="bg-blue-50 p-4 rounded-lg">
-                    <h4 className="font-medium text-blue-900">Margine Netto</h4>
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-medium text-blue-900">Margine Netto</h4>
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                            <Info className="h-4 w-4 text-blue-600 hover:text-blue-800" />
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-2xl">
+                          <DialogHeader>
+                            <DialogTitle>Margine Netto</DialogTitle>
+                            <DialogDescription>
+                              Il margine netto mostra la percentuale di ricavi che si trasforma in profitto finale dopo tutti i costi.
+                            </DialogDescription>
+                          </DialogHeader>
+                          <div className="space-y-4">
+                            <div>
+                              <h4 className="font-semibold text-gray-900 mb-2">Come si calcola</h4>
+                              <p className="text-gray-700 text-sm">
+                                Utile Netto / Ricavi × 100
+                              </p>
+                            </div>
+                            <div>
+                              <h4 className="font-semibold text-gray-900 mb-2">Interpretazione</h4>
+                              <pre className="text-gray-700 text-sm whitespace-pre-line bg-gray-50 p-3 rounded">
+                                • >15%: Eccellente redditività{'\n'}• 10-15%: Buona redditività{'\n'}• 5-10%: Redditività media{'\n'}• <5%: Bassa redditività
+                              </pre>
+                            </div>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
+                    </div>
                     <p className="text-2xl font-bold text-blue-600">{Math.max(0, netMargin).toFixed(1)}%</p>
                     <p className="text-sm text-blue-700">
                       {hasRealData ? "Basato sui tuoi dati" : "Dati di esempio"}
                     </p>
                   </div>
                   <div className="bg-purple-50 p-4 rounded-lg">
-                    <h4 className="font-medium text-purple-900">Margine EBITDA</h4>
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-medium text-purple-900">Margine EBITDA</h4>
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                            <Info className="h-4 w-4 text-purple-600 hover:text-purple-800" />
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-2xl">
+                          <DialogHeader>
+                            <DialogTitle>Margine EBITDA</DialogTitle>
+                            <DialogDescription>
+                              Il margine EBITDA mostra la redditività operativa prima di interessi, tasse, ammortamenti e svalutazioni.
+                            </DialogDescription>
+                          </DialogHeader>
+                          <div className="space-y-4">
+                            <div>
+                              <h4 className="font-semibold text-gray-900 mb-2">Come si calcola</h4>
+                              <p className="text-gray-700 text-sm">
+                                EBITDA / Ricavi × 100
+                              </p>
+                            </div>
+                            <div>
+                              <h4 className="font-semibold text-gray-900 mb-2">Interpretazione</h4>
+                              <pre className="text-gray-700 text-sm whitespace-pre-line bg-gray-50 p-3 rounded">
+                                • >25%: Performance operativa eccellente{'\n'}• 15-25%: Buona performance{'\n'}• 10-15%: Performance media{'\n'}• <10%: Performance sotto la media
+                              </pre>
+                            </div>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
+                    </div>
                     <p className="text-2xl font-bold text-purple-600">{Math.max(0, ebitdaMargin).toFixed(1)}%</p>
                     <p className="text-sm text-purple-700">
                       {hasRealData ? "Basato sui tuoi dati" : "Dati di esempio"}
@@ -382,7 +579,32 @@ const Analytics = ({ user }: AnalyticsProps) => {
                 <div className="grid md:grid-cols-2 gap-4">
                   <Card>
                     <CardHeader>
-                      <CardTitle className="text-base">Performance vs Settore</CardTitle>
+                      <CardTitle className="text-base flex items-center space-x-2">
+                        <span>Performance vs Settore</span>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                              <Info className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-2xl">
+                            <DialogHeader>
+                              <DialogTitle>Confronto con il Settore</DialogTitle>
+                              <DialogDescription>
+                                Questo confronto mostra come la tua azienda si posiziona rispetto alla media del settore e ai benchmark di eccellenza.
+                              </DialogDescription>
+                            </DialogHeader>
+                            <div className="space-y-4">
+                              <div>
+                                <h4 className="font-semibold text-gray-900 mb-2">Come interpretare</h4>
+                                <p className="text-gray-700 text-sm">
+                                  Valori superiori alla media settore indicano performance migliori della concorrenza. Valori che raggiungono i benchmark indicano eccellenza operativa.
+                                </p>
+                              </div>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+                      </CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-3">
@@ -427,33 +649,112 @@ const Analytics = ({ user }: AnalyticsProps) => {
                     </CardContent>
                   </Card>
                 </div>
+
+                {/* Efficiency Metrics Grid with Info */}
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {efficiencyData.map((metric) => (
+                    <Card key={metric.metric}>
+                      <CardHeader className="pb-2">
+                        <div className="flex items-center justify-between">
+                          <CardTitle className="text-sm font-medium">{metric.metric}</CardTitle>
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                                <Info className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-2xl">
+                              <DialogHeader>
+                                <DialogTitle>{metric.metric}</DialogTitle>
+                                <DialogDescription>
+                                  {metric.description}
+                                </DialogDescription>
+                              </DialogHeader>
+                              <div className="space-y-4">
+                                <div>
+                                  <h4 className="font-semibold text-gray-900 mb-2">Cosa è</h4>
+                                  <p className="text-gray-700 text-sm">
+                                    {metric.whatItIs}
+                                  </p>
+                                </div>
+                                <div>
+                                  <h4 className="font-semibold text-gray-900 mb-2">Perché è importante</h4>
+                                  <p className="text-gray-700 text-sm">
+                                    {metric.whyImportant}
+                                  </p>
+                                </div>
+                                <div>
+                                  <h4 className="font-semibold text-gray-900 mb-2">Benchmark di riferimento</h4>
+                                  <pre className="text-gray-700 text-sm whitespace-pre-line bg-gray-50 p-3 rounded">
+                                    {metric.benchmark}
+                                  </pre>
+                                </div>
+                              </div>
+                            </DialogContent>
+                          </Dialog>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="text-lg font-bold text-blue-600">{metric.current.toFixed(2)}</div>
+                        <div className="text-xs text-gray-500 mt-1">
+                          <span>Settore: {metric.industry}</span> • <span>Benchmark: {metric.benchmark}</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
               </div>
             </TabsContent>
 
             <TabsContent value="leverage" className="mt-6">
               <div className="space-y-6">
                 <div className="grid md:grid-cols-3 gap-4">
-                  <div className="bg-blue-50 p-4 rounded-lg">
-                    <h4 className="font-medium text-blue-900">Debiti/Patrimonio</h4>
-                    <p className="text-2xl font-bold text-blue-600">{Math.max(0, debtToEquity).toFixed(2)}</p>
-                    <p className="text-sm text-blue-700">
-                      {debtToEquity < 0.5 ? 'Conservativo' : debtToEquity < 1 ? 'Moderato' : 'Alta leva'}
-                    </p>
-                  </div>
-                  <div className="bg-green-50 p-4 rounded-lg">
-                    <h4 className="font-medium text-green-900">Copertura Interessi</h4>
-                    <p className="text-2xl font-bold text-green-600">{Math.max(1, interestCoverage).toFixed(1)}x</p>
-                    <p className="text-sm text-green-700">
-                      {interestCoverage > 5 ? 'Forte copertura' : interestCoverage > 2 ? 'Adeguata' : 'Monitorare'}
-                    </p>
-                  </div>
-                  <div className="bg-purple-50 p-4 rounded-lg">
-                    <h4 className="font-medium text-purple-900">Debiti/Attività</h4>
-                    <p className="text-2xl font-bold text-purple-600">{Math.max(0, debtToAssets).toFixed(2)}</p>
-                    <p className="text-sm text-purple-700">
-                      {debtToAssets < 0.3 ? 'Conservativo' : debtToAssets < 0.6 ? 'Moderato' : 'Alto debito'}
-                    </p>
-                  </div>
+                  {leverageMetrics.map((metric) => (
+                    <div key={metric.id} className="bg-blue-50 p-4 rounded-lg">
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="font-medium text-blue-900">{metric.title}</h4>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                              <Info className="h-4 w-4 text-blue-600 hover:text-blue-800" />
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-2xl">
+                            <DialogHeader>
+                              <DialogTitle>{metric.title}</DialogTitle>
+                              <DialogDescription>
+                                {metric.description}
+                              </DialogDescription>
+                            </DialogHeader>
+                            <div className="space-y-4">
+                              <div>
+                                <h4 className="font-semibold text-gray-900 mb-2">Cosa è</h4>
+                                <p className="text-gray-700 text-sm">
+                                  {metric.whatItIs}
+                                </p>
+                              </div>
+                              <div>
+                                <h4 className="font-semibold text-gray-900 mb-2">Perché è importante</h4>
+                                <p className="text-gray-700 text-sm">
+                                  {metric.whyImportant}
+                                </p>
+                              </div>
+                              <div>
+                                <h4 className="font-semibold text-gray-900 mb-2">Benchmark di riferimento</h4>
+                                <pre className="text-gray-700 text-sm whitespace-pre-line bg-gray-50 p-3 rounded">
+                                  {metric.benchmark}
+                                </pre>
+                              </div>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+                      </div>
+                      <p className="text-2xl font-bold text-blue-600">{metric.value}</p>
+                      <p className="text-sm text-blue-700">
+                        {metric.status}
+                      </p>
+                    </div>
+                  ))}
                 </div>
 
                 <ResponsiveContainer width="100%" height={300}>
