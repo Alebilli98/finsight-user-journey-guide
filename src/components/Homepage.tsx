@@ -7,6 +7,8 @@ import {
   TrendingUp, Shield, Zap, Globe, Users, CheckCircle,
   BarChart3, Brain, CreditCard, ArrowRight, Star, Building2, Play
 } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
+import LanguageSelector from "./LanguageSelector";
 import PricingSection from "./PricingSection";
 import AboutSection from "./AboutSection";
 import ContactSection from "./ContactSection";
@@ -18,27 +20,28 @@ interface HomepageProps {
 
 const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
   const [activeSection, setActiveSection] = useState<'home' | 'pricing' | 'about' | 'contact'>('home');
+  const { t } = useLanguage();
 
   const features = [
     {
       icon: BarChart3,
-      title: "Dashboard in Tempo Reale",
-      description: "Monitora la salute finanziaria della tua azienda con visualizzazioni intuitive e indicatori chiave di performance."
+      title: t('features.dashboard.title'),
+      description: t('features.dashboard.desc')
     },
     {
       icon: Brain,
-      title: "Insights Powered by AI",
-      description: "Ricevi raccomandazioni personalizzate e analisi predittive su misura per la tua attività."
+      title: t('features.ai.title'),
+      description: t('features.ai.desc')
     },
     {
       icon: Shield,
-      title: "Sicuro e Conforme",
-      description: "Sicurezza di livello enterprise con piena conformità GDPR e regolamenti Dubai Free Zone."
+      title: t('features.security.title'),
+      description: t('features.security.desc')
     },
     {
       icon: CreditCard,
-      title: "Preparazione Finanziamenti",
-      description: "Preparati per gli investimenti con report finanziari completi e proiezioni."
+      title: t('features.funding.title'),
+      description: t('features.funding.desc')
     }
   ];
 
@@ -46,13 +49,13 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
     {
       name: "Marco Rossi",
       company: "TechStart Milano",
-      quote: "FinSight ha rivoluzionato il modo in cui gestiamo le nostre finanze. Gli insights AI sono incredibilmente accurati.",
+      quote: t('testimonials.quote1'),
       rating: 5
     },
     {
       name: "Sarah Al-Ahmad",
       company: "Dubai Innovations",
-      quote: "Finalmente, una piattaforma finanziaria costruita specificamente per le startup. Le dashboard sono incredibili!",
+      quote: t('testimonials.quote2'),
       rating: 5
     }
   ];
@@ -73,15 +76,13 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
               <div className="container mx-auto px-4 text-center">
                 <Badge className="mb-6 bg-blue-100 text-blue-800">
                   <Building2 className="h-3 w-3 mr-1" />
-                  Basato a Dubai, UAE
+                  {t('hero.badge')}
                 </Badge>
                 <h1 className="text-5xl font-bold text-gray-900 mb-6">
-                  Libera il Potenziale <span className="text-blue-600">Finanziario</span> della Tua Startup
+                  {t('hero.title')} <span className="text-blue-600">{t('hero.title.highlight')}</span> {t('hero.title.end')}
                 </h1>
                 <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-                  Diamo potere alle startup e PMI per competere con aziende più grandi attraverso 
-                  analisi finanziarie all'avanguardia e consigli powered by AI. Trasforma la tua 
-                  gestione finanziaria e sblocca il potenziale del tuo business.
+                  {t('hero.subtitle')}
                 </p>
                 <div className="flex justify-center space-x-4">
                   <Button 
@@ -89,11 +90,11 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
                     onClick={onSignup}
                     className="bg-gradient-to-r from-blue-600 to-green-600 px-8 py-3"
                   >
-                    Inizia Prova Gratuita
+                    {t('hero.cta.primary')}
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                   <Button variant="outline" size="lg" onClick={onLogin}>
-                    Accedi al Tuo Account
+                    {t('hero.cta.secondary')}
                   </Button>
                 </div>
               </div>
@@ -104,11 +105,10 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
               <div className="container mx-auto px-4">
                 <div className="text-center mb-16">
                   <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                    Scopri FinSight in Azione
+                    {t('video.title')}
                   </h2>
                   <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                    Guarda come FinSight trasforma la gestione finanziaria della tua azienda 
-                    con un tour completo della piattaforma.
+                    {t('video.subtitle')}
                   </p>
                 </div>
 
@@ -118,15 +118,15 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
                       <div className="absolute inset-0 flex items-center justify-center">
                         <div className="text-center text-white">
                           <Play className="h-16 w-16 mx-auto mb-4 bg-white/20 rounded-full p-4" />
-                          <h3 className="text-xl font-semibold mb-2">Tutorial Completo FinSight</h3>
-                          <p className="text-blue-100 mb-4">Durata: 8 minuti</p>
+                          <h3 className="text-xl font-semibold mb-2">{t('video.tutorial.title')}</h3>
+                          <p className="text-blue-100 mb-4">{t('video.tutorial.duration')}</p>
                           <Button 
                             variant="secondary" 
                             size="lg"
                             className="bg-white text-blue-600 hover:bg-gray-100"
                           >
                             <Play className="h-4 w-4 mr-2" />
-                            Guarda il Video
+                            {t('video.tutorial.cta')}
                           </Button>
                         </div>
                       </div>
@@ -138,22 +138,22 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
                   <Card>
                     <CardContent className="p-4 text-center">
                       <BarChart3 className="h-8 w-8 text-blue-600 mx-auto mb-2" />
-                      <h4 className="font-semibold mb-1">Dashboard Finanziaria</h4>
-                      <p className="text-sm text-gray-600">Visualizza KPI e metriche in tempo reale</p>
+                      <h4 className="font-semibold mb-1">{t('video.card1.title')}</h4>
+                      <p className="text-sm text-gray-600">{t('video.card1.desc')}</p>
                     </CardContent>
                   </Card>
                   <Card>
                     <CardContent className="p-4 text-center">
                       <Brain className="h-8 w-8 text-green-600 mx-auto mb-2" />
-                      <h4 className="font-semibold mb-1">AI Analytics</h4>
-                      <p className="text-sm text-gray-600">Insights predittivi e raccomandazioni</p>
+                      <h4 className="font-semibold mb-1">{t('video.card2.title')}</h4>
+                      <p className="text-sm text-gray-600">{t('video.card2.desc')}</p>
                     </CardContent>
                   </Card>
                   <Card>
                     <CardContent className="p-4 text-center">
                       <CreditCard className="h-8 w-8 text-purple-600 mx-auto mb-2" />
-                      <h4 className="font-semibold mb-1">Report Avanzati</h4>
-                      <p className="text-sm text-gray-600">Documenti pronti per investitori</p>
+                      <h4 className="font-semibold mb-1">{t('video.card3.title')}</h4>
+                      <p className="text-sm text-gray-600">{t('video.card3.desc')}</p>
                     </CardContent>
                   </Card>
                 </div>
@@ -165,11 +165,10 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
               <div className="container mx-auto px-4">
                 <div className="text-center mb-16">
                   <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                    Tutto Quello che Ti Serve per Padroneggiare le Tue Finanze
+                    {t('features.title')}
                   </h2>
                   <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                    La nostra piattaforma completa fornisce tutti gli strumenti e insights necessari 
-                    per prendere decisioni finanziarie informate e guidare la crescita.
+                    {t('features.subtitle')}
                   </p>
                 </div>
 
@@ -199,7 +198,7 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
               <div className="container mx-auto px-4">
                 <div className="text-center mb-16">
                   <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                    Scelto da Aziende in Crescita
+                    {t('testimonials.title')}
                   </h2>
                 </div>
 
@@ -232,10 +231,10 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
             <section className="py-20 bg-gradient-to-r from-blue-600 to-green-600 text-white">
               <div className="container mx-auto px-4 text-center">
                 <h2 className="text-3xl font-bold mb-4">
-                  Pronto a Trasformare la Tua Gestione Finanziaria?
+                  {t('cta.title')}
                 </h2>
                 <p className="text-xl mb-8 opacity-90">
-                  Unisciti a centinaia di startup che già usano FinSight per guidare la crescita e prendere decisioni migliori.
+                  {t('cta.subtitle')}
                 </p>
                 <Button 
                   size="lg" 
@@ -243,7 +242,7 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
                   onClick={onSignup}
                   className="px-8 py-3"
                 >
-                  Inizia Oggi
+                  {t('cta.button')}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </div>
@@ -268,7 +267,7 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
               </div>
               <div>
                 <h1 className="text-xl font-bold text-gray-900">FinSight</h1>
-                <p className="text-xs text-gray-500">La Tua Guida Finanziaria</p>
+                <p className="text-xs text-gray-500">{t('footer.tagline')}</p>
               </div>
             </div>
 
@@ -277,34 +276,35 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
                 onClick={() => setActiveSection('home')}
                 className={`transition-colors ${activeSection === 'home' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
               >
-                Home
+                {t('nav.home')}
               </button>
               <button 
                 onClick={() => setActiveSection('about')}
                 className={`transition-colors ${activeSection === 'about' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
               >
-                Chi Siamo
+                {t('nav.about')}
               </button>
               <button 
                 onClick={() => setActiveSection('pricing')}
                 className={`transition-colors ${activeSection === 'pricing' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
               >
-                Prezzi
+                {t('nav.pricing')}
               </button>
               <button 
                 onClick={() => setActiveSection('contact')}
                 className={`transition-colors ${activeSection === 'contact' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
               >
-                Contatti
+                {t('nav.contact')}
               </button>
             </nav>
 
             <div className="flex items-center space-x-3">
+              <LanguageSelector />
               <Button variant="ghost" onClick={onLogin}>
-                Accedi
+                {t('nav.login')}
               </Button>
               <Button onClick={onSignup} className="bg-gradient-to-r from-blue-600 to-green-600">
-                Registrati Gratis
+                {t('nav.signup')}
               </Button>
             </div>
           </div>
@@ -327,16 +327,16 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
                 </div>
                 <div>
                   <h3 className="font-bold">FinSight</h3>
-                  <p className="text-xs text-gray-400">La Tua Guida Finanziaria</p>
+                  <p className="text-xs text-gray-400">{t('footer.tagline')}</p>
                 </div>
               </div>
               <p className="text-gray-400 text-sm">
-                Diamo potere alle startup e PMI con intelligenza finanziaria powered by AI.
+                {t('footer.description')}
               </p>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4">Prodotto</h4>
+              <h4 className="font-semibold mb-4">{t('footer.product')}</h4>
               <ul className="space-y-2 text-sm text-gray-400">
                 <li><button onClick={() => setActiveSection('home')} className="hover:text-white transition-colors">Dashboard</button></li>
                 <li><button onClick={() => setActiveSection('home')} className="hover:text-white transition-colors">Analytics</button></li>
@@ -346,17 +346,17 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4">Azienda</h4>
+              <h4 className="font-semibold mb-4">{t('footer.company')}</h4>
               <ul className="space-y-2 text-sm text-gray-400">
-                <li><button onClick={() => setActiveSection('about')} className="hover:text-white transition-colors">Chi Siamo</button></li>
+                <li><button onClick={() => setActiveSection('about')} className="hover:text-white transition-colors">{t('nav.about')}</button></li>
                 <li><button onClick={() => setActiveSection('contact')} className="hover:text-white transition-colors">Carriere</button></li>
-                <li><button onClick={() => setActiveSection('contact')} className="hover:text-white transition-colors">Contatti</button></li>
+                <li><button onClick={() => setActiveSection('contact')} className="hover:text-white transition-colors">{t('nav.contact')}</button></li>
                 <li><button onClick={() => setActiveSection('contact')} className="hover:text-white transition-colors">Supporto</button></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4">Legale</h4>
+              <h4 className="font-semibold mb-4">{t('footer.legal')}</h4>
               <ul className="space-y-2 text-sm text-gray-400">
                 <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Termini di Servizio</a></li>
@@ -366,7 +366,7 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
           </div>
 
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400">
-            <p>&copy; 2024 FinSight. Tutti i diritti riservati. Dubai International Free Zone Authority (IFZA)</p>
+            <p>{t('footer.copyright')}</p>
           </div>
         </div>
       </footer>

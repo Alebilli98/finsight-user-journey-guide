@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -13,6 +12,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useLanguage } from "@/contexts/LanguageContext";
+import LanguageSelector from "./LanguageSelector";
 
 interface HeaderProps {
   isOnboarded: boolean;
@@ -22,6 +23,8 @@ interface HeaderProps {
 }
 
 const Header = ({ isOnboarded, user, onLogout, onProfile }: HeaderProps) => {
+  const { t } = useLanguage();
+
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
       <div className="container mx-auto px-4">
@@ -76,6 +79,8 @@ const Header = ({ isOnboarded, user, onLogout, onProfile }: HeaderProps) => {
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
+                
+                <LanguageSelector />
               </>
             )}
             <Badge variant="secondary" className="bg-green-100 text-green-800">
