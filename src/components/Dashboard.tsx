@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -98,7 +97,7 @@ const Dashboard = ({ user }: DashboardProps) => {
       description: "I ricavi annuali rappresentano il totale delle entrate generate dall'azienda in un anno attraverso la vendita di beni o servizi.",
       whatItIs: "I ricavi sono il denaro che l'azienda incassa dalle vendite prima di detrarre qualsiasi costo. Rappresentano il 'fatturato' dell'azienda.",
       whyImportant: "È il punto di partenza per valutare le performance aziendali. Mostra la capacità dell'azienda di generare business e crescere nel mercato.",
-      benchmark: "• Crescita annuale >10%: Eccellente\n• Crescita 5-10%: Buona\n• Crescita 0-5%: Stabile\n• Crescita negativa: Attenzione"
+      benchmark: "• Crescita annuale superiore al 10%: Eccellente\n• Crescita 5-10%: Buona\n• Crescita 0-5%: Stabile\n• Crescita negativa: Attenzione"
     },
     {
       id: 'netIncome',
@@ -110,7 +109,7 @@ const Dashboard = ({ user }: DashboardProps) => {
       description: "L'utile netto è il profitto finale dell'azienda dopo aver sottratto tutti i costi, tasse e spese dai ricavi totali.",
       whatItIs: "È il 'guadagno pulito' dell'azienda, quello che rimane ai proprietari dopo aver pagato tutto. È la linea finale del conto economico.",
       whyImportant: "Indica la vera redditività dell'azienda e la sua capacità di generare valore per gli azionisti. È fondamentale per la sostenibilità a lungo termine.",
-      benchmark: "• >15% dei ricavi: Eccellente\n• 10-15%: Molto buono\n• 5-10%: Buono\n• 0-5%: Accettabile\n• Negativo: Perdite"
+      benchmark: "• Superiore al 15% dei ricavi: Eccellente\n• 10-15%: Molto buono\n• 5-10%: Buono\n• 0-5%: Accettabile\n• Negativo: Perdite"
     },
     {
       id: 'equity',
@@ -122,7 +121,7 @@ const Dashboard = ({ user }: DashboardProps) => {
       description: "Il patrimonio netto rappresenta la differenza tra le attività totali e le passività totali dell'azienda.",
       whatItIs: "È il valore contabile dell'azienda che appartiene ai proprietari/azionisti. Include capitale versato, riserve e utili non distribuiti.",
       whyImportant: "Mostra la solidità finanziaria dell'azienda e quanto valore è stato accumulato nel tempo. Un patrimonio netto forte indica stabilità.",
-      benchmark: "• >50% degli asset: Molto solido\n• 30-50%: Solido\n• 20-30%: Accettabile\n• 10-20%: Attenzione\n• <10%: Rischio elevato"
+      benchmark: "• Superiore al 50% degli asset: Molto solido\n• 30-50%: Solido\n• 20-30%: Accettabile\n• 10-20%: Attenzione\n• Inferiore al 10%: Rischio elevato"
     },
     {
       id: 'workingCapital',
@@ -134,7 +133,7 @@ const Dashboard = ({ user }: DashboardProps) => {
       description: "Il capitale circolante è la differenza tra le attività correnti e le passività correnti dell'azienda.",
       whatItIs: "Rappresenta la liquidità operativa disponibile per gestire le operazioni quotidiane. Include scorte, crediti meno i debiti a breve termine.",
       whyImportant: "È cruciale per la gestione del flusso di cassa. Un capitale circolante positivo indica che l'azienda può coprire i suoi obblighi a breve termine.",
-      benchmark: "• Ratio >2: Eccellente liquidità\n• Ratio 1.5-2: Buona liquidità\n• Ratio 1-1.5: Sufficiente\n• Ratio <1: Problemi di liquidità"
+      benchmark: "• Ratio superiore a 2: Eccellente liquidità\n• Ratio 1.5-2: Buona liquidità\n• Ratio 1-1.5: Sufficiente\n• Ratio inferiore a 1: Problemi di liquidità"
     }
   ];
 
@@ -149,7 +148,7 @@ const Dashboard = ({ user }: DashboardProps) => {
       description: "Il margine lordo indica quanto rimane dei ricavi dopo aver sottratto i costi diretti di produzione (COGS).",
       whatItIs: "È calcolato come (Ricavi - Costo del Venduto) / Ricavi × 100. Mostra l'efficienza nella produzione e vendita dei prodotti/servizi.",
       whyImportant: "Indica quanto l'azienda guadagna su ogni euro di vendita prima dei costi operativi. Un margine alto significa buon controllo dei costi diretti.",
-      benchmark: "• >50%: Eccellente\n• 30-50%: Buono\n• 20-30%: Accettabile\n• 10-20%: Basso\n• <10%: Molto basso"
+      benchmark: "• Superiore al 50%: Eccellente\n• 30-50%: Buono\n• 20-30%: Accettabile\n• 10-20%: Basso\n• Inferiore al 10%: Molto basso"
     },
     {
       id: 'netMargin',
@@ -160,7 +159,7 @@ const Dashboard = ({ user }: DashboardProps) => {
       description: "Il margine netto mostra quanto profitto rimane dopo aver dedotto tutti i costi, inclusi quelli operativi e le tasse.",
       whatItIs: "È calcolato come Utile Netto / Ricavi × 100. È l'indicatore finale di redditività dell'azienda.",
       whyImportant: "Mostra l'efficienza complessiva dell'azienda nel convertire le vendite in profitti. È fondamentale per valutare la sostenibilità del business.",
-      benchmark: "• >15%: Eccellente\n• 10-15%: Molto buono\n• 5-10%: Buono\n• 2-5%: Accettabile\n• <2%: Basso"
+      benchmark: "• Superiore al 15%: Eccellente\n• 10-15%: Molto buono\n• 5-10%: Buono\n• 2-5%: Accettabile\n• Inferiore al 2%: Basso"
     },
     {
       id: 'ebitdaMargin',
@@ -171,7 +170,7 @@ const Dashboard = ({ user }: DashboardProps) => {
       description: "Il margine EBITDA mostra la redditività operativa prima di interessi, tasse, ammortamenti e svalutazioni.",
       whatItIs: "È calcolato come EBITDA / Ricavi × 100. Misura la performance operativa pura dell'azienda, escludendo elementi finanziari e contabili.",
       whyImportant: "Permette di confrontare aziende diverse eliminando gli effetti di decisioni finanziarie e contabili. Mostra l'efficienza operativa.",
-      benchmark: "• >25%: Eccellente\n• 15-25%: Buono\n• 10-15%: Accettabile\n• 5-10%: Basso\n• <5%: Molto basso"
+      benchmark: "• Superiore al 25%: Eccellente\n• 15-25%: Buono\n• 10-15%: Accettabile\n• 5-10%: Basso\n• Inferiore al 5%: Molto basso"
     }
   ];
 
@@ -326,7 +325,7 @@ const Dashboard = ({ user }: DashboardProps) => {
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-2">Benchmark di riferimento</h4>
                     <pre className="text-gray-700 text-sm whitespace-pre-line bg-gray-50 p-3 rounded">
-                      • <40% ricavi: Eccellente controllo costi{'\n'}• 40-60%: Buon controllo{'\n'}• 60-70%: Accettabile{'\n'}• >70%: Necessaria ottimizzazione
+                      • Inferiore al 40% ricavi: Eccellente controllo costi{'\n'}• 40-60%: Buon controllo{'\n'}• 60-70%: Accettabile{'\n'}• Superiore al 70%: Necessaria ottimizzazione
                     </pre>
                   </div>
                 </div>

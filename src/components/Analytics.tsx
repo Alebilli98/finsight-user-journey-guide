@@ -62,7 +62,7 @@ const Analytics = ({ user }: AnalyticsProps) => {
       description: "Misura l'efficienza nell'utilizzo delle attività totali per generare ricavi.",
       whatItIs: "È calcolato come Ricavi / Attività Totali. Indica quanti euro di ricavi genera ogni euro di attività.",
       whyImportant: "Un valore alto indica un uso efficiente delle risorse aziendali. È fondamentale per valutare la produttività degli investimenti.",
-      benchmark: "• >2.0: Eccellente\n• 1.5-2.0: Buono\n• 1.0-1.5: Medio\n• <1.0: Da migliorare"
+      benchmark: "• Superiore a 2.0: Eccellente\n• 1.5-2.0: Buono\n• 1.0-1.5: Medio\n• Inferiore a 1.0: Da migliorare"
     },
     { 
       metric: "Rotazione Scorte", 
@@ -72,7 +72,7 @@ const Analytics = ({ user }: AnalyticsProps) => {
       description: "Indica quanto frequentemente l'azienda vende e rinnova le sue scorte in un periodo.",
       whatItIs: "È calcolato come Costo del Venduto / Scorte Medie. Misura l'efficienza nella gestione dell'inventario.",
       whyImportant: "Un turnover alto indica una gestione efficace delle scorte, riducendo i costi di magazzino e il rischio di obsolescenza.",
-      benchmark: "• >10: Eccellente\n• 6-10: Buono\n• 4-6: Medio\n• <4: Lento"
+      benchmark: "• Superiore a 10: Eccellente\n• 6-10: Buono\n• 4-6: Medio\n• Inferiore a 4: Lento"
     },
     { 
       metric: "Rotazione Crediti", 
@@ -82,7 +82,7 @@ const Analytics = ({ user }: AnalyticsProps) => {
       description: "Misura la velocità con cui l'azienda incassa i crediti dai clienti.",
       whatItIs: "È calcolato come Ricavi / Crediti Medi. Indica quante volte l'anno si incassano i crediti.",
       whyImportant: "Un valore alto significa tempi di incasso più rapidi, migliorando il flusso di cassa e riducendo il rischio di crediti inesigibili.",
-      benchmark: "• >15: Eccellente\n• 10-15: Buono\n• 6-10: Medio\n• <6: Lento"
+      benchmark: "• Superiore a 15: Eccellente\n• 10-15: Buono\n• 6-10: Medio\n• Inferiore a 6: Lento"
     },
     { 
       metric: "Capitale Circolante", 
@@ -92,7 +92,7 @@ const Analytics = ({ user }: AnalyticsProps) => {
       description: "Misura la liquidità operativa disponibile per le attività quotidiane.",
       whatItIs: "È calcolato come Attività Correnti / Passività Correnti. Indica la capacità di coprire gli obblighi a breve termine.",
       whyImportant: "È essenziale per la gestione del flusso di cassa e la continuità operativa. Un valore troppo basso indica rischi di liquidità.",
-      benchmark: "• >2.5: Molto liquido\n• 2.0-2.5: Buono\n• 1.5-2.0: Sufficiente\n• <1.5: Rischio"
+      benchmark: "• Superiore a 2.5: Molto liquido\n• 2.0-2.5: Buono\n• 1.5-2.0: Sufficiente\n• Inferiore a 1.5: Rischio"
     },
     { 
       metric: "Rotazione Debiti", 
@@ -102,7 +102,7 @@ const Analytics = ({ user }: AnalyticsProps) => {
       description: "Indica la velocità con cui l'azienda paga i suoi fornitori.",
       whatItIs: "È calcolato come Acquisti / Debiti Medi verso Fornitori. Misura la gestione dei pagamenti ai fornitori.",
       whyImportant: "Aiuta a ottimizzare il flusso di cassa bilanciando i rapporti con i fornitori e la gestione della liquidità.",
-      benchmark: "• 10-15: Ottimale\n• 8-10: Buono\n• 6-8: Lento\n• <6: Molto lento"
+      benchmark: "• 10-15: Ottimale\n• 8-10: Buono\n• 6-8: Lento\n• Inferiore a 6: Molto lento"
     },
     { 
       metric: "Ciclo Conversione", 
@@ -112,7 +112,7 @@ const Analytics = ({ user }: AnalyticsProps) => {
       description: "Misura il tempo necessario per convertire gli investimenti in inventario in flussi di cassa.",
       whatItIs: "È la somma dei giorni di inventario e crediti meno i giorni di pagamento ai fornitori. Espresso in giorni.",
       whyImportant: "Un ciclo più breve significa un flusso di cassa più veloce e minor capitale immobilizzato nelle operazioni.",
-      benchmark: "• <30 giorni: Eccellente\n• 30-45: Buono\n• 45-60: Medio\n• >60: Da migliorare"
+      benchmark: "• Inferiore a 30 giorni: Eccellente\n• 30-45: Buono\n• 45-60: Medio\n• Superiore a 60: Da migliorare"
     },
     { 
       metric: "Rotazione Immobilizzi", 
@@ -122,7 +122,7 @@ const Analytics = ({ user }: AnalyticsProps) => {
       description: "Misura l'efficienza nell'utilizzo degli asset fissi per generare ricavi.",
       whatItIs: "È calcolato come Ricavi / Immobilizzazioni Nette. Indica la produttività degli investimenti in asset fissi.",
       whyImportant: "Un valore alto indica un uso efficiente di impianti, macchinari e altre immobilizzazioni per generare vendite.",
-      benchmark: "• >3.5: Eccellente\n• 2.5-3.5: Buono\n• 1.5-2.5: Medio\n• <1.5: Basso"
+      benchmark: "• Superiore a 3.5: Eccellente\n• 2.5-3.5: Buono\n• 1.5-2.5: Medio\n• Inferiore a 1.5: Basso"
     },
   ];
 
@@ -148,7 +148,7 @@ const Analytics = ({ user }: AnalyticsProps) => {
       description: "Il rapporto debiti/patrimonio misura la leva finanziaria dell'azienda confrontando i debiti totali con il patrimonio netto.",
       whatItIs: "È calcolato come Debiti Totali / Patrimonio Netto. Indica quanto debito usa l'azienda rispetto al capitale proprio.",
       whyImportant: "Mostra il livello di rischio finanziario e la dipendenza da finanziamenti esterni. Un valore troppo alto può indicare rischi di sostenibilità.",
-      benchmark: "• <0.5: Conservativo\n• 0.5-1.0: Moderato\n• 1.0-2.0: Elevato\n• >2.0: Molto rischioso"
+      benchmark: "• Inferiore a 0.5: Conservativo\n• 0.5-1.0: Moderato\n• 1.0-2.0: Elevato\n• Superiore a 2.0: Molto rischioso"
     },
     {
       id: 'interestCoverage',
@@ -158,7 +158,7 @@ const Analytics = ({ user }: AnalyticsProps) => {
       description: "La copertura degli interessi misura la capacità dell'azienda di pagare gli interessi sui debiti con i propri utili.",
       whatItIs: "È calcolato come EBIT / Interessi Passivi. Indica quante volte l'azienda può coprire gli interessi con i suoi utili operativi.",
       whyImportant: "È fondamentale per valutare la sostenibilità del debito. Un valore basso indica difficoltà nel servire il debito.",
-      benchmark: "• >5x: Eccellente\n• 3-5x: Buono\n• 2-3x: Sufficiente\n• <2x: Rischio"
+      benchmark: "• Superiore a 5x: Eccellente\n• 3-5x: Buono\n• 2-3x: Sufficiente\n• Inferiore a 2x: Rischio"
     },
     {
       id: 'debtToAssets',
@@ -168,7 +168,7 @@ const Analytics = ({ user }: AnalyticsProps) => {
       description: "Il rapporto debiti/attività mostra quale percentuale delle attività è finanziata attraverso il debito.",
       whatItIs: "È calcolato come Debiti Totali / Attività Totali. Indica la proporzione di attività finanziate con debito.",
       whyImportant: "Mostra la struttura finanziaria e il rischio. Un valore alto indica maggiore dipendenza dal debito per finanziare le attività.",
-      benchmark: "• <0.3: Basso debito\n• 0.3-0.6: Moderato\n• 0.6-0.8: Alto\n• >0.8: Molto alto"
+      benchmark: "• Inferiore a 0.3: Basso debito\n• 0.3-0.6: Moderato\n• 0.6-0.8: Alto\n• Superiore a 0.8: Molto alto"
     }
   ];
 
@@ -189,7 +189,7 @@ const Analytics = ({ user }: AnalyticsProps) => {
       description: "Il Return on Equity (ROE) misura la capacità di un'azienda di generare profitti dal capitale proprio degli azionisti.",
       whatItIs: "Il ROE indica quanto profitto un'azienda genera per ogni euro di capitale proprio investito dagli azionisti. È calcolato dividendo l'utile netto per il patrimonio netto.",
       whyImportant: "È fondamentale per gli investitori perché mostra l'efficienza con cui l'azienda utilizza il capitale degli azionisti per generare profitti. Un ROE alto indica una gestione efficace del capitale.",
-      benchmark: "• Eccellente: >15%\n• Buono: 10-15%\n• Medio: 5-10%\n• Da migliorare: <5%"
+      benchmark: "• Eccellente: Superiore al 15%\n• Buono: 10-15%\n• Medio: 5-10%\n• Da migliorare: Inferiore al 5%"
     },
     {
       id: 'roa',
@@ -200,7 +200,7 @@ const Analytics = ({ user }: AnalyticsProps) => {
       description: "Il Return on Assets (ROA) misura l'efficienza con cui un'azienda utilizza le sue attività per generare profitti.",
       whatItIs: "Il ROA indica quanto profitto un'azienda genera per ogni euro di attività possedute. È calcolato dividendo l'utile netto per il totale delle attività.",
       whyImportant: "Mostra quanto efficacemente l'azienda converte gli investimenti in attività in profitti netti. È utile per confrontare aziende dello stesso settore.",
-      benchmark: "• Eccellente: >10%\n• Buono: 5-10%\n• Medio: 2-5%\n• Da migliorare: <2%"
+      benchmark: "• Eccellente: Superiore al 10%\n• Buono: 5-10%\n• Medio: 2-5%\n• Da migliorare: Inferiore al 2%"
     },
     {
       id: 'ros',
@@ -211,7 +211,7 @@ const Analytics = ({ user }: AnalyticsProps) => {
       description: "Il Return on Sales (ROS) misura la percentuale di profitto che un'azienda ottiene dalle sue vendite.",
       whatItIs: "Il ROS, anche chiamato margine di profitto netto, indica quanti centesimi di profitto l'azienda genera per ogni euro di vendite. È calcolato dividendo l'utile netto per i ricavi totali.",
       whyImportant: "Indica l'efficienza operativa dell'azienda e la sua capacità di controllare i costi. Un ROS alto suggerisce una buona gestione dei costi e un forte controllo sui prezzi.",
-      benchmark: "• Eccellente: >10%\n• Buono: 5-10%\n• Medio: 2-5%\n• Da migliorare: <2%"
+      benchmark: "• Eccellente: Superiore al 10%\n• Buono: 5-10%\n• Medio: 2-5%\n• Da migliorare: Inferiore al 2%"
     },
     {
       id: 'roi',
@@ -222,7 +222,7 @@ const Analytics = ({ user }: AnalyticsProps) => {
       description: "Il Return on Investment (ROI) misura l'efficienza di un investimento confrontando il guadagno con il costo dell'investimento.",
       whatItIs: "Il ROI calcola il rendimento percentuale di un investimento. È espresso come percentuale e mostra quanto si guadagna per ogni euro investito.",
       whyImportant: "È fondamentale per valutare la redditività degli investimenti e confrontare diverse opportunità di investimento. Aiuta a prendere decisioni informate sulle allocazioni di capitale.",
-      benchmark: "• Eccellente: >12%\n• Buono: 8-12%\n• Medio: 5-8%\n• Da migliorare: <5%"
+      benchmark: "• Eccellente: Superiore al 12%\n• Buono: 8-12%\n• Medio: 5-8%\n• Da migliorare: Inferiore al 5%"
     }
   ];
 
@@ -236,7 +236,7 @@ const Analytics = ({ user }: AnalyticsProps) => {
       description: "L'indice corrente misura la capacità dell'azienda di far fronte agli obblighi a breve termine con le attività correnti.",
       whatItIs: "È calcolato come Attività Correnti / Passività Correnti. Indica quante volte le attività a breve coprono i debiti a breve.",
       whyImportant: "È fondamentale per valutare la liquidità e la solvibilità a breve termine. Un valore troppo basso indica rischi di liquidità.",
-      benchmark: "• >2.0: Buona liquidità\n• 1.5-2.0: Sufficiente\n• 1.0-1.5: Attenzione\n• <1.0: Rischio"
+      benchmark: "• Superiore a 2.0: Buona liquidità\n• 1.5-2.0: Sufficiente\n• 1.0-1.5: Attenzione\n• Inferiore a 1.0: Rischio"
     },
     { 
       title: "Indice Secco", 
@@ -246,7 +246,7 @@ const Analytics = ({ user }: AnalyticsProps) => {
       description: "L'indice secco misura la capacità di pagare i debiti a breve termine escludendo le scorte dalle attività correnti.",
       whatItIs: "È calcolato come (Attività Correnti - Scorte) / Passività Correnti. È più conservativo dell'indice corrente.",
       whyImportant: "Fornisce una misura più accurata della liquidità immediata, escludendo le scorte che potrebbero essere difficili da convertire rapidamente in cash.",
-      benchmark: "• >1.5: Ottima liquidità\n• 1.0-1.5: Buona\n• 0.7-1.0: Sufficiente\n• <0.7: Insufficiente"
+      benchmark: "• Superiore a 1.5: Ottima liquidità\n• 1.0-1.5: Buona\n• 0.7-1.0: Sufficiente\n• Inferiore a 0.7: Insufficiente"
     },
     ...profitabilityRatios
   ];
@@ -440,7 +440,7 @@ const Analytics = ({ user }: AnalyticsProps) => {
                             <div>
                               <h4 className="font-semibold text-gray-900 mb-2">Interpretazione</h4>
                               <pre className="text-gray-700 text-sm whitespace-pre-line bg-gray-50 p-3 rounded">
-                                • >50%: Eccellente controllo costi{'\n'}• 30-50%: Buon controllo{'\n'}• 20-30%: Accettabile{'\n'}• <20%: Margini sotto pressione
+                                • Superiore al 50%: Eccellente controllo costi{'\n'}• 30-50%: Buon controllo{'\n'}• 20-30%: Accettabile{'\n'}• Inferiore al 20%: Margini sotto pressione
                               </pre>
                             </div>
                           </div>
@@ -478,7 +478,7 @@ const Analytics = ({ user }: AnalyticsProps) => {
                             <div>
                               <h4 className="font-semibold text-gray-900 mb-2">Interpretazione</h4>
                               <pre className="text-gray-700 text-sm whitespace-pre-line bg-gray-50 p-3 rounded">
-                                • >15%: Eccellente redditività{'\n'}• 10-15%: Buona redditività{'\n'}• 5-10%: Redditività media{'\n'}• <5%: Bassa redditività
+                                • Superiore al 15%: Eccellente redditività{'\n'}• 10-15%: Buona redditività{'\n'}• 5-10%: Redditività media{'\n'}• Inferiore al 5%: Bassa redditività
                               </pre>
                             </div>
                           </div>
@@ -516,7 +516,7 @@ const Analytics = ({ user }: AnalyticsProps) => {
                             <div>
                               <h4 className="font-semibold text-gray-900 mb-2">Interpretazione</h4>
                               <pre className="text-gray-700 text-sm whitespace-pre-line bg-gray-50 p-3 rounded">
-                                • >25%: Performance operativa eccellente{'\n'}• 15-25%: Buona performance{'\n'}• 10-15%: Performance media{'\n'}• <10%: Performance sotto la media
+                                • Superiore al 25%: Performance operativa eccellente{'\n'}• 15-25%: Buona performance{'\n'}• 10-15%: Performance media{'\n'}• Inferiore al 10%: Performance sotto la media
                               </pre>
                             </div>
                           </div>
