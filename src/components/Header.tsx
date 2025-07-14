@@ -39,7 +39,14 @@ const Header = ({ isOnboarded, user, onLogout, onProfile }: HeaderProps) => {
                 <Button variant="ghost" size="sm">
                   <Bell className="h-4 w-4" />
                 </Button>
-                <Button variant="ghost" size="sm">
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={() => {
+                    const event = new CustomEvent('navigate-to-section', { detail: 'calendar' });
+                    window.dispatchEvent(event);
+                  }}
+                >
                   <Calendar className="h-4 w-4" />
                 </Button>
                 

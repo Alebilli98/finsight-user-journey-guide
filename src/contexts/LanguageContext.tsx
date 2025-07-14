@@ -1,7 +1,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-type Language = 'it' | 'en';
+type Language = 'it' | 'en' | 'es';
 
 interface LanguageContextType {
   language: Language;
@@ -106,6 +106,7 @@ const translations = {
     'language.select': 'Seleziona Lingua',
     'language.italian': 'Italiano',
     'language.english': 'English',
+    'language.spanish': 'Español',
   },
   en: {
     // Navigation
@@ -172,5 +173,73 @@ const translations = {
     'language.select': 'Select Language',
     'language.italian': 'Italiano',
     'language.english': 'English',
+    'language.spanish': 'Español',
+  },
+  es: {
+    // Navigation
+    'nav.home': 'Inicio',
+    'nav.about': 'Nosotros',
+    'nav.pricing': 'Precios',
+    'nav.contact': 'Contacto',
+    'nav.login': 'Iniciar Sesión',
+    'nav.signup': 'Registro Gratis',
+    
+    // Homepage Hero
+    'hero.badge': 'Con sede en Dubai, EAU',
+    'hero.title': 'Desbloquea el Potencial',
+    'hero.title.highlight': 'Financiero',
+    'hero.title.end': 'de tu Startup',
+    'hero.subtitle': 'Empoderamos a startups y PyMEs para competir con empresas más grandes a través de análisis financieros de vanguardia e insights impulsados por IA. Transforma tu gestión financiera y desbloquea el potencial de tu negocio.',
+    'hero.cta.primary': 'Iniciar Prueba Gratuita',
+    'hero.cta.secondary': 'Acceder a tu Cuenta',
+    
+    // Video Section
+    'video.title': 'Descubre FinSight en Acción',
+    'video.subtitle': 'Mira cómo FinSight transforma la gestión financiera de tu empresa con un tour completo de la plataforma.',
+    'video.tutorial.title': 'Tutorial Completo de FinSight',
+    'video.tutorial.duration': 'Duración: 8 minutos',
+    'video.tutorial.cta': 'Ver Video',
+    'video.card1.title': 'Panel Financiero',
+    'video.card1.desc': 'Visualiza KPIs y métricas en tiempo real',
+    'video.card2.title': 'Análisis con IA',
+    'video.card2.desc': 'Insights predictivos y recomendaciones',
+    'video.card3.title': 'Reportes Avanzados',
+    'video.card3.desc': 'Documentos listos para inversores',
+    
+    // Features
+    'features.title': 'Todo lo que Necesitas para Dominar tus Finanzas',
+    'features.subtitle': 'Nuestra plataforma integral proporciona todas las herramientas e insights necesarios para tomar decisiones financieras informadas e impulsar el crecimiento.',
+    'features.dashboard.title': 'Dashboard en Tiempo Real',
+    'features.dashboard.desc': 'Monitorea la salud financiera de tu empresa con visualizaciones intuitivas e indicadores clave de rendimiento.',
+    'features.ai.title': 'Insights Impulsados por IA',
+    'features.ai.desc': 'Obtén recomendaciones personalizadas y análisis predictivos adaptados a tu negocio.',
+    'features.security.title': 'Seguro y Conforme',
+    'features.security.desc': 'Seguridad de nivel empresarial con pleno cumplimiento GDPR y regulaciones de Zona Franca de Dubai.',
+    'features.funding.title': 'Preparación de Financiamiento',
+    'features.funding.desc': 'Prepárate para inversiones con reportes financieros integrales y proyecciones.',
+    
+    // Testimonials
+    'testimonials.title': 'Elegido por Empresas en Crecimiento',
+    'testimonials.quote1': 'FinSight ha revolucionado la forma en que gestionamos nuestras finanzas. Los insights de IA son increíblemente precisos.',
+    'testimonials.quote2': '¡Finalmente, una plataforma financiera construida específicamente para startups. Los dashboards son increíbles!',
+    
+    // CTA Section
+    'cta.title': '¿Listo para Transformar tu Gestión Financiera?',
+    'cta.subtitle': 'Únete a cientos de startups que ya usan FinSight para impulsar el crecimiento y tomar mejores decisiones.',
+    'cta.button': 'Comenzar Hoy',
+    
+    // Footer
+    'footer.tagline': 'Tu Guía Financiera',
+    'footer.description': 'Empoderamos a startups y PyMEs con inteligencia financiera impulsada por IA.',
+    'footer.product': 'Producto',
+    'footer.company': 'Empresa',
+    'footer.legal': 'Legal',
+    'footer.copyright': '© 2024 FinSight. Todos los derechos reservados. Autoridad de Zona Libre Internacional de Dubai (IFZA)',
+    
+    // Language Selection
+    'language.select': 'Seleccionar Idioma',
+    'language.italian': 'Italiano',
+    'language.english': 'Inglés',
+    'language.spanish': 'Español',
   }
 };

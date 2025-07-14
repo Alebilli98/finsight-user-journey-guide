@@ -17,7 +17,7 @@ const LanguageSelector = () => {
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="sm">
           <Languages className="h-4 w-4 mr-2" />
-          {language === 'it' ? 'IT' : 'EN'}
+          {language === 'it' ? 'IT' : language === 'en' ? 'EN' : 'ES'}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
@@ -26,6 +26,9 @@ const LanguageSelector = () => {
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setLanguage('en')}>
           🇬🇧 {t('language.english')}
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setLanguage('es')}>
+          🇪🇸 {t('language.spanish')}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

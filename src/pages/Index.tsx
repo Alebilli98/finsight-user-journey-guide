@@ -41,7 +41,7 @@ const Index = () => {
     }
   }, []);
 
-  // Listen for navigation events from Analytics component
+  // Listen for navigation events from Analytics component and calendar
   useEffect(() => {
     const handleNavigate = (event: CustomEvent) => {
       setActiveSection(event.detail);

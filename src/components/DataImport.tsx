@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { Upload, FileSpreadsheet, Download, CheckCircle, AlertCircle, Info, Link, Zap, Settings, Database, Plug } from 'lucide-react';
 import * as XLSX from 'xlsx';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface DataImportProps {
   user?: any;
@@ -30,9 +31,11 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
   const [apiKey, setApiKey] = useState("");
   const [isConnecting, setIsConnecting] = useState(false);
   const [connectedSystems, setConnectedSystems] = useState<any[]>([]);
+  const [templateLanguage, setTemplateLanguage] = useState<'it' | 'en' | 'es'>('it');
   
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+  const { language } = useLanguage();
 
   const systemTypes = [
     "SAP Business One",
@@ -133,11 +136,19 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
       XLSX.utils.book_append_sheet(wb, ws, sheetName);
     });
 
-    XLSX.writeFile(wb, 'Template_Dati_Finanziari.xlsx');
+    const fileName = templateLanguage === 'it' ? 'Template_Dati_Finanziari.xlsx' :
+                    templateLanguage === 'en' ? 'Financial_Data_Template.xlsx' :
+                    'Plantilla_Datos_Financieros.xlsx';
+
+    XLSX.writeFile(wb, fileName);
     
     toast({
-      title: "Template Scaricato",
-      description: "Il template Excel è stato scaricato con successo.",
+      title: templateLanguage === 'it' ? "Template Scaricato" : 
+             templateLanguage === 'en' ? "Template Downloaded" : 
+             "Plantilla Descargada",
+      description: templateLanguage === 'it' ? "Il template Excel è stato scaricato con successo." :
+                   templateLanguage === 'en' ? "The Excel template has been downloaded successfully." :
+                   "La plantilla Excel se ha descargado exitosamente.",
     });
   };
 
@@ -311,10 +322,25 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
               />
 
               <div className="flex items-center justify-between pt-4">
-                <Button onClick={downloadTemplate} variant="outline" className="flex items-center space-x-2">
-                  <Download className="h-4 w-4" />
-                  <span>Download Template</span>
-                </Button>
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-2">
+                    <Label htmlFor="template-language">Template Language:</Label>
+                    <Select value={templateLanguage} onValueChange={(value: 'it' | 'en' | 'es') => setTemplateLanguage(value)}>
+                      <SelectTrigger className="w-32">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="it">🇮🇹 IT</SelectItem>
+                        <SelectItem value="en">🇬🇧 EN</SelectItem>
+                        <SelectItem value="es">🇪🇸 ES</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <Button onClick={downloadTemplate} variant="outline" className="flex items-center space-x-2">
+                    <Download className="h-4 w-4" />
+                    <span>Download Template</span>
+                  </Button>
+                </div>
 
                 {uploadedFile && (
                   <div className="flex items-center space-x-2 text-sm text-gray-600">
