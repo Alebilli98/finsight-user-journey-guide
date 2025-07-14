@@ -13,6 +13,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface AppSidebarProps {
   activeSection: string;
@@ -22,6 +23,7 @@ interface AppSidebarProps {
 const AppSidebar = ({ activeSection, setActiveSection }: AppSidebarProps) => {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
+  const { t } = useLanguage();
 
   const navigationItems = [
     { id: "dashboard", label: "Dashboard", icon: TrendingUp },

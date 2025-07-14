@@ -19,7 +19,7 @@ interface HomepageProps {
 }
 
 const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
-  const [activeSection, setActiveSection] = useState<'home' | 'pricing' | 'about' | 'contact'>('home');
+  const [activeSection, setActiveSection] = useState<'home' | 'pricing' | 'about' | 'contact' | 'resources'>('home');
   const { t } = useLanguage();
 
   const features = [
@@ -68,6 +68,52 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
         return <AboutSection />;
       case 'contact':
         return <ContactSection />;
+      case 'resources':
+        return (
+          <div className="py-20">
+            <div className="container mx-auto px-4">
+              <div className="text-center mb-16">
+                <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                  {t('nav.resources')}
+                </h2>
+                <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                  {t('resources.subtitle')}
+                </p>
+              </div>
+              
+              <div className="max-w-4xl mx-auto">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-xl">{t('nav.glossary')}</CardTitle>
+                    <CardDescription>{t('glossary.description')}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div>
+                        <h4 className="font-semibold mb-2">{t('glossary.financial.title')}</h4>
+                        <ul className="space-y-2 text-sm text-gray-600">
+                          <li><strong>ROI:</strong> {t('glossary.roi')}</li>
+                          <li><strong>EBITDA:</strong> {t('glossary.ebitda')}</li>
+                          <li><strong>Cash Flow:</strong> {t('glossary.cashflow')}</li>
+                          <li><strong>Ratio di Liquidità:</strong> {t('glossary.liquidity')}</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold mb-2">{t('glossary.metrics.title')}</h4>
+                        <ul className="space-y-2 text-sm text-gray-600">
+                          <li><strong>KPI:</strong> {t('glossary.kpi')}</li>
+                          <li><strong>Margine Lordo:</strong> {t('glossary.grossmargin')}</li>
+                          <li><strong>Ratio di Debito:</strong> {t('glossary.debtratio')}</li>
+                          <li><strong>Working Capital:</strong> {t('glossary.workingcapital')}</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        );
       default:
         return (
           <>
@@ -295,6 +341,12 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
                 className={`transition-colors ${activeSection === 'contact' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
               >
                 {t('nav.contact')}
+              </button>
+              <button 
+                onClick={() => setActiveSection('resources')}
+                className={`transition-colors ${activeSection === 'resources' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
+              >
+                {t('nav.resources')}
               </button>
             </nav>
 

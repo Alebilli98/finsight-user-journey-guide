@@ -49,9 +49,11 @@ const translations = {
     'nav.contact': 'Contatti',
     'nav.login': 'Accedi',
     'nav.signup': 'Registrati Gratis',
+    'nav.resources': 'Risorse',
+    'nav.glossary': 'Glossario',
     
     // Homepage Hero
-    'hero.badge': 'Basato a Dubai, UAE',
+    'hero.badge': 'Innovazione Globale',
     'hero.title': 'Libera il Potenziale',
     'hero.title.highlight': 'Finanziario',
     'hero.title.end': 'della Tua Startup',
@@ -107,6 +109,20 @@ const translations = {
     'language.italian': 'Italiano',
     'language.english': 'English',
     'language.spanish': 'Español',
+    
+    // Resources Section
+    'resources.subtitle': 'Accedi a risorse e definizioni utili per la gestione finanziaria',
+    'glossary.description': 'Termini finanziari e metriche essenziali per la tua attività',
+    'glossary.financial.title': 'Termini Finanziari',
+    'glossary.metrics.title': 'Metriche Chiave',
+    'glossary.roi': 'Ritorno sugli Investimenti - misura l\'efficacia di un investimento',
+    'glossary.ebitda': 'Earnings Before Interest, Taxes, Depreciation and Amortization',
+    'glossary.cashflow': 'Flusso di cassa - movimento di denaro in entrata e uscita',
+    'glossary.liquidity': 'Capacità di convertire rapidamente asset in contanti',
+    'glossary.kpi': 'Key Performance Indicators - indicatori di performance',
+    'glossary.grossmargin': 'Differenza tra ricavi e costi diretti',
+    'glossary.debtratio': 'Rapporto tra debiti totali e patrimonio netto',
+    'glossary.workingcapital': 'Capitale circolante netto per operazioni quotidiane',
   },
   en: {
     // Navigation
@@ -116,9 +132,11 @@ const translations = {
     'nav.contact': 'Contact',
     'nav.login': 'Login',
     'nav.signup': 'Sign Up Free',
+    'nav.resources': 'Resources',
+    'nav.glossary': 'Glossary',
     
     // Homepage Hero
-    'hero.badge': 'Based in Dubai, UAE',
+    'hero.badge': 'Global Innovation',
     'hero.title': 'Unlock Your Startup\'s',
     'hero.title.highlight': 'Financial',
     'hero.title.end': 'Potential',
@@ -174,6 +192,20 @@ const translations = {
     'language.italian': 'Italiano',
     'language.english': 'English',
     'language.spanish': 'Español',
+    
+    // Resources Section
+    'resources.subtitle': 'Access useful resources and definitions for financial management',
+    'glossary.description': 'Essential financial terms and metrics for your business',
+    'glossary.financial.title': 'Financial Terms',
+    'glossary.metrics.title': 'Key Metrics',
+    'glossary.roi': 'Return on Investment - measures the effectiveness of an investment',
+    'glossary.ebitda': 'Earnings Before Interest, Taxes, Depreciation and Amortization',
+    'glossary.cashflow': 'Cash flow - movement of money in and out of business',
+    'glossary.liquidity': 'Ability to quickly convert assets into cash',
+    'glossary.kpi': 'Key Performance Indicators - performance metrics',
+    'glossary.grossmargin': 'Difference between revenue and direct costs',
+    'glossary.debtratio': 'Ratio between total debt and equity',
+    'glossary.workingcapital': 'Net working capital for daily operations',
   },
   es: {
     // Navigation
@@ -183,9 +215,11 @@ const translations = {
     'nav.contact': 'Contacto',
     'nav.login': 'Iniciar Sesión',
     'nav.signup': 'Registro Gratis',
+    'nav.resources': 'Recursos',
+    'nav.glossary': 'Glosario',
     
     // Homepage Hero
-    'hero.badge': 'Con sede en Dubai, EAU',
+    'hero.badge': 'Innovación Global',
     'hero.title': 'Desbloquea el Potencial',
     'hero.title.highlight': 'Financiero',
     'hero.title.end': 'de tu Startup',
@@ -241,5 +275,19 @@ const translations = {
     'language.italian': 'Italiano',
     'language.english': 'Inglés',
     'language.spanish': 'Español',
+    
+    // Resources Section
+    'resources.subtitle': 'Accede a recursos útiles y definiciones para la gestión financiera',
+    'glossary.description': 'Términos financieros y métricas esenciales para tu negocio',
+    'glossary.financial.title': 'Términos Financieros',
+    'glossary.metrics.title': 'Métricas Clave',
+    'glossary.roi': 'Retorno de la Inversión - mide la efectividad de una inversión',
+    'glossary.ebitda': 'Ganancias antes de Intereses, Impuestos, Depreciación y Amortización',
+    'glossary.cashflow': 'Flujo de efectivo - movimiento de dinero entrante y saliente',
+    'glossary.liquidity': 'Capacidad de convertir rápidamente activos en efectivo',
+    'glossary.kpi': 'Indicadores Clave de Rendimiento - métricas de rendimiento',
+    'glossary.grossmargin': 'Diferencia entre ingresos y costos directos',
+    'glossary.debtratio': 'Relación entre deuda total y patrimonio',
+    'glossary.workingcapital': 'Capital de trabajo neto para operaciones diarias',
   }
 };

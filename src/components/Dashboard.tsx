@@ -14,6 +14,7 @@ import {
   LineChart, Line, AreaChart, Area
 } from "recharts";
 import { useState } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface DashboardProps {
   user?: any;
@@ -21,6 +22,7 @@ interface DashboardProps {
 
 const Dashboard = ({ user }: DashboardProps) => {
   const [showCogsBreakdown, setShowCogsBreakdown] = useState(false);
+  const { t } = useLanguage();
 
   // Get user's actual data or use defaults
   const userData = user || {};

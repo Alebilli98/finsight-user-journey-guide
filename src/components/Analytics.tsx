@@ -10,6 +10,7 @@ import {
   LineChart, Line, ComposedChart, Scatter, ScatterChart
 } from "recharts";
 import { TrendingUp, Calculator, Target, Zap, Info } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface AnalyticsProps {
   user?: any;
@@ -17,6 +18,7 @@ interface AnalyticsProps {
 
 const Analytics = ({ user }: AnalyticsProps) => {
   const [activeTab, setActiveTab] = useState("profitability");
+  const { t } = useLanguage();
 
   // Get real user data or use defaults
   const userData = user || {};

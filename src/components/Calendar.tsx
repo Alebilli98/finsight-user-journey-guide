@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { 
   Calendar as CalendarIcon, Clock, Plus, Edit, Trash2, 
   User, MapPin, Video, Phone, ChevronLeft, ChevronRight,
@@ -85,6 +86,7 @@ const Calendar = () => {
   });
 
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   // Calendar logic
   const today = new Date();

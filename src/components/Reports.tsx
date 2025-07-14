@@ -9,10 +9,12 @@ import {
   BarChart3, PieChart, TrendingUp, TrendingDown, Target
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Reports = () => {
   const [selectedPeriod, setSelectedPeriod] = useState("monthly");
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const reportTypes = [
     {
