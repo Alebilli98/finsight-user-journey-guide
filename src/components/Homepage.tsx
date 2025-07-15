@@ -18,7 +18,7 @@ interface HomepageProps {
 }
 
 const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
-  const [activeSection, setActiveSection] = useState<'home' | 'product' | 'solutions' | 'why' | 'pricing' | 'resources' | 'contact'>('home');
+  const [activeSection, setActiveSection] = useState<'home' | 'product' | 'solutions' | 'why' | 'pricing' | 'resources' | 'contact' | 'about'>('home');
   const { t } = useLanguage();
 
   const features = [
@@ -232,6 +232,8 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
         );
       case 'contact':
         return <ContactSection />;
+      case 'about':
+        return <AboutSection />;
       default:
         return (
           <>
