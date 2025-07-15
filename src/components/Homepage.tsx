@@ -124,8 +124,8 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
                   <Building2 className="h-3 w-3 mr-1" />
                   {t('hero.badge')}
                 </Badge>
-                <h1 className="text-5xl font-bold text-gray-900 mb-6">
-                  {t('hero.title')} <span className="text-blue-600">{t('hero.title.highlight')}</span> {t('hero.title.end')}
+                <h1 className="text-5xl font-bold text-gray-900 mb-6 bg-gradient-to-r from-gray-100/50 to-blue-50/30 px-6 py-4 rounded-lg">
+                  {t('hero.title')} <span className="text-blue-600 drop-shadow-sm">{t('hero.title.highlight')}</span> {t('hero.title.end')}
                 </h1>
                 <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
                   {t('hero.subtitle')}
@@ -308,12 +308,12 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
               className="flex items-center space-x-3 cursor-pointer"
               onClick={() => setActiveSection('home')}
             >
-              <div className="bg-gradient-to-r from-blue-600 to-green-600 p-2 rounded-lg">
-                <TrendingUp className="h-6 w-6 text-white" />
+              <div className="bg-gradient-to-r from-blue-600 to-green-600 p-3 rounded-xl shadow-lg">
+                <TrendingUp className="h-7 w-7 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">FinSight</h1>
-                <p className="text-xs text-gray-500">{t('footer.tagline')}</p>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">FinSight</h1>
+                <p className="text-xs text-blue-600 font-medium">{t('footer.tagline')}</p>
               </div>
             </div>
 

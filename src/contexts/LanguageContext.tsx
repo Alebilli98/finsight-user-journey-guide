@@ -43,13 +43,13 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 const translations = {
   it: {
     // Navigation
-    'nav.home': 'Home',
-    'nav.about': 'Chi Siamo',
-    'nav.pricing': 'Prezzi',
-    'nav.contact': 'Contatti',
+    'nav.home': 'HOME',
+    'nav.about': 'CHI SIAMO',
+    'nav.pricing': 'PREZZI',
+    'nav.contact': 'CONTATTI',
     'nav.login': 'Accedi',
     'nav.signup': 'Registrati Gratis',
-    'nav.resources': 'Risorse',
+    'nav.resources': 'RISORSE',
     'nav.glossary': 'Glossario',
     
     // Homepage Hero
@@ -126,13 +126,13 @@ const translations = {
   },
   en: {
     // Navigation
-    'nav.home': 'Home',
-    'nav.about': 'About Us',
-    'nav.pricing': 'Pricing',
-    'nav.contact': 'Contact',
+    'nav.home': 'HOME',
+    'nav.about': 'ABOUT US',
+    'nav.pricing': 'PRICING',
+    'nav.contact': 'CONTACT',
     'nav.login': 'Login',
     'nav.signup': 'Sign Up Free',
-    'nav.resources': 'Resources',
+    'nav.resources': 'RESOURCES',
     'nav.glossary': 'Glossary',
     
     // Homepage Hero
@@ -209,13 +209,13 @@ const translations = {
   },
   es: {
     // Navigation
-    'nav.home': 'Inicio',
-    'nav.about': 'Nosotros',
-    'nav.pricing': 'Precios',
-    'nav.contact': 'Contacto',
+    'nav.home': 'INICIO',
+    'nav.about': 'NOSOTROS',
+    'nav.pricing': 'PRECIOS',
+    'nav.contact': 'CONTACTO',
     'nav.login': 'Iniciar Sesión',
     'nav.signup': 'Registro Gratis',
-    'nav.resources': 'Recursos',
+    'nav.resources': 'RECURSOS',
     'nav.glossary': 'Glosario',
     
     // Homepage Hero
