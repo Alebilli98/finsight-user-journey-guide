@@ -475,7 +475,7 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
               <Button 
                 variant="outline" 
                 onClick={() => setActiveSection('contact')}
-                className="hidden sm:inline-flex"
+                className="hidden sm:inline-flex border-blue-500 text-blue-600 hover:bg-blue-50"
               >
                 {t('nav.contact')}
               </Button>
