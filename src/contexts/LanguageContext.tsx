@@ -43,13 +43,14 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 const translations = {
   it: {
     // Navigation
-    'nav.home': 'HOME',
-    'nav.about': 'CHI SIAMO',
+    'nav.product': 'PRODOTTO',
+    'nav.solutions': 'SOLUZIONI',
+    'nav.why': 'PERCHÉ FINSIGHT?',
+    'nav.resources': 'RISORSE',
     'nav.pricing': 'PREZZI',
-    'nav.contact': 'CONTATTI',
     'nav.login': 'Accedi',
     'nav.signup': 'Registrati Gratis',
-    'nav.resources': 'RISORSE',
+    'nav.contact': 'Contattaci',
     'nav.glossary': 'Glossario',
     
     // Homepage Hero
@@ -96,6 +97,44 @@ const translations = {
     'cta.subtitle': 'Unisciti a centinaia di startup che già usano FinSight per guidare la crescita e prendere decisioni migliori.',
     'cta.button': 'Inizia Oggi',
     
+    // About Section
+    'about.title': 'Chi Siamo',
+    'about.subtitle': 'La nostra missione è democratizzare l\'intelligenza finanziaria per startup e PMI',
+    'about.mission.title': 'La Nostra Missione',
+    'about.mission.desc': 'Crediamo che ogni startup meriti di avere accesso agli stessi strumenti finanziari avanzati delle grandi aziende. La nostra piattaforma powered by AI livella il campo di gioco.',
+    'about.vision.title': 'La Nostra Visione',
+    'about.vision.desc': 'Un mondo dove ogni imprenditore può prendere decisioni finanziarie informate e guidare la crescita sostenibile attraverso dati e insights intelligenti.',
+    'about.team.title': 'Il Nostro Team',
+    'about.team.desc': 'Un gruppo diversificato di esperti finanziari, ingegneri AI e imprenditori seriali con sede a Dubai, il cuore dell\'innovazione MENA.',
+    
+    // Pricing Section
+    'pricing.title': 'Scegli il Piano Perfetto per la Tua Azienda',
+    'pricing.subtitle': 'Inizia gratis e scala con la crescita del tuo business',
+    'pricing.starter.title': 'Starter',
+    'pricing.starter.price': 'Gratis',
+    'pricing.starter.desc': 'Perfetto per startup in fase iniziale',
+    'pricing.professional.title': 'Professional',
+    'pricing.professional.price': '€99/mese',
+    'pricing.professional.desc': 'Per aziende in crescita',
+    'pricing.enterprise.title': 'Enterprise',
+    'pricing.enterprise.price': 'Su misura',
+    'pricing.enterprise.desc': 'Per grandi organizzazioni',
+    'pricing.cta': 'Inizia Ora',
+    'pricing.contact': 'Contattaci',
+    
+    // Contact Section
+    'contact.title': 'Contattaci',
+    'contact.subtitle': 'Siamo qui per aiutarti a trasformare la gestione finanziaria della tua azienda',
+    'contact.form.name': 'Nome',
+    'contact.form.email': 'Email',
+    'contact.form.company': 'Azienda',
+    'contact.form.message': 'Messaggio',
+    'contact.form.send': 'Invia Messaggio',
+    'contact.info.title': 'Informazioni di Contatto',
+    'contact.info.address': 'Dubai International Financial Centre, Dubai, UAE',
+    'contact.info.email': 'info@finsight.ae',
+    'contact.info.phone': '+971 4 123 4567',
+    
     // Footer
     'footer.tagline': 'La Tua Guida Finanziaria',
     'footer.description': 'Diamo potere alle startup e PMI con intelligenza finanziaria powered by AI.',
@@ -126,13 +165,14 @@ const translations = {
   },
   en: {
     // Navigation
-    'nav.home': 'HOME',
-    'nav.about': 'ABOUT US',
+    'nav.product': 'PRODUCT',
+    'nav.solutions': 'SOLUTIONS',
+    'nav.why': 'WHY FINSIGHT?',
+    'nav.resources': 'RESOURCES',
     'nav.pricing': 'PRICING',
-    'nav.contact': 'CONTACT',
     'nav.login': 'Login',
     'nav.signup': 'Sign Up Free',
-    'nav.resources': 'RESOURCES',
+    'nav.contact': 'Contact Us',
     'nav.glossary': 'Glossary',
     
     // Homepage Hero
@@ -179,6 +219,44 @@ const translations = {
     'cta.subtitle': 'Join hundreds of startups already using FinSight to drive growth and make better decisions.',
     'cta.button': 'Start Today',
     
+    // About Section
+    'about.title': 'About Us',
+    'about.subtitle': 'Our mission is to democratize financial intelligence for startups and SMEs',
+    'about.mission.title': 'Our Mission',
+    'about.mission.desc': 'We believe every startup deserves access to the same advanced financial tools as large corporations. Our AI-powered platform levels the playing field.',
+    'about.vision.title': 'Our Vision',
+    'about.vision.desc': 'A world where every entrepreneur can make informed financial decisions and drive sustainable growth through intelligent data and insights.',
+    'about.team.title': 'Our Team',
+    'about.team.desc': 'A diverse group of financial experts, AI engineers, and serial entrepreneurs based in Dubai, the heart of MENA innovation.',
+    
+    // Pricing Section
+    'pricing.title': 'Choose the Perfect Plan for Your Business',
+    'pricing.subtitle': 'Start free and scale as your business grows',
+    'pricing.starter.title': 'Starter',
+    'pricing.starter.price': 'Free',
+    'pricing.starter.desc': 'Perfect for early-stage startups',
+    'pricing.professional.title': 'Professional',
+    'pricing.professional.price': '$99/month',
+    'pricing.professional.desc': 'For growing businesses',
+    'pricing.enterprise.title': 'Enterprise',
+    'pricing.enterprise.price': 'Custom',
+    'pricing.enterprise.desc': 'For large organizations',
+    'pricing.cta': 'Get Started',
+    'pricing.contact': 'Contact Us',
+    
+    // Contact Section
+    'contact.title': 'Contact Us',
+    'contact.subtitle': 'We\'re here to help you transform your company\'s financial management',
+    'contact.form.name': 'Name',
+    'contact.form.email': 'Email',
+    'contact.form.company': 'Company',
+    'contact.form.message': 'Message',
+    'contact.form.send': 'Send Message',
+    'contact.info.title': 'Contact Information',
+    'contact.info.address': 'Dubai International Financial Centre, Dubai, UAE',
+    'contact.info.email': 'info@finsight.ae',
+    'contact.info.phone': '+971 4 123 4567',
+    
     // Footer
     'footer.tagline': 'Your Financial Guide',
     'footer.description': 'We empower startups and SMEs with AI-powered financial intelligence.',
@@ -209,13 +287,14 @@ const translations = {
   },
   es: {
     // Navigation
-    'nav.home': 'INICIO',
-    'nav.about': 'NOSOTROS',
+    'nav.product': 'PRODUCTO',
+    'nav.solutions': 'SOLUCIONES',
+    'nav.why': '¿POR QUÉ FINSIGHT?',
+    'nav.resources': 'RECURSOS',
     'nav.pricing': 'PRECIOS',
-    'nav.contact': 'CONTACTO',
     'nav.login': 'Iniciar Sesión',
     'nav.signup': 'Registro Gratis',
-    'nav.resources': 'RECURSOS',
+    'nav.contact': 'Contáctanos',
     'nav.glossary': 'Glosario',
     
     // Homepage Hero
@@ -261,6 +340,44 @@ const translations = {
     'cta.title': '¿Listo para Transformar tu Gestión Financiera?',
     'cta.subtitle': 'Únete a cientos de startups que ya usan FinSight para impulsar el crecimiento y tomar mejores decisiones.',
     'cta.button': 'Comenzar Hoy',
+    
+    // About Section
+    'about.title': 'Acerca de Nosotros',
+    'about.subtitle': 'Nuestra misión es democratizar la inteligencia financiera para startups y PyMEs',
+    'about.mission.title': 'Nuestra Misión',
+    'about.mission.desc': 'Creemos que cada startup merece acceso a las mismas herramientas financieras avanzadas que las grandes corporaciones. Nuestra plataforma impulsada por IA nivela el campo de juego.',
+    'about.vision.title': 'Nuestra Visión',
+    'about.vision.desc': 'Un mundo donde cada emprendedor pueda tomar decisiones financieras informadas e impulsar el crecimiento sostenible a través de datos e insights inteligentes.',
+    'about.team.title': 'Nuestro Equipo',
+    'about.team.desc': 'Un grupo diverso de expertos financieros, ingenieros de IA y emprendedores seriales con sede en Dubai, el corazón de la innovación MENA.',
+    
+    // Pricing Section
+    'pricing.title': 'Elige el Plan Perfecto para tu Negocio',
+    'pricing.subtitle': 'Comienza gratis y escala conforme tu negocio crece',
+    'pricing.starter.title': 'Inicial',
+    'pricing.starter.price': 'Gratis',
+    'pricing.starter.desc': 'Perfecto para startups en etapa temprana',
+    'pricing.professional.title': 'Profesional',
+    'pricing.professional.price': '$99/mes',
+    'pricing.professional.desc': 'Para negocios en crecimiento',
+    'pricing.enterprise.title': 'Empresarial',
+    'pricing.enterprise.price': 'Personalizado',
+    'pricing.enterprise.desc': 'Para grandes organizaciones',
+    'pricing.cta': 'Comenzar',
+    'pricing.contact': 'Contáctanos',
+    
+    // Contact Section
+    'contact.title': 'Contáctanos',
+    'contact.subtitle': 'Estamos aquí para ayudarte a transformar la gestión financiera de tu empresa',
+    'contact.form.name': 'Nombre',
+    'contact.form.email': 'Email',
+    'contact.form.company': 'Empresa',
+    'contact.form.message': 'Mensaje',
+    'contact.form.send': 'Enviar Mensaje',
+    'contact.info.title': 'Información de Contacto',
+    'contact.info.address': 'Centro Financiero Internacional de Dubai, Dubai, UAE',
+    'contact.info.email': 'info@finsight.ae',
+    'contact.info.phone': '+971 4 123 4567',
     
     // Footer
     'footer.tagline': 'Tu Guía Financiera',

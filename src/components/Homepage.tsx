@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,7 +18,7 @@ interface HomepageProps {
 }
 
 const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
-  const [activeSection, setActiveSection] = useState<'home' | 'pricing' | 'about' | 'contact' | 'resources'>('home');
+  const [activeSection, setActiveSection] = useState<'home' | 'product' | 'solutions' | 'why' | 'pricing' | 'resources' | 'contact'>('home');
   const { t } = useLanguage();
 
   const features = [
@@ -62,12 +61,129 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
 
   const renderContent = () => {
     switch (activeSection) {
+      case 'product':
+        return (
+          <div className="py-20">
+            <div className="container mx-auto px-4">
+              <div className="text-center mb-16">
+                <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                  {t('nav.product')}
+                </h2>
+                <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                  {t('features.subtitle')}
+                </p>
+              </div>
+              
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                {features.map((feature, index) => {
+                  const Icon = feature.icon;
+                  return (
+                    <Card key={index} className="text-center hover:shadow-lg transition-shadow">
+                      <CardHeader>
+                        <div className="mx-auto mb-4 p-3 bg-blue-100 rounded-full w-fit">
+                          <Icon className="h-6 w-6 text-blue-600" />
+                        </div>
+                        <CardTitle className="text-lg">{feature.title}</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <CardDescription>{feature.description}</CardDescription>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        );
+      case 'solutions':
+        return (
+          <div className="py-20">
+            <div className="container mx-auto px-4">
+              <div className="text-center mb-16">
+                <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                  {t('nav.solutions')}
+                </h2>
+                <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                  {t('features.subtitle')}
+                </p>
+              </div>
+              
+              <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                <Card>
+                  <CardHeader>
+                    <BarChart3 className="h-12 w-12 text-blue-600 mb-4" />
+                    <CardTitle>{t('features.dashboard.title')}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription>{t('features.dashboard.desc')}</CardDescription>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <Brain className="h-12 w-12 text-green-600 mb-4" />
+                    <CardTitle>{t('features.ai.title')}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription>{t('features.ai.desc')}</CardDescription>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <Shield className="h-12 w-12 text-purple-600 mb-4" />
+                    <CardTitle>{t('features.security.title')}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription>{t('features.security.desc')}</CardDescription>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        );
+      case 'why':
+        return (
+          <div className="py-20">
+            <div className="container mx-auto px-4">
+              <div className="text-center mb-16">
+                <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                  {t('nav.why')}
+                </h2>
+                <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                  {t('about.subtitle')}
+                </p>
+              </div>
+              
+              <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>{t('about.mission.title')}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription>{t('about.mission.desc')}</CardDescription>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>{t('about.vision.title')}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription>{t('about.vision.desc')}</CardDescription>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>{t('about.team.title')}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription>{t('about.team.desc')}</CardDescription>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        );
       case 'pricing':
         return <PricingSection onSignup={onSignup} />;
-      case 'about':
-        return <AboutSection />;
-      case 'contact':
-        return <ContactSection />;
       case 'resources':
         return (
           <div className="py-20">
@@ -95,15 +211,15 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
                           <li><strong>ROI:</strong> {t('glossary.roi')}</li>
                           <li><strong>EBITDA:</strong> {t('glossary.ebitda')}</li>
                           <li><strong>Cash Flow:</strong> {t('glossary.cashflow')}</li>
-                          <li><strong>Ratio di Liquidità:</strong> {t('glossary.liquidity')}</li>
+                          <li><strong>Liquidity:</strong> {t('glossary.liquidity')}</li>
                         </ul>
                       </div>
                       <div>
                         <h4 className="font-semibold mb-2">{t('glossary.metrics.title')}</h4>
                         <ul className="space-y-2 text-sm text-gray-600">
                           <li><strong>KPI:</strong> {t('glossary.kpi')}</li>
-                          <li><strong>Margine Lordo:</strong> {t('glossary.grossmargin')}</li>
-                          <li><strong>Ratio di Debito:</strong> {t('glossary.debtratio')}</li>
+                          <li><strong>Gross Margin:</strong> {t('glossary.grossmargin')}</li>
+                          <li><strong>Debt Ratio:</strong> {t('glossary.debtratio')}</li>
                           <li><strong>Working Capital:</strong> {t('glossary.workingcapital')}</li>
                         </ul>
                       </div>
@@ -114,6 +230,8 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
             </div>
           </div>
         );
+      case 'contact':
+        return <ContactSection />;
       default:
         return (
           <>
@@ -319,28 +437,22 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
 
             <nav className="hidden md:flex items-center space-x-6">
               <button 
-                onClick={() => setActiveSection('home')}
-                className={`transition-colors ${activeSection === 'home' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
+                onClick={() => setActiveSection('product')}
+                className={`transition-colors ${activeSection === 'product' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
               >
-                {t('nav.home')}
+                {t('nav.product')}
               </button>
               <button 
-                onClick={() => setActiveSection('about')}
-                className={`transition-colors ${activeSection === 'about' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
+                onClick={() => setActiveSection('solutions')}
+                className={`transition-colors ${activeSection === 'solutions' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
               >
-                {t('nav.about')}
+                {t('nav.solutions')}
               </button>
               <button 
-                onClick={() => setActiveSection('pricing')}
-                className={`transition-colors ${activeSection === 'pricing' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
+                onClick={() => setActiveSection('why')}
+                className={`transition-colors ${activeSection === 'why' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
               >
-                {t('nav.pricing')}
-              </button>
-              <button 
-                onClick={() => setActiveSection('contact')}
-                className={`transition-colors ${activeSection === 'contact' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
-              >
-                {t('nav.contact')}
+                {t('nav.why')}
               </button>
               <button 
                 onClick={() => setActiveSection('resources')}
@@ -348,10 +460,23 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
               >
                 {t('nav.resources')}
               </button>
+              <button 
+                onClick={() => setActiveSection('pricing')}
+                className={`transition-colors ${activeSection === 'pricing' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
+              >
+                {t('nav.pricing')}
+              </button>
             </nav>
 
             <div className="flex items-center space-x-3">
               <LanguageSelector />
+              <Button 
+                variant="outline" 
+                onClick={() => setActiveSection('contact')}
+                className="hidden sm:inline-flex"
+              >
+                {t('nav.contact')}
+              </Button>
               <Button variant="ghost" onClick={onLogin}>
                 {t('nav.login')}
               </Button>
