@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FinSight</title>
+  </head>
+  <body>
+    <script>
+      const password = "TeamFinSight";
+      const inserita = prompt("Inserisci la password per accedere:");
+      if (inserita !== password) {
+        document.body.innerHTML = "<h1>Accesso negato</h1>";
+      }
+    </script>
+
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
