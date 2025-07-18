@@ -1,13 +1,13 @@
-
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp, Eye, EyeOff, Building2, Mail, Lock, User } from "lucide-react";
+import { TrendingUp, Eye, EyeOff, Building2, Mail, Lock, User, Briefcase } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface AuthModalProps {
@@ -35,9 +35,23 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = "login" }: Aut
     lastName: "",
     email: "",
     company: "",
+    industry: "",
     password: "",
     confirmPassword: ""
   });
+
+  const industries = [
+    { value: "commerce", label: "Commercio" },
+    { value: "ecommerce", label: "E-commerce" },
+    { value: "consulting", label: "Consulenza" },
+    { value: "manufacturing", label: "Manifatturiero" },
+    { value: "services", label: "Servizi" },
+    { value: "technology", label: "Tecnologia" },
+    { value: "healthcare", label: "Sanità" },
+    { value: "education", label: "Educazione" },
+    { value: "finance", label: "Finanza" },
+    { value: "other", label: "Altro" }
+  ];
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -105,6 +119,16 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = "login" }: Aut
       return;
     }
 
+    if (!signupData.industry) {
+      toast({
+        title: "Industry Required",
+        description: "Please select your industry.",
+        variant: "destructive"
+      });
+      setIsLoading(false);
+      return;
+    }
+
     // Check if user already exists
     const savedUsers = JSON.parse(localStorage.getItem("finsight_users") || "[]");
     const existingUser = savedUsers.find((u: any) => u.email === signupData.email);
@@ -127,6 +151,7 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = "login" }: Aut
           lastName: signupData.lastName,
           email: signupData.email,
           company: signupData.company,
+          industry: signupData.industry,
           password: signupData.password,
           plan: "Free",
           registrationDate: new Date().toISOString(),
@@ -308,6 +333,29 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = "login" }: Aut
                         value={signupData.company}
                         onChange={(e) => setSignupData({ ...signupData, company: e.target.value })}
                       />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-industry">Industry *</Label>
+                    <div className="relative">
+                      <Briefcase className="absolute left-3 top-3 h-4 w-4 text-gray-400 z-10" />
+                      <Select
+                        value={signupData.industry}
+                        onValueChange={(value) => setSignupData({ ...signupData, industry: value })}
+                        required
+                      >
+                        <SelectTrigger className="pl-10">
+                          <SelectValue placeholder="Seleziona la tua industria" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {industries.map((industry) => (
+                            <SelectItem key={industry.value} value={industry.value}>
+                              {industry.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
 
