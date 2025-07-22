@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,9 +7,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { Upload, FileSpreadsheet, Download, CheckCircle, AlertCircle, Info, Link, Zap, Settings, Database, Plug } from 'lucide-react';
-import * as XLSX from 'xlsx';
+import { Upload, FileSpreadsheet, CheckCircle, AlertCircle, Info, Database, Plug, Settings } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import SectorTemplates from './data-import/SectorTemplates';
+import { useFileProcessor } from './data-import/FileProcessor';
 
 interface DataImportProps {
   user?: any;
@@ -20,9 +20,6 @@ interface DataImportProps {
 
 const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [importStatus, setImportStatus] = useState<'idle' | 'success' | 'error'>('idle');
-  const [importedData, setImportedData] = useState<any>(null);
   const [activeTab, setActiveTab] = useState("file-upload");
   
   // External Integration states
@@ -31,182 +28,41 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
   const [apiKey, setApiKey] = useState("");
   const [isConnecting, setIsConnecting] = useState(false);
   const [connectedSystems, setConnectedSystems] = useState<any[]>([]);
-  const [templateLanguage, setTemplateLanguage] = useState<'it' | 'en' | 'es'>('it');
   
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const { language } = useLanguage();
+  const userIndustry = user?.industry || 'commerce';
 
-  const systemTypes = [
-    "SAP Business One",
-    "Sage",
-    "Zucchetti",
-    "TeamSystem", 
-    "Microsoft Dynamics",
-    "Oracle NetSuite",
-    "QuickBooks",
-    "Xero",
-    "Altri"
-  ];
-
-  const downloadTemplate = () => {
-    const templateData = {
-      'Company Info': [
-        ['Campo', 'Valore', 'Note'],
-        ['Ragione Sociale', 'Es: La Tua Azienda Srl', 'Nome completo dell\'azienda'],
-        ['Codice Fiscale', 'Es: 12345678901', 'Codice fiscale dell\'azienda'],
-        ['Partita IVA', 'Es: IT12345678901', 'Partita IVA con prefisso paese'],
-        ['Settore di Attività', 'Es: Manifatturiero', 'Settore principale'],
-        ['Numero Dipendenti', '50', 'Numero dipendenti attuali'],
-        ['Anno Costituzione', '2020', 'Anno di fondazione'],
-        ['Regione/Provincia', 'Es: Lombardia/Milano', 'Ubicazione sede principale'],
-        ['Fatturato Annuo', '1000000', 'Fatturato ultimo anno in euro'],
-        ['Email Aziendale', 'info@azienda.it', 'Email principale'],
-        ['Telefono', '+39 02 1234567', 'Numero di telefono']
-      ],
-      'Ricavi e Costi': [
-        ['Voce', 'Importo €', 'Descrizione'],
-        ['RICAVI TOTALI', '1200000', 'Somma di tutti i ricavi'],
-        ['Ricavi da Vendite', '1000000', 'Ricavi principali da vendite'],
-        ['Altri Ricavi', '200000', 'Ricavi accessori, plusvalenze, etc.'],
-        ['', '', ''],
-        ['COSTI TOTALI', '900000', 'Somma di tutti i costi'],
-        ['Costo del Venduto', '400000', 'Costi diretti di produzione'],
-        ['Costi del Personale', '300000', 'Stipendi + contributi + TFR'],
-        ['Costi Operativi', '150000', 'Affitti, utilities, marketing'],
-        ['Ammortamenti', '30000', 'Ammortamenti e svalutazioni'],
-        ['Oneri Finanziari', '20000', 'Interessi passivi, commissioni'],
-        ['', '', ''],
-        ['UTILE LORDO', '300000', 'Ricavi - Costo del Venduto'],
-        ['EBITDA', '270000', 'Utile prima di interessi, tasse, ammortamenti'],
-        ['UTILE NETTO', '240000', 'Utile finale dopo tutte le deduzioni']
-      ],
-      'Attività e Passività': [
-        ['Voce Patrimoniale', 'Importo €', 'Dettagli'],
-        ['ATTIVITÀ CORRENTI', '', ''],
-        ['Cassa e Banche', '150000', 'Liquidità immediata'],
-        ['Crediti Clienti', '200000', 'Crediti commerciali'],
-        ['Magazzino', '100000', 'Rimanenze e scorte'],
-        ['Altri Crediti', '50000', 'Crediti diversi'],
-        ['Totale Attività Correnti', '500000', ''],
-        ['', '', ''],
-        ['ATTIVITÀ FISSE', '', ''],
-        ['Immobili', '300000', 'Terreni e fabbricati'],
-        ['Impianti e Macchinari', '200000', 'Attrezzature produttive'],
-        ['Altri Beni', '50000', 'Mobili, auto aziendali, etc.'],
-        ['Totale Attività Fisse', '550000', ''],
-        ['', '', ''],
-        ['TOTALE ATTIVITÀ', '1050000', ''],
-        ['', '', ''],
-        ['PASSIVITÀ', '', ''],
-        ['Debiti Fornitori', '150000', 'Debiti commerciali'],
-        ['Debiti Bancari Breve', '100000', 'Prestiti entro 12 mesi'],
-        ['Altri Debiti Breve', '50000', 'Stipendi, tasse, etc.'],
-        ['Debiti Bancari Lungo', '200000', 'Mutui e finanziamenti'],
-        ['Totale Debiti', '500000', ''],
-        ['', '', ''],
-        ['PATRIMONIO NETTO', '550000', 'Capitale + Riserve + Utili']
-      ],
-      'Dati Mensili': [
-        ['Mese', 'Ricavi', 'Costi', 'Utile', 'Liquidità', 'Note'],
-        ['Gennaio', '95000', '70000', '25000', '145000', ''],
-        ['Febbraio', '88000', '68000', '20000', '140000', ''],
-        ['Marzo', '105000', '75000', '30000', '155000', ''],
-        ['Aprile', '98000', '72000', '26000', '150000', ''],
-        ['Maggio', '110000', '78000', '32000', '165000', ''],
-        ['Giugno', '115000', '82000', '33000', '170000', ''],
-        ['Luglio', '102000', '74000', '28000', '160000', 'Periodo estivo'],
-        ['Agosto', '75000', '65000', '10000', '135000', 'Ferie aziendali'],
-        ['Settembre', '108000', '76000', '32000', '162000', ''],
-        ['Ottobre', '112000', '80000', '32000', '168000', ''],
-        ['Novembre', '118000', '85000', '33000', '175000', ''],
-        ['Dicembre', '125000', '90000', '35000', '185000', 'Chiusura annuale']
-      ]
-    };
-
-    const wb = XLSX.utils.book_new();
-    Object.entries(templateData).forEach(([sheetName, data]) => {
-      const ws = XLSX.utils.aoa_to_sheet(data);
-      const colWidths = [
-        { wch: 25 },
-        { wch: 15 },
-        { wch: 35 }
-      ];
-      ws['!cols'] = colWidths;
-      XLSX.utils.book_append_sheet(wb, ws, sheetName);
-    });
-
-    const fileName = templateLanguage === 'it' ? 'Template_Dati_Finanziari.xlsx' :
-                    templateLanguage === 'en' ? 'Financial_Data_Template.xlsx' :
-                    'Plantilla_Datos_Financieros.xlsx';
-
-    XLSX.writeFile(wb, fileName);
-    
-    toast({
-      title: templateLanguage === 'it' ? "Template Scaricato" : 
-             templateLanguage === 'en' ? "Template Downloaded" : 
-             "Plantilla Descargada",
-      description: templateLanguage === 'it' ? "Il template Excel è stato scaricato con successo." :
-                   templateLanguage === 'en' ? "The Excel template has been downloaded successfully." :
-                   "La plantilla Excel se ha descargado exitosamente.",
-    });
-  };
-
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setUploadedFile(file);
-      processFile(file);
-    }
-  };
-
-  const processFile = async (file: File) => {
-    setIsProcessing(true);
-    setImportStatus('idle');
-
-    try {
-      const arrayBuffer = await file.arrayBuffer();
-      const workbook = XLSX.read(arrayBuffer);
-      
-      // Process the Excel file and extract data
-      const extractedData = {
-        companyInfo: { name: 'Test Company', sector: 'Technology' },
-        profitLoss: { totalRevenue: 1200000, netIncome: 240000 },
-        balanceSheet: { totalAssets: 1050000, equity: 550000 },
-        monthlyData: []
-      };
-
-      setImportedData(extractedData);
-      setImportStatus('success');
-      
+  const { processExcelFile, isProcessing, importStatus, importedData } = useFileProcessor({
+    onDataUpdate: (data) => {
       if (onDataUpdate && user) {
         const updatedUser = {
           ...user,
-          importedData: extractedData,
+          financialData: data.financialData,
+          monthlyData: data.monthlyData,
           lastDataImport: new Date().toISOString()
         };
         onDataUpdate(updatedUser);
       }
       
       if (onDataImport) {
-        onDataImport(extractedData);
+        onDataImport(data);
       }
+    },
+    userIndustry
+  });
 
-      toast({
-        title: "Importazione Completata",
-        description: "I dati sono stati importati con successo.",
-      });
-      
-    } catch (error) {
-      console.error('Errore durante l\'importazione:', error);
-      setImportStatus('error');
-      toast({
-        title: "Errore di Importazione",
-        description: "Si è verificato un errore durante l'importazione del file.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsProcessing(false);
+  const systemTypes = [
+    "SAP Business One", "Sage", "Zucchetti", "TeamSystem", 
+    "Microsoft Dynamics", "Oracle NetSuite", "QuickBooks", "Xero", "Altri"
+  ];
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setUploadedFile(file);
+      await processExcelFile(file);
     }
   };
 
@@ -223,7 +79,6 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
     setIsConnecting(true);
 
     try {
-      // Simulate API connection test
       await new Promise(resolve => setTimeout(resolve, 2000));
       
       const newConnection = {
@@ -241,7 +96,6 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
         description: `${systemType} è stato collegato con successo.`,
       });
 
-      // Reset form
       setSystemType("");
       setApiUrl("");
       setApiKey("");
@@ -258,13 +112,24 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Data Import & Integration</h1>
-        <p className="text-gray-600">Import your financial data and connect external systems</p>
+    <div className="space-y-8 p-6 bg-gradient-to-br from-gray-50 to-white min-h-screen">
+      {/* Header */}
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between space-y-4 lg:space-y-0">
+        <div>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
+            Data Import & Integration
+          </h1>
+          <p className="text-gray-600 mt-2">Importa i dati finanziari e connetti sistemi esterni</p>
+        </div>
+        <div className="flex flex-wrap items-center gap-3">
+          <Badge className="bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 border-0 px-4 py-2 rounded-full">
+            <Upload className="h-4 w-4 mr-2" />
+            Data Import
+          </Badge>
+        </div>
       </div>
 
-      <Card>
+      <Card className="border-0 shadow-lg">
         <CardContent className="p-0">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <div className="border-b">
@@ -273,44 +138,54 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
                   value="file-upload" 
                   className="data-[state=active]:bg-background data-[state=active]:shadow-sm"
                 >
-                  File Upload
+                  Caricamento File
                 </TabsTrigger>
                 <TabsTrigger 
                   value="external-integration"
                   className="data-[state=active]:bg-background data-[state=active]:shadow-sm"
                 >
-                  External Integration
+                  Integrazioni Esterne
                 </TabsTrigger>
                 <TabsTrigger 
                   value="connection-status"
                   className="data-[state=active]:bg-background data-[state=active]:shadow-sm"
                 >
-                  Connection Status
+                  Stato Connessioni
                 </TabsTrigger>
               </TabsList>
             </div>
 
             <TabsContent value="file-upload" className="p-6 space-y-6">
               <div className="flex items-center space-x-2 mb-4">
-                <Upload className="h-5 w-5" />
-                <h3 className="text-lg font-semibold">Upload Financial Data</h3>
+                <Upload className="h-5 w-5 text-blue-600" />
+                <h3 className="text-lg font-semibold">Carica Dati Finanziari</h3>
               </div>
               <p className="text-gray-600 text-sm mb-6">
-                Upload CSV or Excel files containing your financial transactions, income, and expenses
+                Carica file Excel o CSV con i tuoi dati finanziari per aggiornare automaticamente tutte le metriche
               </p>
 
+              {/* Template Section */}
+              <div className="mb-8">
+                <SectorTemplates userIndustry={userIndustry} />
+              </div>
+
+              {/* File Upload Area */}
               <div 
-                className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center hover:border-gray-400 transition-colors cursor-pointer"
+                className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center hover:border-blue-400 hover:bg-blue-50/30 transition-all duration-300 cursor-pointer"
                 onClick={() => fileInputRef.current?.click()}
               >
-                <Upload className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                <div className="bg-gradient-to-r from-blue-500 to-green-500 p-4 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+                  <Upload className="h-10 w-10 text-white" />
+                </div>
                 <h3 className="text-xl font-medium text-gray-900 mb-2">
-                  Drag & drop your files here
+                  Trascina e rilascia i tuoi file qui
                 </h3>
                 <p className="text-gray-600 mb-4">
-                  or click to browse and upload
+                  oppure clicca per selezionare e caricare
                 </p>
-                <Badge variant="outline">Supported formats: .xlsx, .csv</Badge>
+                <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                  Formati supportati: .xlsx, .csv
+                </Badge>
               </div>
               
               <input
@@ -321,64 +196,73 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
                 className="hidden"
               />
 
-              <div className="flex items-center justify-between pt-4">
-                <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-2">
-                    <Label htmlFor="template-language">Template Language:</Label>
-                    <Select value={templateLanguage} onValueChange={(value: 'it' | 'en' | 'es') => setTemplateLanguage(value)}>
-                      <SelectTrigger className="w-32">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="it">🇮🇹 IT</SelectItem>
-                        <SelectItem value="en">🇬🇧 EN</SelectItem>
-                        <SelectItem value="es">🇪🇸 ES</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <Button onClick={downloadTemplate} variant="outline" className="flex items-center space-x-2">
-                    <Download className="h-4 w-4" />
-                    <span>Download Template</span>
-                  </Button>
-                </div>
-
-                {uploadedFile && (
-                  <div className="flex items-center space-x-2 text-sm text-gray-600">
-                    <FileSpreadsheet className="h-4 w-4" />
-                    <span>{uploadedFile.name}</span>
-                    {isProcessing && <Badge>Processing...</Badge>}
-                    {importStatus === 'success' && (
-                      <Badge className="bg-green-100 text-green-800">
-                        <CheckCircle className="h-3 w-3 mr-1" />
-                        Imported
-                      </Badge>
+              {uploadedFile && (
+                <Card className="bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <FileSpreadsheet className="h-6 w-6 text-blue-600" />
+                        <div>
+                          <p className="font-medium text-gray-900">{uploadedFile.name}</p>
+                          <p className="text-sm text-gray-600">
+                            {(uploadedFile.size / 1024).toFixed(1)} KB
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        {isProcessing && (
+                          <Badge className="bg-blue-100 text-blue-800">
+                            Elaborazione...
+                          </Badge>
+                        )}
+                        {importStatus === 'success' && (
+                          <Badge className="bg-green-100 text-green-800">
+                            <CheckCircle className="h-3 w-3 mr-1" />
+                            Importato con Successo
+                          </Badge>
+                        )}
+                        {importStatus === 'error' && (
+                          <Badge className="bg-red-100 text-red-800">
+                            <AlertCircle className="h-3 w-3 mr-1" />
+                            Errore
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                    
+                    {importedData && importStatus === 'success' && (
+                      <div className="mt-4 p-3 bg-white rounded border">
+                        <h4 className="font-medium text-gray-900 mb-2">Dati Importati:</h4>
+                        <div className="grid md:grid-cols-2 gap-2 text-sm">
+                          {importedData.financialData.annualRevenue && (
+                            <div>Ricavi Annuali: €{importedData.financialData.annualRevenue.toLocaleString()}</div>
+                          )}
+                          {importedData.monthlyData?.length > 0 && (
+                            <div>Dati Mensili: {importedData.monthlyData.length} mesi</div>
+                          )}
+                        </div>
+                      </div>
                     )}
-                    {importStatus === 'error' && (
-                      <Badge className="bg-red-100 text-red-800">
-                        <AlertCircle className="h-3 w-3 mr-1" />
-                        Error
-                      </Badge>
-                    )}
-                  </div>
-                )}
-              </div>
+                  </CardContent>
+                </Card>
+              )}
             </TabsContent>
 
             <TabsContent value="external-integration" className="p-6 space-y-6">
               <div className="flex items-center space-x-2 mb-4">
                 <Plug className="h-5 w-5" />
-                <h3 className="text-lg font-semibold">External System Integration</h3>
+                <h3 className="text-lg font-semibold">Integrazioni Esterne</h3>
               </div>
               <p className="text-gray-600 text-sm mb-6">
-                Connect to your existing accounting or financial management systems
+                Connetti i tuoi sistemi di contabilità o gestione finanziaria esistenti
               </p>
 
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="system-type">System Type</Label>
+                  <Label htmlFor="system-type">Tipo di Sistema</Label>
                   <Select value={systemType} onValueChange={setSystemType}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select your accounting software" />
+                      <SelectValue placeholder="Seleziona il tuo software" />
                     </SelectTrigger>
                     <SelectContent>
                       {systemTypes.map((type) => (
@@ -391,7 +275,7 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
                 </div>
 
                 <div>
-                  <Label htmlFor="api-url">API URL</Label>
+                  <Label htmlFor="api-url">URL API</Label>
                   <Input
                     id="api-url"
                     type="url"
@@ -402,11 +286,11 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
                 </div>
 
                 <div>
-                  <Label htmlFor="api-key">API Key</Label>
+                  <Label htmlFor="api-key">Chiave API</Label>
                   <Input
                     id="api-key"
                     type="password"
-                    placeholder="Your API key"
+                    placeholder="La tua chiave API"
                     value={apiKey}
                     onChange={(e) => setApiKey(e.target.value)}
                   />
@@ -415,9 +299,9 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
                 <Button 
                   onClick={handleTestConnection} 
                   disabled={isConnecting}
-                  className="w-full"
+                  className="w-full bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 rounded-full"
                 >
-                  {isConnecting ? "Testing Connection..." : "Test Connection"}
+                  {isConnecting ? "Testando la Connessione..." : "Testa la Connessione"}
                 </Button>
               </div>
 
@@ -425,9 +309,9 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
                 <div className="flex items-start space-x-3">
                   <Info className="h-5 w-5 text-amber-600 mt-0.5" />
                   <div>
-                    <h4 className="font-medium text-amber-900">Setup Guide</h4>
+                    <h4 className="font-medium text-amber-900">Guida all'Installazione</h4>
                     <p className="text-sm text-amber-700 mt-1">
-                      Need help setting up the integration? Contact our support team for assistance with API configuration and data mapping.
+                      Hai bisogno di aiuto per configurare l'integrazione? Contatta il nostro team di supporto per assistenza con la configurazione dell'API e la mappatura dei dati.
                     </p>
                   </div>
                 </div>
@@ -437,26 +321,26 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
             <TabsContent value="connection-status" className="p-6">
               <div className="flex items-center space-x-2 mb-4">
                 <Settings className="h-5 w-5" />
-                <h3 className="text-lg font-semibold">Connection Status</h3>
+                <h3 className="text-lg font-semibold">Stato Connessioni</h3>
               </div>
               <p className="text-gray-600 text-sm mb-6">
-                Monitor your connected systems and data sources
+                Monitora i tuoi sistemi connessi e le fonti di dati
               </p>
 
               {connectedSystems.length === 0 ? (
                 <div className="text-center py-12">
                   <Database className="h-16 w-16 text-gray-300 mx-auto mb-4" />
                   <h4 className="text-lg font-medium text-gray-500 mb-2">
-                    No external systems connected yet
+                    Nessun sistema esterno connesso
                   </h4>
                   <p className="text-gray-400 mb-4">
-                    Use the Integration tab to connect your systems
+                    Usa la tab Integrazione per connettere i tuoi sistemi
                   </p>
                   <Button 
                     variant="outline" 
                     onClick={() => setActiveTab("external-integration")}
                   >
-                    Connect System
+                    Connetti Sistema
                   </Button>
                 </div>
               ) : (
@@ -477,10 +361,10 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
                           <div className="flex items-center space-x-2">
                             <Badge className="bg-green-100 text-green-800">
                               <CheckCircle className="h-3 w-3 mr-1" />
-                              Connected
+                              Connesso
                             </Badge>
                             <p className="text-xs text-gray-500">
-                              Last sync: {new Date(system.lastSync).toLocaleString('it-IT')}
+                              Ultima sincronizzazione: {new Date(system.lastSync).toLocaleString('it-IT')}
                             </p>
                           </div>
                         </div>
