@@ -16,43 +16,33 @@ const EcommerceDashboard = ({ user }: EcommerceDashboardProps) => {
   const userData = user || {};
   const financialData = userData.financialData || {};
   
-  // E-commerce specific metrics
+  // E-commerce specific metrics - start with 0 if no real data
   const companyName = financialData.companyName || userData.company || 'La Tua Azienda';
-  const annualRevenue = financialData.annualRevenue || financialData.totalRevenue || userData.monthlyIncome * 12 || 180000;
-  const ordersReceived = financialData.ordersReceived || Math.round(annualRevenue / 85) || 2118;
-  const activeCustomers = financialData.activeCustomers || Math.round(ordersReceived * 0.7) || 1483;
+  const annualRevenue = financialData.annualRevenue || 0;
+  const ordersReceived = financialData.ordersReceived || 0;
+  const activeCustomers = financialData.activeCustomers || 0;
   
   // Additional e-commerce metrics
-  const averageOrderValue = ordersReceived > 0 ? (annualRevenue / ordersReceived) : 85;
-  const customerLifetimeValue = activeCustomers > 0 ? (annualRevenue / activeCustomers) : 121;
+  const averageOrderValue = ordersReceived > 0 ? (annualRevenue / ordersReceived) : 0;
+  const customerLifetimeValue = activeCustomers > 0 ? (annualRevenue / activeCustomers) : 0;
   const monthlyRevenue = Math.round(annualRevenue / 12);
   const monthlyOrders = Math.round(ordersReceived / 12);
-  const conversionRate = financialData.conversionRate || 3.2;
+  const conversionRate = financialData.conversionRate || 0;
   
   const hasRealData = annualRevenue > 0 || ordersReceived > 0;
 
-  // Generate sample monthly data for charts
-  const monthlyData = ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'].map((month, index) => {
-    const baseRevenue = monthlyRevenue * (0.8 + Math.random() * 0.4);
-    const baseOrders = monthlyOrders * (0.8 + Math.random() * 0.4);
-    const baseCustomers = Math.round(activeCustomers / 12) * (0.9 + Math.random() * 0.2);
-    return {
-      month,
-      revenue: Math.round(baseRevenue),
-      orders: Math.round(baseOrders),
-      customers: Math.round(baseCustomers),
-      expenses: Math.round(baseRevenue * 0.6) // 60% expense ratio for e-commerce
-    };
-  });
+  // Generate monthly data - all zeros if no real data
+  const monthlyData = ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'].map((month) => ({
+    month,
+    revenue: 0,
+    orders: 0,
+    customers: 0,
+    expenses: 0
+  }));
 
-  // E-commerce specific expense breakdown
+  // E-commerce specific expense breakdown - all zeros if no real data
   const expenseData = [
-    { name: 'Costo Prodotti', value: Math.round(annualRevenue * 0.4), color: '#ef4444' },
-    { name: 'Marketing Digital', value: Math.round(annualRevenue * 0.12), color: '#3b82f6' },
-    { name: 'Logistica & Spedizioni', value: Math.round(annualRevenue * 0.08), color: '#10b981' },
-    { name: 'Piattaforma E-commerce', value: Math.round(annualRevenue * 0.03), color: '#f59e0b' },
-    { name: 'Customer Service', value: Math.round(annualRevenue * 0.05), color: '#8b5cf6' },
-    { name: 'Altri Costi', value: Math.round(annualRevenue * 0.02), color: '#6b7280' }
+    { name: 'Nessun Dato', value: 0, color: '#e5e7eb' }
   ];
 
   return (
@@ -82,7 +72,7 @@ const EcommerceDashboard = ({ user }: EcommerceDashboardProps) => {
         <MetricCard 
           title="Ricavi Annuali"
           value={`€${annualRevenue.toLocaleString()}`}
-          change={15.2}
+          change={hasRealData ? 15.2 : 0}
           trend="up"
           color="green"
           icon={<DollarSign className="h-6 w-6 text-white" />}
@@ -90,7 +80,7 @@ const EcommerceDashboard = ({ user }: EcommerceDashboardProps) => {
         <MetricCard 
           title="Ordini Ricevuti"
           value={ordersReceived.toLocaleString()}
-          change={22.8}
+          change={hasRealData ? 22.8 : 0}
           trend="up"
           color="blue"
           icon={<ShoppingBag className="h-6 w-6 text-white" />}
@@ -98,7 +88,7 @@ const EcommerceDashboard = ({ user }: EcommerceDashboardProps) => {
         <MetricCard 
           title="Clienti Attivi"
           value={activeCustomers.toLocaleString()}
-          change={18.5}
+          change={hasRealData ? 18.5 : 0}
           trend="up"
           color="purple"
           icon={<Users className="h-6 w-6 text-white" />}
@@ -106,7 +96,7 @@ const EcommerceDashboard = ({ user }: EcommerceDashboardProps) => {
         <MetricCard 
           title="AOV"
           value={`€${averageOrderValue.toFixed(0)}`}
-          change={5.3}
+          change={hasRealData ? 5.3 : 0}
           trend="up"
           color="orange"
           icon={<Target className="h-6 w-6 text-white" />}
@@ -129,13 +119,13 @@ const EcommerceDashboard = ({ user }: EcommerceDashboardProps) => {
         />
         <KPIIndicator 
           title="Ritorno Clienti"
-          value={68}
+          value={hasRealData ? 68 : 0}
           target={75}
           unit="%"
         />
       </div>
 
-      {/* Charts Section */}
+      {/* Charts Section - only show if we have real data */}
       {hasRealData && (
         <div className="grid lg:grid-cols-2 gap-8">
           <MonthlyRevenueChart 
@@ -149,51 +139,6 @@ const EcommerceDashboard = ({ user }: EcommerceDashboardProps) => {
           />
         </div>
       )}
-
-      {/* E-commerce Insights */}
-      <div className="grid lg:grid-cols-3 gap-6">
-        <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-blue-100">
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-4">
-              <div className="p-3 bg-blue-500 rounded-full">
-                <Zap className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-blue-900">Conversioni in Crescita</h3>
-                <p className="text-sm text-blue-700">+{conversionRate}% tasso di conversione</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-0 shadow-lg bg-gradient-to-br from-purple-50 to-purple-100">
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-4">
-              <div className="p-3 bg-purple-500 rounded-full">
-                <Users className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-purple-900">Base Clienti</h3>
-                <p className="text-sm text-purple-700">CLV €{customerLifetimeValue.toFixed(0)} per cliente</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-green-100">
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-4">
-              <div className="p-3 bg-green-500 rounded-full">
-                <TrendingUp className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-green-900">Revenue Growth</h3>
-                <p className="text-sm text-green-700">+15% crescita anno su anno</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
 
       {/* No Data State */}
       {!hasRealData && (
