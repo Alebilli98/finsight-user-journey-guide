@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import * as XLSX from 'xlsx';
@@ -193,4 +192,4 @@ export const useFileProcessor = ({ onDataUpdate, userIndustry = 'commerce' }: Fi
   };
 };
 
-export default FileProcessor;
+export default useFileProcessor;
