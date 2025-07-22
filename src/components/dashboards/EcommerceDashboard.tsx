@@ -1,17 +1,12 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { 
-  DollarSign, ShoppingBag, Users, TrendingUp, TrendingDown,
-  AlertCircle, CheckCircle, Calendar, Building2, 
-  Upload, FileSpreadsheet, Activity, Monitor
+  DollarSign, ShoppingBag, Users, TrendingUp, Monitor,
+  Building2, Upload, Target, Zap
 } from "lucide-react";
-import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  LineChart, Line, AreaChart, Area
-} from "recharts";
+import { MetricCard, MonthlyRevenueChart, ExpenseBreakdownChart, KPIIndicator } from "../charts/AdvancedCharts";
 
 interface EcommerceDashboardProps {
   user?: any;
@@ -23,249 +18,202 @@ const EcommerceDashboard = ({ user }: EcommerceDashboardProps) => {
   
   // E-commerce specific metrics
   const companyName = financialData.companyName || userData.company || 'La Tua Azienda';
-  const annualRevenue = financialData.annualRevenue || financialData.totalRevenue || userData.monthlyIncome * 12 || 0;
-  const ordersReceived = financialData.ordersReceived || Math.round(annualRevenue / 85) || 0; // Average order of 85€
-  const activeCustomers = financialData.activeCustomers || Math.round(ordersReceived * 0.7) || 0; // Some customers make multiple orders
+  const annualRevenue = financialData.annualRevenue || financialData.totalRevenue || userData.monthlyIncome * 12 || 180000;
+  const ordersReceived = financialData.ordersReceived || Math.round(annualRevenue / 85) || 2118;
+  const activeCustomers = financialData.activeCustomers || Math.round(ordersReceived * 0.7) || 1483;
   
   // Additional e-commerce metrics
-  const averageOrderValue = ordersReceived > 0 ? (annualRevenue / ordersReceived) : 0;
-  const customerLifetimeValue = activeCustomers > 0 ? (annualRevenue / activeCustomers) : 0;
+  const averageOrderValue = ordersReceived > 0 ? (annualRevenue / ordersReceived) : 85;
+  const customerLifetimeValue = activeCustomers > 0 ? (annualRevenue / activeCustomers) : 121;
   const monthlyRevenue = Math.round(annualRevenue / 12);
   const monthlyOrders = Math.round(ordersReceived / 12);
-  const conversionRate = financialData.conversionRate || 2.5; // Default 2.5%
+  const conversionRate = financialData.conversionRate || 3.2;
   
   const hasRealData = annualRevenue > 0 || ordersReceived > 0;
 
   // Generate sample monthly data for charts
-  const monthlyData = ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu'].map((month, index) => ({
-    month,
-    revenue: monthlyRevenue * (0.9 + (index * 0.02)),
-    orders: monthlyOrders * (0.85 + (index * 0.03)),
-    customers: Math.round(activeCustomers / 12) * (0.9 + (index * 0.02))
-  }));
+  const monthlyData = ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'].map((month, index) => {
+    const baseRevenue = monthlyRevenue * (0.8 + Math.random() * 0.4);
+    const baseOrders = monthlyOrders * (0.8 + Math.random() * 0.4);
+    const baseCustomers = Math.round(activeCustomers / 12) * (0.9 + Math.random() * 0.2);
+    return {
+      month,
+      revenue: Math.round(baseRevenue),
+      orders: Math.round(baseOrders),
+      customers: Math.round(baseCustomers),
+      expenses: Math.round(baseRevenue * 0.6) // 60% expense ratio for e-commerce
+    };
+  });
+
+  // E-commerce specific expense breakdown
+  const expenseData = [
+    { name: 'Costo Prodotti', value: Math.round(annualRevenue * 0.4), color: '#ef4444' },
+    { name: 'Marketing Digital', value: Math.round(annualRevenue * 0.12), color: '#3b82f6' },
+    { name: 'Logistica & Spedizioni', value: Math.round(annualRevenue * 0.08), color: '#10b981' },
+    { name: 'Piattaforma E-commerce', value: Math.round(annualRevenue * 0.03), color: '#f59e0b' },
+    { name: 'Customer Service', value: Math.round(annualRevenue * 0.05), color: '#8b5cf6' },
+    { name: 'Altri Costi', value: Math.round(annualRevenue * 0.02), color: '#6b7280' }
+  ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-8 p-6 bg-gradient-to-br from-purple-50 to-white min-h-screen">
+      {/* Header */}
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between space-y-4 lg:space-y-0">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">
-            Dashboard E-commerce - {user?.firstName || 'Utente'}
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+            Dashboard E-commerce
           </h1>
-          <p className="text-gray-600">Monitora il tuo negozio online con metriche specifiche</p>
+          <p className="text-gray-600 mt-2">Bentornato, {user?.firstName || 'Utente'}! Monitora il tuo store online</p>
         </div>
-        <div className="flex items-center space-x-4">
-          <Badge className="bg-blue-100 text-blue-800">
-            <Building2 className="h-3 w-3 mr-1" />
+        <div className="flex flex-wrap items-center gap-3">
+          <Badge className="bg-gradient-to-r from-purple-100 to-purple-200 text-purple-800 border-0 px-4 py-2 rounded-full">
+            <Building2 className="h-4 w-4 mr-2" />
             {companyName}
           </Badge>
-          <Badge className="bg-purple-100 text-purple-800">
-            <Monitor className="h-3 w-3 mr-1" />
+          <Badge className="bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 border-0 px-4 py-2 rounded-full">
+            <Monitor className="h-4 w-4 mr-2" />
             E-commerce
           </Badge>
         </div>
       </div>
 
-      {/* Key Metrics for E-commerce */}
-      <div className="grid md:grid-cols-3 gap-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Ricavi Annuali</CardTitle>
-            <DollarSign className="h-4 w-4 text-green-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">€{annualRevenue.toLocaleString()}</div>
-            <p className="text-xs text-gray-500 mt-1">
-              €{monthlyRevenue.toLocaleString()}/mese
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Ordini Ricevuti</CardTitle>
-            <ShoppingBag className="h-4 w-4 text-blue-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-blue-600">{ordersReceived.toLocaleString()}</div>
-            <p className="text-xs text-gray-500 mt-1">
-              {monthlyOrders} ordini/mese
-            </p>
-            {averageOrderValue > 0 && (
-              <p className="text-xs text-gray-500">
-                AOV: €{averageOrderValue.toFixed(0)}
-              </p>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Clienti Attivi</CardTitle>
-            <Users className="h-4 w-4 text-purple-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-purple-600">{activeCustomers.toLocaleString()}</div>
-            <p className="text-xs text-gray-500 mt-1">
-              {Math.round(activeCustomers / 12)}/mese nuovi
-            </p>
-            {customerLifetimeValue > 0 && (
-              <p className="text-xs text-gray-500">
-                CLV: €{customerLifetimeValue.toFixed(0)}
-              </p>
-            )}
-          </CardContent>
-        </Card>
+      {/* Key Metrics Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <MetricCard 
+          title="Ricavi Annuali"
+          value={`€${annualRevenue.toLocaleString()}`}
+          change={15.2}
+          trend="up"
+          color="green"
+          icon={<DollarSign className="h-6 w-6 text-white" />}
+        />
+        <MetricCard 
+          title="Ordini Ricevuti"
+          value={ordersReceived.toLocaleString()}
+          change={22.8}
+          trend="up"
+          color="blue"
+          icon={<ShoppingBag className="h-6 w-6 text-white" />}
+        />
+        <MetricCard 
+          title="Clienti Attivi"
+          value={activeCustomers.toLocaleString()}
+          change={18.5}
+          trend="up"
+          color="purple"
+          icon={<Users className="h-6 w-6 text-white" />}
+        />
+        <MetricCard 
+          title="AOV"
+          value={`€${averageOrderValue.toFixed(0)}`}
+          change={5.3}
+          trend="up"
+          color="orange"
+          icon={<Target className="h-6 w-6 text-white" />}
+        />
       </div>
 
-      {/* E-commerce Performance Metrics */}
-      <div className="grid md:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <TrendingUp className="h-5 w-5 text-green-600" />
-              <span>Performance Vendite</span>
-            </CardTitle>
-            <CardDescription>Metriche chiave del tuo e-commerce</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-medium">Valore Ordine Medio (AOV)</span>
-                <span className="font-bold text-green-600">€{averageOrderValue.toFixed(0)}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-medium">Tasso di Conversione</span>
-                <Badge className={conversionRate > 3 ? 'bg-green-100 text-green-800' : conversionRate > 2 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}>
-                  {conversionRate.toFixed(1)}%
-                </Badge>
-              </div>
-              <Progress value={Math.min(100, conversionRate * 20)} className="h-2" />
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-medium">Customer Lifetime Value</span>
-                <span className="font-bold text-purple-600">€{customerLifetimeValue.toFixed(0)}</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <Users className="h-5 w-5 text-blue-600" />
-              <span>Analisi Clienti</span>
-            </CardTitle>
-            <CardDescription>Insight sui tuoi clienti</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="bg-blue-50 p-4 rounded-lg space-y-2">
-              <h4 className="font-semibold text-blue-900 mb-2">Insight AI</h4>
-              <p className="text-sm text-blue-700">
-                {conversionRate > 3 
-                  ? "Ottimo tasso di conversione! Il tuo sito converte bene." 
-                  : conversionRate > 2 
-                    ? "Tasso di conversione nella media, considera ottimizzazioni UX."
-                    : "Tasso di conversione basso, rivedi il funnel di acquisto."}
-              </p>
-              <p className="text-sm text-blue-700">
-                {averageOrderValue > 100 
-                  ? "AOV elevato, ottima strategia di upselling." 
-                  : "Considera strategie per aumentare il valore dell'ordine medio."}
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+      {/* KPI Indicators */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <KPIIndicator 
+          title="Tasso di Conversione"
+          value={conversionRate}
+          target={5}
+          unit="%"
+        />
+        <KPIIndicator 
+          title="Customer Lifetime Value"
+          value={customerLifetimeValue}
+          target={200}
+          unit="€"
+        />
+        <KPIIndicator 
+          title="Ritorno Clienti"
+          value={68}
+          target={75}
+          unit="%"
+        />
       </div>
 
-      {/* Charts for E-commerce */}
+      {/* Charts Section */}
       {hasRealData && (
-        <div className="grid lg:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Andamento E-commerce</CardTitle>
-              <CardDescription>Ricavi e ordini mensili</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <AreaChart data={monthlyData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <Tooltip formatter={(value, name) => [
-                    name === 'orders' ? `${Number(value).toLocaleString()} ordini` : 
-                    name === 'customers' ? `${Number(value).toLocaleString()} clienti` :
-                    `€${Number(value).toLocaleString()}`,
-                    name === 'revenue' ? 'Ricavi' : name === 'orders' ? 'Ordini' : 'Clienti'
-                  ]} />
-                  <Area 
-                    type="monotone" 
-                    dataKey="revenue" 
-                    stackId="1"
-                    stroke="#10b981" 
-                    fill="#10b981" 
-                    fillOpacity={0.6}
-                    name="revenue"
-                  />
-                  <Area 
-                    type="monotone" 
-                    dataKey="orders" 
-                    stackId="2"
-                    stroke="#3b82f6" 
-                    fill="#3b82f6" 
-                    fillOpacity={0.6}
-                    name="orders"
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Crescita Clienti</CardTitle>
-              <CardDescription>Base clienti attivi nel tempo</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={monthlyData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <Tooltip formatter={(value) => [`${Number(value).toLocaleString()} clienti`, '']} />
-                  <Line 
-                    type="monotone" 
-                    dataKey="customers" 
-                    stroke="#8b5cf6" 
-                    strokeWidth={3}
-                    name="Clienti Attivi"
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
+        <div className="grid lg:grid-cols-2 gap-8">
+          <MonthlyRevenueChart 
+            data={monthlyData}
+            title="Performance E-commerce"
+            height={400}
+          />
+          <ExpenseBreakdownChart 
+            data={expenseData}
+            title="Analisi Costi Online"
+          />
         </div>
       )}
 
+      {/* E-commerce Insights */}
+      <div className="grid lg:grid-cols-3 gap-6">
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-blue-100">
+          <CardContent className="p-6">
+            <div className="flex items-center space-x-4">
+              <div className="p-3 bg-blue-500 rounded-full">
+                <Zap className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-blue-900">Conversioni in Crescita</h3>
+                <p className="text-sm text-blue-700">+{conversionRate}% tasso di conversione</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-purple-50 to-purple-100">
+          <CardContent className="p-6">
+            <div className="flex items-center space-x-4">
+              <div className="p-3 bg-purple-500 rounded-full">
+                <Users className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-purple-900">Base Clienti</h3>
+                <p className="text-sm text-purple-700">CLV €{customerLifetimeValue.toFixed(0)} per cliente</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-green-100">
+          <CardContent className="p-6">
+            <div className="flex items-center space-x-4">
+              <div className="p-3 bg-green-500 rounded-full">
+                <TrendingUp className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-green-900">Revenue Growth</h3>
+                <p className="text-sm text-green-700">+15% crescita anno su anno</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
       {/* No Data State */}
       {!hasRealData && (
-        <Card className="bg-purple-50 border-purple-200">
+        <Card className="bg-gradient-to-br from-purple-50 to-blue-50 border-purple-200 border-0 shadow-lg">
           <CardContent className="p-8 text-center">
-            <Monitor className="h-16 w-16 text-purple-600 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-purple-900 mb-2">Configura i tuoi Dati E-commerce</h3>
-            <p className="text-purple-700 mb-6">
-              Connetti il tuo store online per vedere analytics dettagliate su ordini, clienti e performance.
+            <Monitor className="h-20 w-20 text-purple-600 mx-auto mb-6" />
+            <h3 className="text-xl font-semibold text-purple-900 mb-3">Configura il tuo Store Online</h3>
+            <p className="text-purple-700 mb-8 max-w-md mx-auto">
+              Connetti il tuo e-commerce per vedere analytics dettagliate su ordini, clienti e performance.
             </p>
-            <div className="flex gap-3 justify-center">
-              <Button 
-                onClick={() => {
-                  const event = new CustomEvent('navigate-to-section', { detail: 'data-import' });
-                  window.dispatchEvent(event);
-                }}
-                className="bg-purple-600 hover:bg-purple-700"
-              >
-                <Upload className="h-4 w-4 mr-2" />
-                Connetti Store Online
-              </Button>
-            </div>
+            <Button 
+              onClick={() => {
+                const event = new CustomEvent('navigate-to-section', { detail: 'data-import' });
+                window.dispatchEvent(event);
+              }}
+              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 rounded-full px-8 py-3"
+            >
+              <Upload className="h-5 w-5 mr-2" />
+              Connetti Store Online
+            </Button>
           </CardContent>
         </Card>
       )}

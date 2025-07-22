@@ -13,6 +13,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 interface AppSidebarProps {
@@ -41,7 +42,7 @@ const AppSidebar = ({ activeSection, setActiveSection }: AppSidebarProps) => {
       <SidebarContent className="p-4">
         <SidebarGroup>
           <SidebarGroupLabel className="flex items-center space-x-3 px-3 py-6 mb-4">
-            <div className="bg-gradient-to-r from-blue-600 to-green-600 p-2.5 rounded-xl">
+            <div className="bg-gradient-to-r from-blue-600 to-green-600 p-2.5 rounded-xl shadow-md">
               <TrendingUp className="h-6 w-6 text-white" />
             </div>
             {!collapsed && (
@@ -53,28 +54,30 @@ const AppSidebar = ({ activeSection, setActiveSection }: AppSidebarProps) => {
           </SidebarGroupLabel>
 
           <SidebarGroupContent>
-            <SidebarMenu className="space-y-2">
-              {navigationItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = activeSection === item.id;
-                
-                return (
-                  <SidebarMenuItem key={item.id}>
-                    <SidebarMenuButton
-                      onClick={() => setActiveSection(item.id)}
-                      className={`w-full justify-start py-3 px-4 rounded-lg transition-all ${
-                        isActive 
-                          ? "bg-blue-100 text-blue-700 font-medium shadow-sm" 
-                          : "hover:bg-gray-100 text-gray-700"
-                      }`}
-                    >
-                      <Icon className="h-5 w-5 flex-shrink-0" />
-                      {!collapsed && <span className="ml-3 text-base">{item.label}</span>}
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
-            </SidebarMenu>
+            <ScrollArea className="h-[calc(100vh-200px)] overflow-y-auto">
+              <SidebarMenu className="space-y-2">
+                {navigationItems.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = activeSection === item.id;
+                  
+                  return (
+                    <SidebarMenuItem key={item.id}>
+                      <SidebarMenuButton
+                        onClick={() => setActiveSection(item.id)}
+                        className={`w-full justify-start py-3 px-4 rounded-xl transition-all transform hover:scale-105 ${
+                          isActive 
+                            ? "bg-gradient-to-r from-blue-100 to-green-100 text-blue-700 font-medium shadow-lg border border-blue-200" 
+                            : "hover:bg-gray-100 text-gray-700 hover:shadow-md"
+                        }`}
+                      >
+                        <Icon className="h-5 w-5 flex-shrink-0" />
+                        {!collapsed && <span className="ml-3 text-base">{item.label}</span>}
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
+              </SidebarMenu>
+            </ScrollArea>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>

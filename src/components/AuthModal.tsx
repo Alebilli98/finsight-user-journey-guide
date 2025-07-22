@@ -44,12 +44,22 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = "login" }: Aut
     { value: "commerce", label: "Commercio" },
     { value: "ecommerce", label: "E-commerce" },
     { value: "consulting", label: "Consulenza" },
-    { value: "manufacturing", label: "Manifatturiero" },
+    { value: "real-estate", label: "Real Estate" },
     { value: "services", label: "Servizi" },
-    { value: "technology", label: "Tecnologia" },
+    { value: "manufacturing", label: "Produzione/Manifatturiero" },
+    { value: "technology", label: "Tecnologia/IT" },
     { value: "healthcare", label: "Sanità" },
-    { value: "education", label: "Educazione" },
-    { value: "finance", label: "Finanza" },
+    { value: "education", label: "Educazione/Formazione" },
+    { value: "finance", label: "Servizi Finanziari" },
+    { value: "hospitality", label: "Ospitalità/Turismo" },
+    { value: "retail", label: "Retail/Vendita al dettaglio" },
+    { value: "logistics", label: "Logistica/Trasporti" },
+    { value: "food-beverage", label: "Food & Beverage" },
+    { value: "construction", label: "Costruzioni/Edilizia" },
+    { value: "automotive", label: "Automotive" },
+    { value: "legal", label: "Servizi Legali" },
+    { value: "marketing", label: "Marketing/Pubblicità" },
+    { value: "non-profit", label: "No-Profit/ONG" },
     { value: "other", label: "Altro" }
   ];
 
@@ -189,10 +199,10 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = "login" }: Aut
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <div className="flex items-center justify-center space-x-2 mb-4">
-            <div className="bg-gradient-to-r from-blue-600 to-green-600 p-2 rounded-lg">
+            <div className="bg-gradient-to-r from-blue-600 to-green-600 p-2 rounded-lg shadow-md">
               <TrendingUp className="h-5 w-5 text-white" />
             </div>
             <div>
@@ -212,7 +222,7 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = "login" }: Aut
           </TabsList>
 
           <TabsContent value="login">
-            <Card>
+            <Card className="border-0 shadow-lg">
               <CardHeader>
                 <CardTitle>Welcome Back</CardTitle>
                 <CardDescription>
@@ -229,7 +239,7 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = "login" }: Aut
                         id="login-email"
                         type="email"
                         placeholder="your@email.com"
-                        className="pl-10"
+                        className="pl-10 rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500"
                         value={loginData.email}
                         onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
                         required
@@ -245,7 +255,7 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = "login" }: Aut
                         id="login-password"
                         type={showPassword ? "text" : "password"}
                         placeholder="Your password"
-                        className="pl-10 pr-10"
+                        className="pl-10 pr-10 rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500"
                         value={loginData.password}
                         onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
                         required
@@ -262,7 +272,7 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = "login" }: Aut
                     </div>
                   </div>
 
-                  <Button type="submit" className="w-full" disabled={isLoading}>
+                  <Button type="submit" className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700" disabled={isLoading}>
                     {isLoading ? "Logging in..." : "Login"}
                   </Button>
                 </form>
@@ -271,7 +281,7 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = "login" }: Aut
           </TabsContent>
 
           <TabsContent value="signup">
-            <Card>
+            <Card className="border-0 shadow-lg">
               <CardHeader>
                 <CardTitle>Create Account</CardTitle>
                 <CardDescription>
@@ -288,7 +298,7 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = "login" }: Aut
                         <Input
                           id="signup-firstname"
                           placeholder="Mario"
-                          className="pl-10"
+                          className="pl-10 rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500"
                           value={signupData.firstName}
                           onChange={(e) => setSignupData({ ...signupData, firstName: e.target.value })}
                           required
@@ -300,6 +310,7 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = "login" }: Aut
                       <Input
                         id="signup-lastname"
                         placeholder="Rossi"
+                        className="rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500"
                         value={signupData.lastName}
                         onChange={(e) => setSignupData({ ...signupData, lastName: e.target.value })}
                       />
@@ -314,7 +325,7 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = "login" }: Aut
                         id="signup-email"
                         type="email"
                         placeholder="mario@yourcompany.com"
-                        className="pl-10"
+                        className="pl-10 rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500"
                         value={signupData.email}
                         onChange={(e) => setSignupData({ ...signupData, email: e.target.value })}
                         required
@@ -329,7 +340,7 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = "login" }: Aut
                       <Input
                         id="signup-company"
                         placeholder="Your Company Ltd"
-                        className="pl-10"
+                        className="pl-10 rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500"
                         value={signupData.company}
                         onChange={(e) => setSignupData({ ...signupData, company: e.target.value })}
                       />
@@ -345,10 +356,10 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = "login" }: Aut
                         onValueChange={(value) => setSignupData({ ...signupData, industry: value })}
                         required
                       >
-                        <SelectTrigger className="pl-10">
+                        <SelectTrigger className="pl-10 rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500">
                           <SelectValue placeholder="Seleziona la tua industria" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="max-h-[300px] overflow-y-auto">
                           {industries.map((industry) => (
                             <SelectItem key={industry.value} value={industry.value}>
                               {industry.label}
@@ -367,7 +378,7 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = "login" }: Aut
                         id="signup-password"
                         type={showPassword ? "text" : "password"}
                         placeholder="Create password"
-                        className="pl-10 pr-10"
+                        className="pl-10 pr-10 rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500"
                         value={signupData.password}
                         onChange={(e) => setSignupData({ ...signupData, password: e.target.value })}
                         required
@@ -391,13 +402,14 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = "login" }: Aut
                       id="signup-confirm"
                       type="password"
                       placeholder="Confirm password"
+                      className="rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500"
                       value={signupData.confirmPassword}
                       onChange={(e) => setSignupData({ ...signupData, confirmPassword: e.target.value })}
                       required
                     />
                   </div>
 
-                  <Button type="submit" className="w-full" disabled={isLoading}>
+                  <Button type="submit" className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700" disabled={isLoading}>
                     {isLoading ? "Creating Account..." : "Create Account"}
                   </Button>
                 </form>
