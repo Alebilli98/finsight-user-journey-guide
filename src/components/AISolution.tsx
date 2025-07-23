@@ -1,16 +1,21 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Brain, MessageSquare, TrendingUp, Lightbulb, Target, 
-  Zap, ArrowRight, CheckCircle, AlertTriangle
+  Zap, ArrowRight, CheckCircle, AlertTriangle, Bot
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import AIAssistant from "./ai/AIAssistant";
 
-const AISolution = () => {
+interface AISolutionProps {
+  financialData?: any;
+}
+
+const AISolution = ({ financialData }: AISolutionProps) => {
   const [chatMessage, setChatMessage] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const { toast } = useToast();
@@ -108,133 +113,159 @@ const AISolution = () => {
         </Badge>
       </div>
 
-      {/* AI Chat Interface */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <MessageSquare className="h-5 w-5 text-blue-600" />
-            <span>Ask FinSight AI</span>
-          </CardTitle>
-          <CardDescription>
-            Get instant answers to your financial questions and receive actionable insights
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {/* Chat History */}
-            <div className="bg-gray-50 rounded-lg p-4 max-h-80 overflow-y-auto space-y-4">
-              {chatHistory.map((chat, index) => (
-                <div key={index} className={`flex ${chat.type === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-[80%] p-3 rounded-lg ${
-                    chat.type === 'user' 
-                      ? 'bg-blue-600 text-white' 
-                      : 'bg-white border text-gray-900'
-                  }`}>
-                    <p className="text-sm">{chat.message}</p>
-                    <p className={`text-xs mt-1 ${
-                      chat.type === 'user' ? 'text-blue-100' : 'text-gray-500'
-                    }`}>
-                      {chat.timestamp}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
+      <Tabs defaultValue="assistant" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="assistant" className="flex items-center gap-2">
+            <Bot className="h-4 w-4" />
+            Assistente AI
+          </TabsTrigger>
+          <TabsTrigger value="chat" className="flex items-center gap-2">
+            <MessageSquare className="h-4 w-4" />
+            Chat AI
+          </TabsTrigger>
+          <TabsTrigger value="insights" className="flex items-center gap-2">
+            <Lightbulb className="h-4 w-4" />
+            Insights
+          </TabsTrigger>
+        </TabsList>
 
-            {/* Input Area */}
-            <div className="flex space-x-2">
-              <Textarea
-                placeholder="Ask me about your financial performance, recommendations, or any specific questions..."
-                value={chatMessage}
-                onChange={(e) => setChatMessage(e.target.value)}
-                className="flex-1"
-                rows={2}
-              />
-              <Button 
-                onClick={handleSendMessage}
-                disabled={isAnalyzing}
-                className="flex items-center space-x-2"
-              >
-                {isAnalyzing ? (
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                ) : (
-                  <Brain className="h-4 w-4" />
-                )}
-                <span>{isAnalyzing ? 'Analyzing...' : 'Send'}</span>
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+        {/* AI Assistant Tab */}
+        <TabsContent value="assistant" className="space-y-4">
+          <AIAssistant financialData={financialData} />
+        </TabsContent>
 
-      {/* AI Insights */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Lightbulb className="h-5 w-5 text-yellow-600" />
-            <span>Personalized Recommendations</span>
-          </CardTitle>
-          <CardDescription>
-            AI-generated insights based on your current financial data and industry benchmarks
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {aiInsights.map((insight, index) => (
-              <Card key={index} className="border-l-4 border-l-blue-500 hover:shadow-md transition-shadow">
-                <CardContent className="p-4">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-2 mb-2">
-                        <div className="flex items-center space-x-2">
-                          {insight.type === 'opportunity' && <TrendingUp className="h-4 w-4 text-green-600" />}
-                          {insight.type === 'cost-reduction' && <Target className="h-4 w-4 text-blue-600" />}
-                          {insight.type === 'efficiency' && <Zap className="h-4 w-4 text-purple-600" />}
-                          {insight.type === 'risk' && <AlertTriangle className="h-4 w-4 text-red-600" />}
-                          <h3 className="font-semibold text-gray-900">{insight.title}</h3>
-                        </div>
-                        <Badge 
-                          variant={insight.priority === 'urgent' ? 'destructive' : 'secondary'}
-                          className={
-                            insight.priority === 'high' ? 'bg-orange-100 text-orange-800' :
-                            insight.priority === 'urgent' ? 'bg-red-100 text-red-800' :
-                            'bg-blue-100 text-blue-800'
-                          }
-                        >
-                          {insight.priority}
-                        </Badge>
-                      </div>
-                      
-                      <p className="text-gray-600 mb-3">{insight.description}</p>
-                      
-                      <div className="space-y-2">
-                        <div className="flex items-center space-x-2">
-                          <span className="text-sm font-medium text-gray-700">Impact:</span>
-                          <span className="text-sm text-green-600 font-medium">{insight.impact}</span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <span className="text-sm font-medium text-gray-700">Recommended Action:</span>
-                          <span className="text-sm text-gray-600">{insight.action}</span>
-                        </div>
+        {/* Existing Chat Interface */}
+        <TabsContent value="chat" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <MessageSquare className="h-5 w-5 text-blue-600" />
+                <span>Ask FinSight AI</span>
+              </CardTitle>
+              <CardDescription>
+                Get instant answers to your financial questions and receive actionable insights
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {/* Chat History */}
+                <div className="bg-gray-50 rounded-lg p-4 max-h-80 overflow-y-auto space-y-4">
+                  {chatHistory.map((chat, index) => (
+                    <div key={index} className={`flex ${chat.type === 'user' ? 'justify-end' : 'justify-start'}`}>
+                      <div className={`max-w-[80%] p-3 rounded-lg ${
+                        chat.type === 'user' 
+                          ? 'bg-blue-600 text-white' 
+                          : 'bg-white border text-gray-900'
+                      }`}>
+                        <p className="text-sm">{chat.message}</p>
+                        <p className={`text-xs mt-1 ${
+                          chat.type === 'user' ? 'text-blue-100' : 'text-gray-500'
+                        }`}>
+                          {chat.timestamp}
+                        </p>
                       </div>
                     </div>
-                    
-                    <Button 
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleApplyRecommendation(insight.title)}
-                      className="ml-4 flex items-center space-x-1"
-                    >
-                      <CheckCircle className="h-3 w-3" />
-                      <span>Apply</span>
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+                  ))}
+                </div>
+
+                {/* Input Area */}
+                <div className="flex space-x-2">
+                  <Textarea
+                    placeholder="Ask me about your financial performance, recommendations, or any specific questions..."
+                    value={chatMessage}
+                    onChange={(e) => setChatMessage(e.target.value)}
+                    className="flex-1"
+                    rows={2}
+                  />
+                  <Button 
+                    onClick={handleSendMessage}
+                    disabled={isAnalyzing}
+                    className="flex items-center space-x-2"
+                  >
+                    {isAnalyzing ? (
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    ) : (
+                      <Brain className="h-4 w-4" />
+                    )}
+                    <span>{isAnalyzing ? 'Analyzing...' : 'Send'}</span>
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Existing AI Insights */}
+        <TabsContent value="insights" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <Lightbulb className="h-5 w-5 text-yellow-600" />
+                <span>Personalized Recommendations</span>
+              </CardTitle>
+              <CardDescription>
+                AI-generated insights based on your current financial data and industry benchmarks
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {aiInsights.map((insight, index) => (
+                  <Card key={index} className="border-l-4 border-l-blue-500 hover:shadow-md transition-shadow">
+                    <CardContent className="p-4">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-2 mb-2">
+                            <div className="flex items-center space-x-2">
+                              {insight.type === 'opportunity' && <TrendingUp className="h-4 w-4 text-green-600" />}
+                              {insight.type === 'cost-reduction' && <Target className="h-4 w-4 text-blue-600" />}
+                              {insight.type === 'efficiency' && <Zap className="h-4 w-4 text-purple-600" />}
+                              {insight.type === 'risk' && <AlertTriangle className="h-4 w-4 text-red-600" />}
+                              <h3 className="font-semibold text-gray-900">{insight.title}</h3>
+                            </div>
+                            <Badge 
+                              variant={insight.priority === 'urgent' ? 'destructive' : 'secondary'}
+                              className={
+                                insight.priority === 'high' ? 'bg-orange-100 text-orange-800' :
+                                insight.priority === 'urgent' ? 'bg-red-100 text-red-800' :
+                                'bg-blue-100 text-blue-800'
+                              }
+                            >
+                              {insight.priority}
+                            </Badge>
+                          </div>
+                          
+                          <p className="text-gray-600 mb-3">{insight.description}</p>
+                          
+                          <div className="space-y-2">
+                            <div className="flex items-center space-x-2">
+                              <span className="text-sm font-medium text-gray-700">Impact:</span>
+                              <span className="text-sm text-green-600 font-medium">{insight.impact}</span>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <span className="text-sm font-medium text-gray-700">Recommended Action:</span>
+                              <span className="text-sm text-gray-600">{insight.action}</span>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <Button 
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleApplyRecommendation(insight.title)}
+                          className="ml-4 flex items-center space-x-1"
+                        >
+                          <CheckCircle className="h-3 w-3" />
+                          <span>Apply</span>
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
 
       {/* Quick Analysis Tools */}
       <div className="grid md:grid-cols-3 gap-6">
