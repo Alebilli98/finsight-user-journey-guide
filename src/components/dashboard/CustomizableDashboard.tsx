@@ -10,8 +10,8 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
-  Settings, Target, BookOpen, TrendingUp, DollarSign, 
-  BarChart3, PieChart, Info, Lightbulb 
+  Settings, Target, BookOpen, TrendingUp, TrendingDown, DollarSign, 
+  BarChart3, PieChart, Info, Lightbulb, Users 
 } from "lucide-react";
 import { MetricCard } from "../charts/AdvancedCharts";
 

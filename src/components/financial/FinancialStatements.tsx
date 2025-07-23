@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -72,34 +71,14 @@ const FinancialStatements = ({ user }: FinancialStatementsProps) => {
   };
 
   const cashFlowData = {
-    operating: {
-      cashFromCustomers: financialData.cashFromCustomers || 0,
-      cashToSuppliers: financialData.cashToSuppliers || 0,
-      cashToEmployees: financialData.cashToEmployees || 0,
-      cashForOperatingExpenses: financialData.cashForOperatingExpenses || 0,
-      interestPaid: financialData.interestPaid || 0,
-      taxesPaid: financialData.taxesPaid || 0,
-      netOperatingCashFlow: financialData.operatingCashFlow || 0
-    },
-    investing: {
-      purchaseOfAssets: financialData.purchaseOfAssets || 0,
-      saleOfAssets: financialData.saleOfAssets || 0,
-      investments: financialData.investingCashFlow || 0,
-      netInvestingCashFlow: financialData.investingCashFlow || 0
-    },
-    financing: {
-      proceedsFromLoans: financialData.proceedsFromLoans || 0,
-      loanRepayments: financialData.loanRepayments || 0,
-      equityIssuance: financialData.equityIssuance || 0,
-      dividendsPaid: financialData.dividendsPaid || 0,
-      netFinancingCashFlow: financialData.financingCashFlow || 0
-    },
+    operatingCashFlow: financialData.operatingCashFlow || 0,
+    investingCashFlow: financialData.investingCashFlow || 0,
+    financingCashFlow: financialData.financingCashFlow || 0,
     netCashFlow: financialData.netCashFlow || 0,
-    beginningCash: financialData.beginningCash || 0,
-    endingCash: financialData.endingCash || 0,
-    monthlyData: hasRealData ? (financialData.monthlyCashFlow || []) : [],
+    endingCashBalance: financialData.endingCash || 0,
     burnRate: financialData.burnRate || 0,
-    cashRunway: financialData.cashRunway || 0
+    cashRunway: financialData.cashRunway || 0,
+    monthlyData: hasRealData ? (financialData.monthlyCashFlow || []) : []
   };
 
   return (
@@ -189,13 +168,13 @@ const FinancialStatements = ({ user }: FinancialStatementsProps) => {
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span>Operating CF</span>
-                <span className={`font-medium ${cashFlowData.operating.netOperatingCashFlow >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                  €{cashFlowData.operating.netOperatingCashFlow.toLocaleString()}
+                <span className={`font-medium ${cashFlowData.operatingCashFlow >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                  €{cashFlowData.operatingCashFlow.toLocaleString()}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
                 <span>Ending Cash</span>
-                <span className="font-medium text-purple-600">€{cashFlowData.endingCash.toLocaleString()}</span>
+                <span className="font-medium text-purple-600">€{cashFlowData.endingCashBalance.toLocaleString()}</span>
               </div>
             </div>
           </CardContent>
