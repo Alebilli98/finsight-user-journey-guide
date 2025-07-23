@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import CommerceDashboard from "@/components/dashboards/CommerceDashboard";
 import EcommerceDashboard from "@/components/dashboards/EcommerceDashboard";
@@ -6,9 +5,11 @@ import ConsultingDashboard from "@/components/dashboards/ConsultingDashboard";
 import FinancialStatements from "@/components/financial/FinancialStatements";
 import Analytics from "@/components/Analytics";
 import DuPontAnalysis from "@/components/financial/DuPontAnalysis";
+import ScenarioAnalysis from "@/components/ai/ScenarioAnalysis";
+import CustomizableDashboard from "@/components/dashboard/CustomizableDashboard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { FileText, BarChart3, Calculator, TrendingUp } from "lucide-react";
+import { FileText, BarChart3, Calculator, TrendingUp, Brain, Settings } from "lucide-react";
 
 interface DashboardProps {
   user?: any;
@@ -60,7 +61,7 @@ const Dashboard = ({ user }: DashboardProps) => {
       <Tabs defaultValue="overview" className="w-full">
         <div className="border-b bg-white/50 backdrop-blur-sm">
           <div className="px-6">
-            <TabsList className="grid w-full grid-cols-4 bg-transparent h-12">
+            <TabsList className="grid w-full grid-cols-6 bg-transparent h-12">
               <TabsTrigger value="overview" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
                 <TrendingUp className="h-4 w-4 mr-2" />
                 Overview
@@ -76,6 +77,14 @@ const Dashboard = ({ user }: DashboardProps) => {
               <TabsTrigger value="dupont" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
                 <Calculator className="h-4 w-4 mr-2" />
                 DuPont Analysis
+              </TabsTrigger>
+              <TabsTrigger value="ai-insights" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                <Brain className="h-4 w-4 mr-2" />
+                AI Insights
+              </TabsTrigger>
+              <TabsTrigger value="custom" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                <Settings className="h-4 w-4 mr-2" />
+                My Dashboard
               </TabsTrigger>
             </TabsList>
           </div>
@@ -96,6 +105,18 @@ const Dashboard = ({ user }: DashboardProps) => {
         <TabsContent value="dupont" className="mt-0">
           <div className="p-6">
             <DuPontAnalysis data={dupontData} />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="ai-insights" className="mt-0">
+          <div className="p-6">
+            <ScenarioAnalysis financialData={financialData} />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="custom" className="mt-0">
+          <div className="p-6">
+            <CustomizableDashboard user={user} financialData={financialData} />
           </div>
         </TabsContent>
       </Tabs>
