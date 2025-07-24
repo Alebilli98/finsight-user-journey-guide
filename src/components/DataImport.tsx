@@ -39,8 +39,10 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
       if (onDataUpdate && user) {
         const updatedUser = {
           ...user,
-          financialData: data.financialData,
+          companyInfo: { ...user.companyInfo, ...data.companyInfo },
+          financialData: { ...user.financialData, ...data.financialData },
           monthlyData: data.monthlyData,
+          balanceSheet: data.balanceSheet,
           lastDataImport: new Date().toISOString()
         };
         onDataUpdate(updatedUser);
@@ -161,7 +163,7 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
                 <h3 className="text-lg font-semibold">Carica Dati Finanziari</h3>
               </div>
               <p className="text-gray-600 text-sm mb-6">
-                Carica file Excel o CSV con i tuoi dati finanziari per aggiornare automaticamente tutte le metriche
+                Carica il template Excel completo per aggiornare automaticamente tutte le metriche e KPI
               </p>
 
               {/* Template Section */}
@@ -178,7 +180,7 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
                   <Upload className="h-10 w-10 text-white" />
                 </div>
                 <h3 className="text-xl font-medium text-gray-900 mb-2">
-                  Trascina e rilascia i tuoi file qui
+                  Trascina e rilascia il template compilato qui
                 </h3>
                 <p className="text-gray-600 mb-4">
                   oppure clicca per selezionare e caricare
@@ -224,23 +226,43 @@ const DataImport = ({ user, onDataUpdate, onDataImport }: DataImportProps) => {
                         {importStatus === 'error' && (
                           <Badge className="bg-red-100 text-red-800">
                             <AlertCircle className="h-3 w-3 mr-1" />
-                            Errore
+                            Errore - Verifica i dati
                           </Badge>
                         )}
                       </div>
                     </div>
                     
-                    {importedData && importStatus === 'success' && (
+                    {importedData && (
                       <div className="mt-4 p-3 bg-white rounded border">
                         <h4 className="font-medium text-gray-900 mb-2">Dati Importati:</h4>
                         <div className="grid md:grid-cols-2 gap-2 text-sm">
-                          {importedData.financialData.annualRevenue && (
-                            <div>Ricavi Annuali: €{importedData.financialData.annualRevenue.toLocaleString()}</div>
+                          {importedData.companyInfo?.companyName && (
+                            <div>Azienda: {importedData.companyInfo.companyName}</div>
+                          )}
+                          {importedData.financialData?.annualRevenue && (
+                            <div>Ricavi: €{importedData.financialData.annualRevenue.toLocaleString()}</div>
+                          )}
+                          {importedData.financialData?.grossMargin && (
+                            <div>Margine Lordo: {importedData.financialData.grossMargin.toFixed(1)}%</div>
+                          )}
+                          {importedData.financialData?.roi && (
+                            <div>ROI: {importedData.financialData.roi.toFixed(1)}%</div>
                           )}
                           {importedData.monthlyData?.length > 0 && (
                             <div>Dati Mensili: {importedData.monthlyData.length} mesi</div>
                           )}
                         </div>
+                        
+                        {importedData.errors && importedData.errors.length > 0 && (
+                          <div className="mt-3 p-2 bg-red-50 border border-red-200 rounded">
+                            <p className="text-sm text-red-700 font-medium">Attenzione:</p>
+                            <ul className="text-sm text-red-600 mt-1">
+                              {importedData.errors.map((error: string, index: number) => (
+                                <li key={index}>• {error}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
                       </div>
                     )}
                   </CardContent>

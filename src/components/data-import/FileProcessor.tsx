@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import * as XLSX from 'xlsx';
@@ -21,117 +22,231 @@ export const useFileProcessor = ({ onDataUpdate, userIndustry = 'commerce' }: Fi
       const arrayBuffer = await file.arrayBuffer();
       const workbook = XLSX.read(arrayBuffer);
       
-      const sheetNames = workbook.SheetNames;
       const extractedData: any = {
         companyInfo: {},
         financialData: {},
         monthlyData: [],
-        industry: userIndustry
+        balanceSheet: {},
+        industry: userIndustry,
+        errors: []
       };
 
-      // Process each sheet
-      sheetNames.forEach(sheetName => {
-        const worksheet = workbook.Sheets[sheetName];
-        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-
-        if (sheetName.includes('Dati Mensili') || sheetName.includes('Monthly')) {
-          // Process monthly data
-          const monthlyData = jsonData.slice(1).map((row: any) => {
-            if (Array.isArray(row) && row.length >= 4) {
-              return {
-                month: row[0] || '',
-                revenue: parseFloat(row[1]) || 0,
-                expenses: parseFloat(row[2]) || 0,
-                profit: parseFloat(row[3]) || 0,
-                notes: row[4] || ''
-              };
-            }
-            return null;
-          }).filter(Boolean);
-          
-          extractedData.monthlyData = monthlyData;
-        } else {
-          // Process main financial data
-          jsonData.slice(1).forEach((row: any) => {
-            if (Array.isArray(row) && row.length >= 2) {
-              const field = row[0]?.toString().toLowerCase();
-              const value = row[1];
-              
-              if (field && value !== undefined && value !== '') {
-                // Map common fields based on industry
-                if (field.includes('ricavi') || field.includes('revenue')) {
-                  extractedData.financialData.annualRevenue = parseFloat(value) || 0;
-                } else if (field.includes('vendite') || field.includes('sales')) {
-                  extractedData.financialData.numberOfSales = parseFloat(value) || 0;
-                } else if (field.includes('ordini') || field.includes('orders')) {
-                  extractedData.financialData.ordersReceived = parseFloat(value) || 0;
-                } else if (field.includes('clienti') || field.includes('customers')) {
-                  extractedData.financialData.activeCustomers = parseFloat(value) || 0;
-                } else if (field.includes('fatture') || field.includes('invoices')) {
-                  extractedData.financialData.invoicesIssued = parseFloat(value) || 0;
-                } else if (field.includes('crediti') || field.includes('credits')) {
-                  extractedData.financialData.clientCredits = parseFloat(value) || 0;
-                } else if (field.includes('costo') && field.includes('merce')) {
-                  extractedData.financialData.merchandiseCost = parseFloat(value) || 0;
-                } else if (field.includes('margine') || field.includes('margin')) {
-                  extractedData.financialData.grossMargin = parseFloat(value) || 0;
-                } else if (field.includes('conversione') || field.includes('conversion')) {
-                  extractedData.financialData.conversionRate = parseFloat(value) || 0;
-                }
-              }
-            }
-          });
-        }
-      });
-
-      // Calculate derived metrics
-      const annualRevenue = extractedData.financialData.annualRevenue || 0;
-      const monthlyData = extractedData.monthlyData;
-      
-      if (monthlyData && monthlyData.length > 0) {
-        // Calculate totals from monthly data if annual data is missing
-        if (!annualRevenue) {
-          extractedData.financialData.annualRevenue = monthlyData.reduce((sum: number, month: any) => sum + (month.revenue || 0), 0);
-        }
+      // Process Company Info
+      if (workbook.SheetNames.includes('Company Info')) {
+        const companySheet = workbook.Sheets['Company Info'];
+        const companyData = XLSX.utils.sheet_to_json(companySheet, { header: 1 });
         
-        // Calculate expense breakdown
-        const totalExpenses = monthlyData.reduce((sum: number, month: any) => sum + (month.expenses || 0), 0);
-        extractedData.financialData.expenseBreakdown = generateExpenseBreakdown(totalExpenses, userIndustry);
+        companyData.slice(1).forEach((row: any) => {
+          if (Array.isArray(row) && row.length >= 2) {
+            const field = row[0]?.toString().toLowerCase();
+            const value = row[1];
+            
+            if (field && value) {
+              if (field.includes('company name')) extractedData.companyInfo.companyName = value;
+              else if (field.includes('tax code')) extractedData.companyInfo.taxCode = value;
+              else if (field.includes('vat')) extractedData.companyInfo.vatNumber = value;
+              else if (field.includes('sector')) extractedData.companyInfo.sector = value;
+              else if (field.includes('employees')) extractedData.companyInfo.employees = parseFloat(value) || 0;
+              else if (field.includes('establishment')) extractedData.companyInfo.yearEstablished = value;
+              else if (field.includes('region')) extractedData.companyInfo.region = value;
+              else if (field.includes('turnover')) extractedData.financialData.annualRevenue = parseFloat(value) || 0;
+              else if (field.includes('email')) extractedData.companyInfo.email = value;
+              else if (field.includes('phone')) extractedData.companyInfo.phone = value;
+            }
+          }
+        });
       }
 
-      // Set additional calculated fields based on industry
-      switch (userIndustry) {
-        case 'commerce':
-          if (!extractedData.financialData.numberOfSales && annualRevenue) {
-            extractedData.financialData.numberOfSales = Math.round(annualRevenue / 150); // Assume 150€ average sale
+      // Process P&L Statement
+      if (workbook.SheetNames.includes('P&L')) {
+        const plSheet = workbook.Sheets['P&L'];
+        const plData = XLSX.utils.sheet_to_json(plSheet, { header: 1 });
+        
+        plData.slice(1).forEach((row: any) => {
+          if (Array.isArray(row) && row.length >= 2) {
+            const field = row[0]?.toString().toLowerCase();
+            const value = parseFloat(row[1]) || 0;
+            
+            if (field && !isNaN(value)) {
+              if (field.includes('retail sales revenue') || field.includes('total revenue')) {
+                extractedData.financialData.annualRevenue = value;
+              } else if (field.includes('cost of goods sold') || field.includes('cost of acquiring')) {
+                extractedData.financialData.costOfGoodsSold = value;
+              } else if (field.includes('gross profit')) {
+                extractedData.financialData.grossProfit = value;
+              } else if (field.includes('selling & marketing')) {
+                extractedData.financialData.marketingExpenses = value;
+              } else if (field.includes('rent expenses')) {
+                extractedData.financialData.rentExpenses = value;
+              } else if (field.includes('general & administrative')) {
+                extractedData.financialData.adminExpenses = value;
+              } else if (field.includes('depreciation')) {
+                extractedData.financialData.depreciation = value;
+              } else if (field.includes('total operating expenses')) {
+                extractedData.financialData.operatingExpenses = value;
+              } else if (field.includes('operating income') || field.includes('ebit')) {
+                extractedData.financialData.operatingIncome = value;
+              } else if (field.includes('interest expense')) {
+                extractedData.financialData.interestExpense = value;
+              } else if (field.includes('interest income')) {
+                extractedData.financialData.interestIncome = value;
+              } else if (field.includes('income tax')) {
+                extractedData.financialData.taxes = value;
+              } else if (field.includes('net income')) {
+                extractedData.financialData.netIncome = value;
+              }
+            }
           }
-          break;
-        case 'ecommerce':
-          if (!extractedData.financialData.ordersReceived && annualRevenue) {
-            extractedData.financialData.ordersReceived = Math.round(annualRevenue / 85); // Assume 85€ AOV
+        });
+      }
+
+      // Process Balance Sheet
+      if (workbook.SheetNames.includes('Balance Sheet')) {
+        const balanceSheet = workbook.Sheets['Balance Sheet'];
+        const balanceData = XLSX.utils.sheet_to_json(balanceSheet, { header: 1 });
+        
+        balanceData.slice(1).forEach((row: any) => {
+          if (Array.isArray(row) && row.length >= 2) {
+            const field = row[0]?.toString().toLowerCase();
+            const value = parseFloat(row[1]) || 0;
+            
+            if (field && !isNaN(value)) {
+              if (field.includes('cash & cash equivalents')) {
+                extractedData.financialData.cash = value;
+              } else if (field.includes('accounts receivable')) {
+                extractedData.financialData.accountsReceivable = value;
+              } else if (field.includes('inventory')) {
+                extractedData.financialData.inventory = value;
+              } else if (field.includes('prepaid expenses')) {
+                extractedData.financialData.prepaidExpenses = value;
+              } else if (field.includes('total current assets')) {
+                extractedData.financialData.currentAssets = value;
+              } else if (field.includes('property & equipment')) {
+                extractedData.financialData.propertyEquipment = value;
+              } else if (field.includes('accumulated depreciation')) {
+                extractedData.financialData.accumulatedDepreciation = value;
+              } else if (field.includes('total non-current assets')) {
+                extractedData.financialData.nonCurrentAssets = value;
+              } else if (field.includes('total assets')) {
+                extractedData.financialData.totalAssets = value;
+              } else if (field.includes('accounts payable')) {
+                extractedData.financialData.accountsPayable = value;
+              } else if (field.includes('accrued expenses')) {
+                extractedData.financialData.accruedExpenses = value;
+              } else if (field.includes('total current liabilities')) {
+                extractedData.financialData.currentLiabilities = value;
+              } else if (field.includes('long-term debt')) {
+                extractedData.financialData.longTermDebt = value;
+              } else if (field.includes('total non-current liabilities')) {
+                extractedData.financialData.nonCurrentLiabilities = value;
+              } else if (field.includes('total liabilities')) {
+                extractedData.financialData.totalLiabilities = value;
+              } else if (field.includes('common stock')) {
+                extractedData.financialData.commonStock = value;
+              } else if (field.includes('retained earnings')) {
+                extractedData.financialData.retainedEarnings = value;
+              }
+            }
           }
-          if (!extractedData.financialData.activeCustomers && extractedData.financialData.ordersReceived) {
-            extractedData.financialData.activeCustomers = Math.round(extractedData.financialData.ordersReceived * 0.7);
+        });
+      }
+
+      // Process Monthly Data
+      if (workbook.SheetNames.includes('Dati Mensili')) {
+        const monthlySheet = workbook.Sheets['Dati Mensili'];
+        const monthlyData = XLSX.utils.sheet_to_json(monthlySheet, { header: 1 });
+        
+        const processedMonthlyData = monthlyData.slice(1).map((row: any) => {
+          if (Array.isArray(row) && row.length >= 5) {
+            return {
+              month: row[0] || '',
+              revenue: parseFloat(row[1]) || 0,
+              costs: parseFloat(row[2]) || 0,
+              profit: parseFloat(row[3]) || 0,
+              cash: parseFloat(row[4]) || 0,
+              notes: row[5] || ''
+            };
           }
-          break;
-        case 'consulting':
-          if (!extractedData.financialData.invoicesIssued) {
-            extractedData.financialData.invoicesIssued = annualRevenue;
+          return null;
+        }).filter(Boolean);
+        
+        extractedData.monthlyData = processedMonthlyData;
+      }
+
+      // Calculate KPIs
+      const calculateKPIs = () => {
+        const revenue = extractedData.financialData.annualRevenue || 0;
+        const cogs = extractedData.financialData.costOfGoodsSold || 0;
+        const netIncome = extractedData.financialData.netIncome || 0;
+        const totalAssets = extractedData.financialData.totalAssets || 0;
+        const totalLiabilities = extractedData.financialData.totalLiabilities || 0;
+        const equity = totalAssets - totalLiabilities;
+
+        // Calculate key ratios
+        extractedData.financialData.grossMargin = revenue > 0 ? ((revenue - cogs) / revenue) * 100 : 0;
+        extractedData.financialData.netMargin = revenue > 0 ? (netIncome / revenue) * 100 : 0;
+        extractedData.financialData.roi = totalAssets > 0 ? (netIncome / totalAssets) * 100 : 0;
+        extractedData.financialData.roe = equity > 0 ? (netIncome / equity) * 100 : 0;
+        extractedData.financialData.debtToEquity = equity > 0 ? totalLiabilities / equity : 0;
+        extractedData.financialData.currentRatio = extractedData.financialData.currentLiabilities > 0 ? 
+          (extractedData.financialData.currentAssets || 0) / extractedData.financialData.currentLiabilities : 0;
+
+        // Calculate growth if monthly data is available
+        if (extractedData.monthlyData && extractedData.monthlyData.length >= 2) {
+          const firstMonth = extractedData.monthlyData[0];
+          const lastMonth = extractedData.monthlyData[extractedData.monthlyData.length - 1];
+          if (firstMonth.revenue > 0) {
+            extractedData.financialData.revenueGrowth = ((lastMonth.revenue - firstMonth.revenue) / firstMonth.revenue) * 100;
           }
-          break;
+        }
+      };
+
+      calculateKPIs();
+
+      // Data validation
+      const validateData = () => {
+        const errors = [];
+        
+        if (!extractedData.companyInfo.companyName) errors.push('Nome azienda mancante');
+        if (!extractedData.financialData.annualRevenue || extractedData.financialData.annualRevenue <= 0) {
+          errors.push('Ricavi annuali mancanti o non validi');
+        }
+        if (!extractedData.financialData.totalAssets || extractedData.financialData.totalAssets <= 0) {
+          errors.push('Totale attività mancante o non valido');
+        }
+        if (Math.abs((extractedData.financialData.totalAssets || 0) - 
+                   ((extractedData.financialData.totalLiabilities || 0) + 
+                    (extractedData.financialData.commonStock || 0) + 
+                    (extractedData.financialData.retainedEarnings || 0))) > 1) {
+          errors.push('Bilancio non in pareggio: Attività ≠ Passività + Patrimonio');
+        }
+        
+        return errors;
+      };
+
+      const validationErrors = validateData();
+      extractedData.errors = validationErrors;
+
+      if (validationErrors.length > 0) {
+        setImportStatus('error');
+        toast({
+          title: "Dati Incompleti",
+          description: `Alcuni dati non sono completi: ${validationErrors.join(', ')}`,
+          variant: "destructive"
+        });
+      } else {
+        setImportStatus('success');
+        toast({
+          title: "Importazione Completata",
+          description: `Dati importati con successo. Ricavi: €${(extractedData.financialData.annualRevenue || 0).toLocaleString()}`,
+        });
       }
 
       setImportedData(extractedData);
-      setImportStatus('success');
       
       if (onDataUpdate) {
         onDataUpdate(extractedData);
       }
-
-      toast({
-        title: "Importazione Completata",
-        description: `Dati importati con successo. Ricavi annuali: €${(extractedData.financialData.annualRevenue || 0).toLocaleString()}`,
-      });
 
       return extractedData;
       
@@ -146,40 +261,6 @@ export const useFileProcessor = ({ onDataUpdate, userIndustry = 'commerce' }: Fi
       return null;
     } finally {
       setIsProcessing(false);
-    }
-  };
-
-  const generateExpenseBreakdown = (totalExpenses: number, industry: string) => {
-    switch (industry) {
-      case 'commerce':
-        return [
-          { name: 'Costo Merci', value: Math.round(totalExpenses * 0.5), color: '#ef4444' },
-          { name: 'Affitto', value: Math.round(totalExpenses * 0.15), color: '#3b82f6' },
-          { name: 'Stipendi', value: Math.round(totalExpenses * 0.2), color: '#10b981' },
-          { name: 'Marketing', value: Math.round(totalExpenses * 0.08), color: '#f59e0b' },
-          { name: 'Altri Costi', value: Math.round(totalExpenses * 0.07), color: '#6b7280' }
-        ];
-      case 'ecommerce':
-        return [
-          { name: 'Costo Prodotti', value: Math.round(totalExpenses * 0.4), color: '#ef4444' },
-          { name: 'Marketing Digital', value: Math.round(totalExpenses * 0.2), color: '#3b82f6' },
-          { name: 'Logistica', value: Math.round(totalExpenses * 0.15), color: '#10b981' },
-          { name: 'Piattaforma', value: Math.round(totalExpenses * 0.1), color: '#f59e0b' },
-          { name: 'Altri Costi', value: Math.round(totalExpenses * 0.15), color: '#6b7280' }
-        ];
-      case 'consulting':
-        return [
-          { name: 'Personale', value: Math.round(totalExpenses * 0.6), color: '#ef4444' },
-          { name: 'Ufficio', value: Math.round(totalExpenses * 0.15), color: '#3b82f6' },
-          { name: 'Software/Tools', value: Math.round(totalExpenses * 0.1), color: '#10b981' },
-          { name: 'Marketing', value: Math.round(totalExpenses * 0.08), color: '#f59e0b' },
-          { name: 'Altri Costi', value: Math.round(totalExpenses * 0.07), color: '#6b7280' }
-        ];
-      default:
-        return [
-          { name: 'Costi Operativi', value: Math.round(totalExpenses * 0.7), color: '#ef4444' },
-          { name: 'Altri Costi', value: Math.round(totalExpenses * 0.3), color: '#6b7280' }
-        ];
     }
   };
 
