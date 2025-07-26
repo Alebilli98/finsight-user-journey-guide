@@ -422,67 +422,69 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
       {/* Navigation */}
       <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-2 sm:px-4">
           <div className="flex items-center justify-between h-16">
             <div 
-              className="flex items-center space-x-3 cursor-pointer"
+              className="flex items-center space-x-2 sm:space-x-3 cursor-pointer flex-shrink-0"
               onClick={() => setActiveSection('home')}
             >
-              <div className="bg-gradient-to-r from-blue-600 to-green-600 p-3 rounded-xl shadow-lg">
-                <TrendingUp className="h-7 w-7 text-white" />
+              <div className="bg-gradient-to-r from-blue-600 to-green-600 p-2 sm:p-3 rounded-xl shadow-lg">
+                <TrendingUp className="h-5 w-5 sm:h-7 sm:w-7 text-white" />
               </div>
-              <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">FinSight</h1>
+              <div className="hidden sm:block">
+                <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">FinSight</h1>
                 <p className="text-xs text-blue-600 font-medium">{t('footer.tagline')}</p>
               </div>
             </div>
 
-            <nav className="hidden md:flex items-center space-x-6">
+            <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
               <button 
                 onClick={() => setActiveSection('product')}
-                className={`transition-colors ${activeSection === 'product' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
+                className={`transition-colors text-sm ${activeSection === 'product' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
               >
                 {t('nav.product')}
               </button>
               <button 
                 onClick={() => setActiveSection('solutions')}
-                className={`transition-colors ${activeSection === 'solutions' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
+                className={`transition-colors text-sm ${activeSection === 'solutions' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
               >
                 {t('nav.solutions')}
               </button>
               <button 
                 onClick={() => setActiveSection('why')}
-                className={`transition-colors ${activeSection === 'why' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
+                className={`transition-colors text-sm ${activeSection === 'why' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
               >
                 {t('nav.why')}
               </button>
               <button 
                 onClick={() => setActiveSection('resources')}
-                className={`transition-colors ${activeSection === 'resources' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
+                className={`transition-colors text-sm ${activeSection === 'resources' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
               >
                 {t('nav.resources')}
               </button>
               <button 
                 onClick={() => setActiveSection('pricing')}
-                className={`transition-colors ${activeSection === 'pricing' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
+                className={`transition-colors text-sm ${activeSection === 'pricing' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
               >
                 {t('nav.pricing')}
               </button>
             </nav>
 
-            <div className="flex items-center space-x-3">
-              <LanguageSelector />
+            <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-3">
+              <div className="hidden sm:block">
+                <LanguageSelector />
+              </div>
               <Button 
                 variant="outline" 
                 onClick={() => setActiveSection('contact')}
-                className="hidden sm:inline-flex border-blue-500 text-blue-600 hover:bg-blue-50"
+                className="hidden lg:inline-flex border-blue-500 text-blue-600 hover:bg-blue-50 text-sm px-3"
               >
                 {t('nav.contact')}
               </Button>
-              <Button variant="ghost" onClick={onLogin}>
+              <Button variant="ghost" onClick={onLogin} className="text-sm px-2 sm:px-3">
                 {t('nav.login')}
               </Button>
-              <Button onClick={onSignup} className="bg-gradient-to-r from-blue-600 to-green-600">
+              <Button onClick={onSignup} className="bg-gradient-to-r from-blue-600 to-green-600 text-sm px-2 sm:px-4">
                 {t('nav.signup')}
               </Button>
             </div>

@@ -27,21 +27,22 @@ const Header = ({ isOnboarded, user, onLogout, onProfile }: HeaderProps) => {
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-2 sm:px-4">
         <div className="flex items-center justify-between h-16">
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-4">
             {isOnboarded && <SidebarTrigger />}
           </div>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-4">
             {isOnboarded && user && (
               <>
-                <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="sm" className="hidden sm:flex">
                   <Bell className="h-4 w-4" />
                 </Button>
                 <Button 
                   variant="ghost" 
                   size="sm"
+                  className="hidden sm:flex"
                   onClick={() => {
                     const event = new CustomEvent('navigate-to-section', { detail: 'calendar' });
                     window.dispatchEvent(event);
@@ -54,7 +55,7 @@ const Header = ({ isOnboarded, user, onLogout, onProfile }: HeaderProps) => {
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="sm" className="relative">
                       <User className="h-4 w-4" />
-                      <span className="ml-2 hidden md:inline">
+                      <span className="ml-2 hidden lg:inline">
                         {user.firstName} {user.lastName}
                       </span>
                     </Button>
@@ -87,10 +88,12 @@ const Header = ({ isOnboarded, user, onLogout, onProfile }: HeaderProps) => {
                   </DropdownMenuContent>
                 </DropdownMenu>
                 
-                <LanguageSelector />
+                <div className="hidden sm:block">
+                  <LanguageSelector />
+                </div>
               </>
             )}
-            <Badge variant="secondary" className="bg-green-100 text-green-800">
+            <Badge variant="secondary" className="bg-green-100 text-green-800 text-xs sm:text-sm hidden sm:inline-flex">
               {user?.plan || "Premier"} Plan
             </Badge>
           </div>
