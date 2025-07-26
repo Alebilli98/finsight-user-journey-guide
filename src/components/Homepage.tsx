@@ -238,28 +238,28 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
         return (
           <>
             {/* Hero Section */}
-            <section className="py-12 sm:py-20">
+            <section className="py-20">
               <div className="container mx-auto px-4 text-center">
-                <Badge className="mb-4 sm:mb-6 bg-blue-100 text-blue-800">
+                <Badge className="mb-6 bg-blue-100 text-blue-800">
                   <Building2 className="h-3 w-3 mr-1" />
                   {t('hero.badge')}
                 </Badge>
-                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6 bg-gradient-to-r from-gray-100/50 to-blue-50/30 px-3 sm:px-6 py-3 sm:py-4 rounded-lg">
+                <h1 className="text-5xl font-bold text-gray-900 mb-6 bg-gradient-to-r from-gray-100/50 to-blue-50/30 px-6 py-4 rounded-lg">
                   {t('hero.title')} <span className="text-blue-600 drop-shadow-sm">{t('hero.title.highlight')}</span> {t('hero.title.end')}
                 </h1>
-                <p className="text-lg sm:text-xl text-gray-600 mb-6 sm:mb-8 max-w-3xl mx-auto px-4">
+                <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
                   {t('hero.subtitle')}
                 </p>
-                <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 px-4">
+                <div className="flex justify-center space-x-4">
                   <Button 
                     size="lg" 
                     onClick={onSignup}
-                    className="bg-gradient-to-r from-blue-600 to-green-600 px-6 sm:px-8 py-3 w-full sm:w-auto"
+                    className="bg-gradient-to-r from-blue-600 to-green-600 px-8 py-3"
                   >
                     {t('hero.cta.primary')}
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
-                  <Button variant="outline" size="lg" onClick={onLogin} className="w-full sm:w-auto">
+                  <Button variant="outline" size="lg" onClick={onLogin}>
                     {t('hero.cta.secondary')}
                   </Button>
                 </div>
@@ -300,7 +300,7 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
                   </Card>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 mt-8 sm:mt-12 max-w-4xl mx-auto">
+                <div className="grid md:grid-cols-3 gap-6 mt-12 max-w-4xl mx-auto">
                   <Card>
                     <CardContent className="p-4 text-center">
                       <BarChart3 className="h-8 w-8 text-blue-600 mx-auto mb-2" />
@@ -338,7 +338,7 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
                   </p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                   {features.map((feature, index) => {
                     const Icon = feature.icon;
                     return (
@@ -368,7 +368,7 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
                   </h2>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto">
+                <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
                   {testimonials.map((testimonial, index) => (
                     <Card key={index}>
                       <CardHeader>
@@ -422,22 +422,22 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
       {/* Navigation */}
       <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
-        <div className="container mx-auto px-2 sm:px-4">
+        <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             <div 
-              className="flex items-center space-x-2 sm:space-x-3 cursor-pointer"
+              className="flex items-center space-x-3 cursor-pointer"
               onClick={() => setActiveSection('home')}
             >
-              <div className="bg-gradient-to-r from-blue-600 to-green-600 p-2 sm:p-3 rounded-xl shadow-lg">
-                <TrendingUp className="h-5 w-5 sm:h-7 sm:w-7 text-white" />
+              <div className="bg-gradient-to-r from-blue-600 to-green-600 p-3 rounded-xl shadow-lg">
+                <TrendingUp className="h-7 w-7 text-white" />
               </div>
-              <div className="hidden xs:block">
-                <h1 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">FinSight</h1>
-                <p className="text-xs text-blue-600 font-medium hidden sm:block">{t('footer.tagline')}</p>
+              <div>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">FinSight</h1>
+                <p className="text-xs text-blue-600 font-medium">{t('footer.tagline')}</p>
               </div>
             </div>
 
-            <nav className="hidden lg:flex items-center space-x-6">
+            <nav className="hidden md:flex items-center space-x-6">
               <button 
                 onClick={() => setActiveSection('product')}
                 className={`transition-colors ${activeSection === 'product' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
@@ -470,21 +470,19 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
               </button>
             </nav>
 
-            <div className="flex items-center space-x-1 sm:space-x-3">
-              <div className="hidden sm:block">
-                <LanguageSelector />
-              </div>
+            <div className="flex items-center space-x-3">
+              <LanguageSelector />
               <Button 
                 variant="outline" 
                 onClick={() => setActiveSection('contact')}
-                className="hidden md:inline-flex border-blue-500 text-blue-600 hover:bg-blue-50 text-sm px-3"
+                className="hidden sm:inline-flex border-blue-500 text-blue-600 hover:bg-blue-50"
               >
                 {t('nav.contact')}
               </Button>
-              <Button variant="ghost" onClick={onLogin} className="text-sm px-2 sm:px-4">
+              <Button variant="ghost" onClick={onLogin}>
                 {t('nav.login')}
               </Button>
-              <Button onClick={onSignup} className="bg-gradient-to-r from-blue-600 to-green-600 text-sm px-2 sm:px-4">
+              <Button onClick={onSignup} className="bg-gradient-to-r from-blue-600 to-green-600">
                 {t('nav.signup')}
               </Button>
             </div>
@@ -498,9 +496,9 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-8 sm:py-12">
+      <footer className="bg-gray-900 text-white py-12">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
+          <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center space-x-3 mb-4">
                 <div className="bg-gradient-to-r from-blue-600 to-green-600 p-2 rounded-lg">
