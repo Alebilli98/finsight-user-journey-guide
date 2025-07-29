@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import DuPontAnalysis from "./financial/DuPontAnalysis";
+import ScenarioAnalysis from "./ai/ScenarioAnalysis";
 
 interface AnalyticsProps {
   user?: any;
@@ -49,7 +50,10 @@ const Analytics = ({ user }: AnalyticsProps) => {
       description: "Misura l'efficienza operativa dell'azienda",
       info: "Questo ratio indica quanto profitto netto genera l'azienda per ogni euro di ricavi. Un margine più alto indica una maggiore efficienza operativa.",
       type: "Profitability Ratio",
-      icon: <Percent className="h-4 w-4" />
+      icon: <Percent className="h-4 w-4" />,
+      whatIs: "Il margine di profitto netto è un indicatore di redditività che mostra la percentuale di profitto che rimane dopo aver dedotto tutti i costi dai ricavi.",
+      purpose: "Valuta l'efficienza dell'azienda nel controllare i costi e generare profitti dai ricavi.",
+      benchmarkRange: "Generalmente considerato buono tra il 10-20%, ma varia significativamente per settore."
     },
     {
       name: "Rotazione degli Attivi",
@@ -58,7 +62,10 @@ const Analytics = ({ user }: AnalyticsProps) => {
       description: "Misura l'efficienza nell'utilizzo degli asset",
       info: "Indica quanto efficacemente l'azienda utilizza i suoi asset per generare ricavi. Un valore più alto indica un uso più efficiente degli asset.",
       type: "Efficiency Ratio",
-      icon: <TrendingUp className="h-4 w-4" />
+      icon: <TrendingUp className="h-4 w-4" />,
+      whatIs: "La rotazione degli attivi misura quanto efficacemente un'azienda utilizza i suoi asset per generare ricavi.",
+      purpose: "Identifica se l'azienda sta utilizzando i suoi asset in modo efficiente per generare vendite.",
+      benchmarkRange: "Valori superiori a 1.0 sono generalmente positivi, con 1.5-2.0 considerati ottimi per molti settori."
     },
     {
       name: "Moltiplicatore di Equity",
@@ -67,7 +74,10 @@ const Analytics = ({ user }: AnalyticsProps) => {
       description: "Misura il leveraging finanziario",
       info: "Questo ratio mostra quanto l'azienda utilizza il debito per finanziare i suoi asset. Un valore più alto indica maggiore leva finanziaria.",
       type: "Leverage Ratio",
-      icon: <Target className="h-4 w-4" />
+      icon: <Target className="h-4 w-4" />,
+      whatIs: "Il moltiplicatore di equity indica quanto l'azienda fa affidamento sul debito rispetto al capitale proprio per finanziare i suoi asset.",
+      purpose: "Valuta il livello di leva finanziaria e il rischio associato alla struttura del capitale.",
+      benchmarkRange: "Valori tra 1.5-3.0 sono tipicamente accettabili, ma dipende dal settore e dalla strategia aziendale."
     },
     {
       name: "ROE (Return on Equity)",
@@ -76,7 +86,10 @@ const Analytics = ({ user }: AnalyticsProps) => {
       description: "Rendimento sul capitale proprio",
       info: "Misura la redditività dell'investimento degli azionisti. Un ROE più alto indica una maggiore redditività per gli azionisti.",
       type: "Profitability Ratio",
-      icon: <DollarSign className="h-4 w-4" />
+      icon: <DollarSign className="h-4 w-4" />,
+      whatIs: "Il Return on Equity misura la redditività in relazione al capitale proprio investito dagli azionisti.",
+      purpose: "Indica quanto efficacemente l'azienda genera profitti con il denaro investito dagli azionisti.",
+      benchmarkRange: "Un ROE del 12-18% è generalmente considerato buono, con valori superiori al 20% eccellenti."
     }
   ];
 
@@ -107,6 +120,20 @@ const Analytics = ({ user }: AnalyticsProps) => {
         <CardContent>
           <div className="space-y-2">
             <p className="text-sm text-gray-600">{ratio.description}</p>
+            
+            {/* Informative description box */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 space-y-2">
+              <div className="flex items-center space-x-2">
+                <Info className="h-4 w-4 text-blue-600" />
+                <span className="text-sm font-medium text-blue-800">Informazioni</span>
+              </div>
+              <div className="text-xs space-y-1">
+                <p><strong>Cosa è:</strong> {ratio.whatIs}</p>
+                <p><strong>A cosa serve:</strong> {ratio.purpose}</p>
+                <p><strong>Range di riferimento:</strong> {ratio.benchmarkRange}</p>
+              </div>
+            </div>
+            
             <Alert className="border-blue-200 bg-blue-50">
               <Info className="h-4 w-4 text-blue-600" />
               <AlertDescription className="text-xs">
@@ -137,7 +164,7 @@ const Analytics = ({ user }: AnalyticsProps) => {
       </div>
 
       <Tabs defaultValue="ratios" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="ratios" className="flex items-center gap-2">
             <Calculator className="h-4 w-4" />
             Financial Ratios
@@ -145,6 +172,10 @@ const Analytics = ({ user }: AnalyticsProps) => {
           <TabsTrigger value="dupont" className="flex items-center gap-2">
             <Target className="h-4 w-4" />
             DuPont Analysis
+          </TabsTrigger>
+          <TabsTrigger value="ai-insights" className="flex items-center gap-2">
+            <BarChart3 className="h-4 w-4" />
+            AI Insights
           </TabsTrigger>
         </TabsList>
 
@@ -195,6 +226,10 @@ const Analytics = ({ user }: AnalyticsProps) => {
 
         <TabsContent value="dupont" className="space-y-6">
           <DuPontAnalysis data={dupontData} />
+        </TabsContent>
+
+        <TabsContent value="ai-insights" className="space-y-6">
+          <ScenarioAnalysis financialData={financialData} />
         </TabsContent>
       </Tabs>
     </div>
