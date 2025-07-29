@@ -11,7 +11,7 @@ import ScenarioAnalysis from "@/components/ai/ScenarioAnalysis";
 import CustomizableDashboard from "@/components/dashboard/CustomizableDashboard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { FileText, BarChart3, Calculator, TrendingUp, Brain, Settings, Bot } from "lucide-react";
+import { FileText, BarChart3, TrendingUp, Settings, Bot } from "lucide-react";
 
 interface DashboardProps {
   user?: any;
@@ -22,27 +22,6 @@ const Dashboard = ({ user }: DashboardProps) => {
   const userIndustry = user?.industry;
   const userData = user || {};
   const financialData = userData.financialData || {};
-
-  // DuPont Analysis data
-  const dupontData = {
-    netIncome: financialData.netIncome || 0,
-    revenue: financialData.annualRevenue || 0,
-    totalAssets: financialData.totalAssets || 0,
-    totalEquity: (financialData.totalAssets || 0) - (financialData.totalLiabilities || 0),
-    netProfitMargin: financialData.annualRevenue > 0 ? ((financialData.netIncome || 0) / financialData.annualRevenue) * 100 : 0,
-    assetTurnover: financialData.totalAssets > 0 ? (financialData.annualRevenue || 0) / financialData.totalAssets : 0,
-    equityMultiplier: ((financialData.totalAssets || 0) - (financialData.totalLiabilities || 0)) > 0 ? 
-      (financialData.totalAssets || 0) / ((financialData.totalAssets || 0) - (financialData.totalLiabilities || 0)) : 0,
-    roe: ((financialData.totalAssets || 0) - (financialData.totalLiabilities || 0)) > 0 ? 
-      ((financialData.netIncome || 0) / ((financialData.totalAssets || 0) - (financialData.totalLiabilities || 0))) * 100 : 0,
-    historicalData: financialData.dupontHistorical || [],
-    industryBenchmarks: {
-      netProfitMargin: 15,
-      assetTurnover: 1.2,
-      equityMultiplier: 2.0,
-      roe: 15
-    }
-  };
 
   // Render the industry-specific dashboard
   const renderIndustryDashboard = () => {
@@ -63,7 +42,7 @@ const Dashboard = ({ user }: DashboardProps) => {
       <Tabs defaultValue="overview" className="w-full">
         <div className="border-b bg-white/50 backdrop-blur-sm">
           <div className="px-6">
-            <TabsList className="grid w-full grid-cols-7 bg-transparent h-12">
+            <TabsList className="grid w-full grid-cols-5 bg-transparent h-12">
               <TabsTrigger value="overview" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
                 <TrendingUp className="h-4 w-4 mr-2" />
                 Overview
@@ -76,17 +55,9 @@ const Dashboard = ({ user }: DashboardProps) => {
                 <BarChart3 className="h-4 w-4 mr-2" />
                 Analytics
               </TabsTrigger>
-              <TabsTrigger value="dupont" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
-                <Calculator className="h-4 w-4 mr-2" />
-                DuPont Analysis
-              </TabsTrigger>
               <TabsTrigger value="ai-solution" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
                 <Bot className="h-4 w-4 mr-2" />
                 AI Solution
-              </TabsTrigger>
-              <TabsTrigger value="ai-insights" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
-                <Brain className="h-4 w-4 mr-2" />
-                AI Insights
               </TabsTrigger>
               <TabsTrigger value="custom" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
                 <Settings className="h-4 w-4 mr-2" />
@@ -108,21 +79,9 @@ const Dashboard = ({ user }: DashboardProps) => {
           <Analytics user={user} />
         </TabsContent>
 
-        <TabsContent value="dupont" className="mt-0">
-          <div className="p-6">
-            <DuPontAnalysis data={dupontData} />
-          </div>
-        </TabsContent>
-
         <TabsContent value="ai-solution" className="mt-0">
           <div className="p-6">
             <AISolution financialData={financialData} />
-          </div>
-        </TabsContent>
-
-        <TabsContent value="ai-insights" className="mt-0">
-          <div className="p-6">
-            <ScenarioAnalysis financialData={financialData} />
           </div>
         </TabsContent>
 

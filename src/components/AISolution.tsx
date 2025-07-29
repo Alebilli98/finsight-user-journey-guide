@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import AIAssistant from "./ai/AIAssistant";
+import ScenarioAnalysis from "./ai/ScenarioAnalysis";
 
 interface AISolutionProps {
   financialData?: any;
@@ -105,8 +107,8 @@ const AISolution = ({ financialData }: AISolutionProps) => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">AI-Powered Insights</h1>
-          <p className="text-gray-600">Intelligent recommendations tailored to your financial data</p>
+          <h1 className="text-2xl font-bold text-gray-900">AI-Powered Solutions</h1>
+          <p className="text-gray-600">Intelligent recommendations and insights tailored to your business</p>
         </div>
         <Badge className="bg-gradient-to-r from-purple-500 to-blue-500 text-white">
           AI Powered
@@ -114,10 +116,10 @@ const AISolution = ({ financialData }: AISolutionProps) => {
       </div>
 
       <Tabs defaultValue="assistant" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="assistant" className="flex items-center gap-2">
             <Bot className="h-4 w-4" />
-            Assistente AI
+            AI Assistant
           </TabsTrigger>
           <TabsTrigger value="chat" className="flex items-center gap-2">
             <MessageSquare className="h-4 w-4" />
@@ -125,7 +127,11 @@ const AISolution = ({ financialData }: AISolutionProps) => {
           </TabsTrigger>
           <TabsTrigger value="insights" className="flex items-center gap-2">
             <Lightbulb className="h-4 w-4" />
-            Insights
+            AI Insights
+          </TabsTrigger>
+          <TabsTrigger value="scenarios" className="flex items-center gap-2">
+            <Brain className="h-4 w-4" />
+            Scenario Analysis
           </TabsTrigger>
         </TabsList>
 
@@ -134,7 +140,7 @@ const AISolution = ({ financialData }: AISolutionProps) => {
           <AIAssistant financialData={financialData} />
         </TabsContent>
 
-        {/* Existing Chat Interface */}
+        {/* Chat Interface */}
         <TabsContent value="chat" className="space-y-4">
           <Card>
             <CardHeader>
@@ -195,7 +201,7 @@ const AISolution = ({ financialData }: AISolutionProps) => {
           </Card>
         </TabsContent>
 
-        {/* Existing AI Insights */}
+        {/* AI Insights */}
         <TabsContent value="insights" className="space-y-4">
           <Card>
             <CardHeader>
@@ -264,6 +270,11 @@ const AISolution = ({ financialData }: AISolutionProps) => {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* Scenario Analysis */}
+        <TabsContent value="scenarios" className="space-y-4">
+          <ScenarioAnalysis financialData={financialData} />
         </TabsContent>
       </Tabs>
 

@@ -1,423 +1,202 @@
 
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
-  BarChart3, PieChart, TrendingUp, TrendingDown, Target,
-  Calendar, Clock, Users, DollarSign, Activity, Calculator,
-  Percent, FileBarChart, Gauge
+  BarChart3, TrendingUp, Target, Calculator, AlertCircle,
+  DollarSign, Percent, TrendingDown, Info
 } from "lucide-react";
-import { MonthlyRevenueChart, ExpenseBreakdownChart, KPIIndicator } from "./charts/AdvancedCharts";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import DuPontAnalysis from "./financial/DuPontAnalysis";
 
 interface AnalyticsProps {
   user?: any;
 }
 
 const Analytics = ({ user }: AnalyticsProps) => {
-  const { t } = useLanguage();
   const userData = user || {};
   const financialData = userData.financialData || {};
-  const userIndustry = userData.industry || 'commerce';
-
-  // Use real data if available, otherwise show zeros
-  const annualRevenue = financialData.annualRevenue || 0;
-  const monthlyRevenue = Math.round(annualRevenue / 12);
-  const hasRealData = annualRevenue > 0;
-
-  // Calculate comprehensive KPIs and ratios
-  const calculateFinancialRatios = () => {
-    const totalAssets = financialData.totalAssets || 0;
-    const totalLiabilities = financialData.totalLiabilities || 0;
-    const currentAssets = financialData.currentAssets || 0;
-    const currentLiabilities = financialData.currentLiabilities || 0;
-    const inventory = financialData.inventory || 0;
-    const netIncome = financialData.netIncome || 0;
-    const totalEquity = totalAssets - totalLiabilities;
-    const grossProfit = financialData.grossProfit || 0;
-    const costOfGoodsSold = financialData.costOfGoodsSold || 0;
-    const operatingExpenses = financialData.operatingExpenses || 0;
-
-    return {
-      // Liquidity Ratios
-      currentRatio: currentLiabilities > 0 ? (currentAssets / currentLiabilities) : 0,
-      quickRatio: currentLiabilities > 0 ? ((currentAssets - inventory) / currentLiabilities) : 0,
-      cashRatio: currentLiabilities > 0 ? (financialData.cash || 0) / currentLiabilities : 0,
-
-      // Profitability Ratios
-      grossMargin: annualRevenue > 0 ? (grossProfit / annualRevenue) * 100 : 0,
-      netMargin: annualRevenue > 0 ? (netIncome / annualRevenue) * 100 : 0,
-      operatingMargin: annualRevenue > 0 ? ((annualRevenue - costOfGoodsSold - operatingExpenses) / annualRevenue) * 100 : 0,
-      roa: totalAssets > 0 ? (netIncome / totalAssets) * 100 : 0,
-      roe: totalEquity > 0 ? (netIncome / totalEquity) * 100 : 0,
-
-      // Efficiency Ratios
-      assetTurnover: totalAssets > 0 ? annualRevenue / totalAssets : 0,
-      inventoryTurnover: inventory > 0 ? costOfGoodsSold / inventory : 0,
-      receivablesTurnover: (financialData.accountsReceivable || 0) > 0 ? annualRevenue / financialData.accountsReceivable : 0,
-
-      // Leverage Ratios
-      debtToEquity: totalEquity > 0 ? totalLiabilities / totalEquity : 0,
-      debtToAssets: totalAssets > 0 ? totalLiabilities / totalAssets : 0,
-      equityRatio: totalAssets > 0 ? totalEquity / totalAssets : 0,
-
-      // Industry Specific KPIs
-      ...getIndustrySpecificKPIs()
-    };
-  };
-
-  const getIndustrySpecificKPIs = () => {
-    switch (userIndustry) {
-      case 'consulting':
-        return {
-          utilizationRate: financialData.utilizationRate || 0,
-          billableHours: financialData.billableHours || 0,
-          averageHourlyRate: financialData.averageHourlyRate || 0,
-          clientRetentionRate: financialData.clientRetentionRate || 0,
-          projectMargin: financialData.projectMargin || 0
-        };
-      case 'ecommerce':
-        return {
-          conversionRate: financialData.conversionRate || 0,
-          averageOrderValue: financialData.averageOrderValue || 0,
-          customerAcquisitionCost: financialData.customerAcquisitionCost || 0,
-          customerLifetimeValue: financialData.customerLifetimeValue || 0,
-          cartAbandonmentRate: financialData.cartAbandonmentRate || 0
-        };
-      default: // commerce
-        return {
-          inventoryDays: financialData.inventoryDays || 0,
-          grossProfitPerUnit: financialData.grossProfitPerUnit || 0,
-          salesPerSquareFoot: financialData.salesPerSquareFoot || 0,
-          customerFootfall: financialData.customerFootfall || 0,
-          averageTransactionValue: financialData.averageTransactionValue || 0
-        };
+  
+  // DuPont Analysis data
+  const dupontData = {
+    netIncome: financialData.netIncome || 0,
+    revenue: financialData.annualRevenue || 0,
+    totalAssets: financialData.totalAssets || 0,
+    totalEquity: (financialData.totalAssets || 0) - (financialData.totalLiabilities || 0),
+    netProfitMargin: financialData.annualRevenue > 0 ? ((financialData.netIncome || 0) / financialData.annualRevenue) * 100 : 0,
+    assetTurnover: financialData.totalAssets > 0 ? (financialData.annualRevenue || 0) / financialData.totalAssets : 0,
+    equityMultiplier: ((financialData.totalAssets || 0) - (financialData.totalLiabilities || 0)) > 0 ? 
+      (financialData.totalAssets || 0) / ((financialData.totalAssets || 0) - (financialData.totalLiabilities || 0)) : 0,
+    roe: ((financialData.totalAssets || 0) - (financialData.totalLiabilities || 0)) > 0 ? 
+      ((financialData.netIncome || 0) / ((financialData.totalAssets || 0) - (financialData.totalLiabilities || 0))) * 100 : 0,
+    historicalData: financialData.dupontHistorical || [],
+    industryBenchmarks: {
+      netProfitMargin: 15,
+      assetTurnover: 1.2,
+      equityMultiplier: 2.0,
+      roe: 15
     }
   };
 
-  const ratios = calculateFinancialRatios();
+  // Financial ratios with descriptions
+  const financialRatios = [
+    {
+      name: "Margine di Profitto Netto",
+      value: dupontData.netProfitMargin,
+      benchmark: "10-20%",
+      description: "Misura l'efficienza operativa dell'azienda",
+      info: "Questo ratio indica quanto profitto netto genera l'azienda per ogni euro di ricavi. Un margine più alto indica una maggiore efficienza operativa.",
+      type: "Profitability Ratio",
+      icon: <Percent className="h-4 w-4" />
+    },
+    {
+      name: "Rotazione degli Attivi",
+      value: dupontData.assetTurnover,
+      benchmark: "1.0-2.0",
+      description: "Misura l'efficienza nell'utilizzo degli asset",
+      info: "Indica quanto efficacemente l'azienda utilizza i suoi asset per generare ricavi. Un valore più alto indica un uso più efficiente degli asset.",
+      type: "Efficiency Ratio",
+      icon: <TrendingUp className="h-4 w-4" />
+    },
+    {
+      name: "Moltiplicatore di Equity",
+      value: dupontData.equityMultiplier,
+      benchmark: "1.5-3.0",
+      description: "Misura il leveraging finanziario",
+      info: "Questo ratio mostra quanto l'azienda utilizza il debito per finanziare i suoi asset. Un valore più alto indica maggiore leva finanziaria.",
+      type: "Leverage Ratio",
+      icon: <Target className="h-4 w-4" />
+    },
+    {
+      name: "ROE (Return on Equity)",
+      value: dupontData.roe,
+      benchmark: "12-18%",
+      description: "Rendimento sul capitale proprio",
+      info: "Misura la redditività dell'investimento degli azionisti. Un ROE più alto indica una maggiore redditività per gli azionisti.",
+      type: "Profitability Ratio",
+      icon: <DollarSign className="h-4 w-4" />
+    }
+  ];
 
-  const monthlyData = hasRealData ? 
-    (financialData.monthlyData || []) : 
-    Array(12).fill(0).map((_, index) => ({
-      month: ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'][index],
-      revenue: 0,
-      expenses: 0,
-      profit: 0
-    }));
+  const RatioCard = ({ ratio }: { ratio: any }) => {
+    const isGood = ratio.name === "ROE (Return on Equity)" || ratio.name === "Margine di Profitto Netto" 
+      ? ratio.value > 12 
+      : ratio.name === "Rotazione degli Attivi" 
+        ? ratio.value > 1.0
+        : ratio.value < 3.0;
 
-  const expenseData = hasRealData ? 
-    (financialData.expenseBreakdown || []) :
-    [
-      { name: 'Nessun Dato', value: 0, color: '#e5e7eb' }
-    ];
-
-  return (
-    <div className="space-y-8 p-6 bg-gradient-to-br from-gray-50 to-white min-h-screen">
-      {/* Header */}
-      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between space-y-4 lg:space-y-0">
-        <div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
-            Analytics Avanzate
-          </h1>
-          <p className="text-gray-600 mt-2">Analisi dettagliate delle performance aziendali</p>
-        </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <Badge className="bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 border-0 px-4 py-2 rounded-full">
-            <Activity className="h-4 w-4 mr-2" />
-            Analytics
-          </Badge>
-        </div>
-      </div>
-
-      {/* Analytics Tabs */}
-      <Card className="border-0 shadow-lg">
-        <CardContent className="p-0">
-          <Tabs defaultValue="profitability" className="w-full">
-            <div className="border-b">
-              <TabsList className="grid w-full grid-cols-4 bg-transparent h-12">
-                <TabsTrigger value="profitability" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
-                  Redditività
-                </TabsTrigger>
-                <TabsTrigger value="liquidity" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
-                  Liquidità
-                </TabsTrigger>
-                <TabsTrigger value="efficiency" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
-                  Efficienza
-                </TabsTrigger>
-                <TabsTrigger value="industry" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
-                  Settore
-                </TabsTrigger>
-              </TabsList>
+    return (
+      <Card className="hover:shadow-lg transition-shadow">
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              {ratio.icon}
+              <div>
+                <CardTitle className="text-sm">{ratio.name}</CardTitle>
+                <CardDescription className="text-xs">{ratio.type}</CardDescription>
+              </div>
             </div>
-
-            {/* Profitability Tab */}
-            <TabsContent value="profitability" className="p-6 space-y-6">
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <KPIIndicator 
-                  title="Margine Lordo"
-                  value={ratios.grossMargin}
-                  target={60}
-                  unit="%"
-                />
-                <KPIIndicator 
-                  title="Margine Netto"
-                  value={ratios.netMargin}
-                  target={15}
-                  unit="%"
-                />
-                <KPIIndicator 
-                  title="Margine Operativo"
-                  value={ratios.operatingMargin}
-                  target={20}
-                  unit="%"
-                />
-                <KPIIndicator 
-                  title="ROA (Return on Assets)"
-                  value={ratios.roa}
-                  target={10}
-                  unit="%"
-                />
-                <KPIIndicator 
-                  title="ROE (Return on Equity)"
-                  value={ratios.roe}
-                  target={15}
-                  unit="%"
-                />
-                <KPIIndicator 
-                  title="EBITDA Margin"
-                  value={hasRealData ? (financialData.ebitdaMargin || 0) : 0}
-                  target={25}
-                  unit="%"
-                />
-              </div>
-            </TabsContent>
-
-            {/* Liquidity Tab */}
-            <TabsContent value="liquidity" className="p-6 space-y-6">
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <KPIIndicator 
-                  title="Current Ratio"
-                  value={ratios.currentRatio}
-                  target={2}
-                  unit=""
-                />
-                <KPIIndicator 
-                  title="Quick Ratio"
-                  value={ratios.quickRatio}
-                  target={1}
-                  unit=""
-                />
-                <KPIIndicator 
-                  title="Cash Ratio"
-                  value={ratios.cashRatio}
-                  target={0.5}
-                  unit=""
-                />
-                <KPIIndicator 
-                  title="Working Capital Ratio"
-                  value={hasRealData ? (financialData.workingCapitalRatio || 0) : 0}
-                  target={20}
-                  unit="%"
-                />
-                <KPIIndicator 
-                  title="Days Sales Outstanding"
-                  value={hasRealData ? (financialData.dso || 0) : 0}
-                  target={30}
-                  unit=" giorni"
-                />
-                <KPIIndicator 
-                  title="Days Payable Outstanding"
-                  value={hasRealData ? (financialData.dpo || 0) : 0}
-                  target={45}
-                  unit=" giorni"
-                />
-              </div>
-            </TabsContent>
-
-            {/* Efficiency Tab */}
-            <TabsContent value="efficiency" className="p-6 space-y-6">
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <KPIIndicator 
-                  title="Asset Turnover"
-                  value={ratios.assetTurnover}
-                  target={1.5}
-                  unit=""
-                />
-                <KPIIndicator 
-                  title="Inventory Turnover"
-                  value={ratios.inventoryTurnover}
-                  target={6}
-                  unit=""
-                />
-                <KPIIndicator 
-                  title="Receivables Turnover"
-                  value={ratios.receivablesTurnover}
-                  target={12}
-                  unit=""
-                />
-                <KPIIndicator 
-                  title="Debt to Equity"
-                  value={ratios.debtToEquity}
-                  target={0.5}
-                  unit=""
-                />
-                <KPIIndicator 
-                  title="Debt to Assets"
-                  value={ratios.debtToAssets}
-                  target={0.3}
-                  unit=""
-                />
-                <KPIIndicator 
-                  title="Equity Ratio"
-                  value={ratios.equityRatio * 100}
-                  target={60}
-                  unit="%"
-                />
-              </div>
-            </TabsContent>
-
-            {/* Industry Specific Tab */}
-            <TabsContent value="industry" className="p-6 space-y-6">
-              {userIndustry === 'consulting' && (
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  <KPIIndicator 
-                    title="Utilization Rate"
-                    value={ratios.utilizationRate}
-                    target={85}
-                    unit="%"
-                  />
-                  <KPIIndicator 
-                    title="Ore Fatturabili/Anno"
-                    value={ratios.billableHours}
-                    target={1800}
-                    unit=""
-                  />
-                  <KPIIndicator 
-                    title="Tariffa Oraria Media"
-                    value={ratios.averageHourlyRate}
-                    target={100}
-                    unit="€"
-                  />
-                  <KPIIndicator 
-                    title="Client Retention"
-                    value={ratios.clientRetentionRate}
-                    target={90}
-                    unit="%"
-                  />
-                  <KPIIndicator 
-                    title="Project Margin"
-                    value={ratios.projectMargin}
-                    target={40}
-                    unit="%"
-                  />
-                </div>
-              )}
-
-              {userIndustry === 'ecommerce' && (
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  <KPIIndicator 
-                    title="Conversion Rate"
-                    value={ratios.conversionRate}
-                    target={3}
-                    unit="%"
-                  />
-                  <KPIIndicator 
-                    title="Average Order Value"
-                    value={ratios.averageOrderValue}
-                    target={100}
-                    unit="€"
-                  />
-                  <KPIIndicator 
-                    title="Customer Acquisition Cost"
-                    value={ratios.customerAcquisitionCost}
-                    target={30}
-                    unit="€"
-                  />
-                  <KPIIndicator 
-                    title="Customer Lifetime Value"
-                    value={ratios.customerLifetimeValue}
-                    target={300}
-                    unit="€"
-                  />
-                  <KPIIndicator 
-                    title="Cart Abandonment Rate"
-                    value={ratios.cartAbandonmentRate}
-                    target={70}
-                    unit="%"
-                  />
-                </div>
-              )}
-
-              {userIndustry === 'commerce' && (
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  <KPIIndicator 
-                    title="Giorni di Inventario"
-                    value={ratios.inventoryDays}
-                    target={30}
-                    unit=" giorni"
-                  />
-                  <KPIIndicator 
-                    title="Profitto Lordo/Unità"
-                    value={ratios.grossProfitPerUnit}
-                    target={50}
-                    unit="€"
-                  />
-                  <KPIIndicator 
-                    title="Vendite/m²"
-                    value={ratios.salesPerSquareFoot}
-                    target={500}
-                    unit="€"
-                  />
-                  <KPIIndicator 
-                    title="Traffico Clienti"
-                    value={ratios.customerFootfall}
-                    target={1000}
-                    unit="/mese"
-                  />
-                  <KPIIndicator 
-                    title="Scontrino Medio"
-                    value={ratios.averageTransactionValue}
-                    target={75}
-                    unit="€"
-                  />
-                </div>
-              )}
-            </TabsContent>
-          </Tabs>
+            <Badge variant={isGood ? "default" : "secondary"}>
+              {typeof ratio.value === 'number' ? ratio.value.toFixed(1) : ratio.value}
+              {ratio.name.includes('Margine') || ratio.name.includes('ROE') ? '%' : ''}
+            </Badge>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2">
+            <p className="text-sm text-gray-600">{ratio.description}</p>
+            <Alert className="border-blue-200 bg-blue-50">
+              <Info className="h-4 w-4 text-blue-600" />
+              <AlertDescription className="text-xs">
+                <strong>Benchmark:</strong> {ratio.benchmark}<br />
+                {ratio.info}
+              </AlertDescription>
+            </Alert>
+          </div>
         </CardContent>
       </Card>
+    );
+  };
 
-      {/* Charts Section */}
-      {hasRealData ? (
-        <div className="grid lg:grid-cols-2 gap-8">
-          <MonthlyRevenueChart 
-            data={monthlyData}
-            title="Performance Mensile"
-            height={400}
-          />
-          <ExpenseBreakdownChart 
-            data={expenseData}
-            title="Analisi Spese"
-          />
+  return (
+    <div className="space-y-6 p-6 bg-gradient-to-br from-slate-50 to-white min-h-screen">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-600 to-blue-600 bg-clip-text text-transparent">
+            Financial Analytics
+          </h1>
+          <p className="text-gray-600 mt-2">Advanced financial analysis and performance metrics</p>
         </div>
-      ) : (
-        <div className="text-center py-12">
-          <Calculator className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-500 mb-2">Nessun Dato Disponibile</h3>
-          <p className="text-gray-400 mb-4">Importa i tuoi dati per vedere le analytics dettagliate</p>
-          <Button 
-            onClick={() => {
-              const event = new CustomEvent('navigate-to-section', { detail: 'data-import' });
-              window.dispatchEvent(event);
-            }}
-            className="bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 rounded-full"
-          >
-            Importa Dati
-          </Button>
-        </div>
-      )}
+        <Badge className="bg-gradient-to-r from-blue-100 to-slate-200 text-slate-800 border-0 px-4 py-2 rounded-full">
+          <BarChart3 className="h-4 w-4 mr-2" />
+          Analytics Dashboard
+        </Badge>
+      </div>
+
+      <Tabs defaultValue="ratios" className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="ratios" className="flex items-center gap-2">
+            <Calculator className="h-4 w-4" />
+            Financial Ratios
+          </TabsTrigger>
+          <TabsTrigger value="dupont" className="flex items-center gap-2">
+            <Target className="h-4 w-4" />
+            DuPont Analysis
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="ratios" className="space-y-6">
+          {/* Financial Ratios Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {financialRatios.map((ratio, index) => (
+              <RatioCard key={index} ratio={ratio} />
+            ))}
+          </div>
+
+          {/* Additional Analytics Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card className="bg-gradient-to-r from-green-50 to-green-100">
+              <CardContent className="p-6 text-center">
+                <TrendingUp className="h-8 w-8 text-green-600 mx-auto mb-3" />
+                <h3 className="font-semibold text-gray-900 mb-2">Trend Analysis</h3>
+                <p className="text-sm text-gray-600 mb-4">Analisi delle tendenze finanziarie</p>
+                <Button variant="outline" size="sm">
+                  Visualizza Trend
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-r from-blue-50 to-blue-100">
+              <CardContent className="p-6 text-center">
+                <BarChart3 className="h-8 w-8 text-blue-600 mx-auto mb-3" />
+                <h3 className="font-semibold text-gray-900 mb-2">Benchmark Comparison</h3>
+                <p className="text-sm text-gray-600 mb-4">Confronto con benchmark di settore</p>
+                <Button variant="outline" size="sm">
+                  Confronta
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-r from-purple-50 to-purple-100">
+              <CardContent className="p-6 text-center">
+                <Target className="h-8 w-8 text-purple-600 mx-auto mb-3" />
+                <h3 className="font-semibold text-gray-900 mb-2">Performance Metrics</h3>
+                <p className="text-sm text-gray-600 mb-4">Metriche di performance avanzate</p>
+                <Button variant="outline" size="sm">
+                  Analizza
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="dupont" className="space-y-6">
+          <DuPontAnalysis data={dupontData} />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
