@@ -1,10 +1,12 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
   TrendingUp, Shield, Zap, Globe, Users, CheckCircle,
-  BarChart3, Brain, CreditCard, ArrowRight, Star, Building2, Play
+  BarChart3, Brain, CreditCard, ArrowRight, Star, Building2, 
+  FileText, Calculator, Bot, Settings, Droplets
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import LanguageSelector from "./LanguageSelector";
@@ -18,7 +20,7 @@ interface HomepageProps {
 }
 
 const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
-  const [activeSection, setActiveSection] = useState<'home' | 'product' | 'solutions' | 'why' | 'pricing' | 'resources' | 'contact' | 'about'>('home');
+  const [activeSection, setActiveSection] = useState<'home' | 'product' | 'why' | 'pricing' | 'resources' | 'contact' | 'about'>('home');
   const { t } = useLanguage();
 
   const features = [
@@ -44,6 +46,44 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
     }
   ];
 
+  const dashboardFeatures = [
+    {
+      icon: TrendingUp,
+      title: "Overview Dashboard",
+      description: "Real-time financial health monitoring with key performance indicators"
+    },
+    {
+      icon: FileText,
+      title: "Financial Statements",
+      description: "Complete Income Statement, Balance Sheet, and Cash Flow analysis"
+    },
+    {
+      icon: BarChart3,
+      title: "Advanced Analytics",
+      description: "In-depth financial analytics with trend analysis and forecasting"
+    },
+    {
+      icon: Calculator,
+      title: "DuPont Analysis",
+      description: "Break down ROE components for comprehensive profitability analysis"
+    },
+    {
+      icon: Bot,
+      title: "AI Solution",
+      description: "Intelligent financial recommendations and automated insights"
+    },
+    {
+      icon: Brain,
+      title: "AI Insights",
+      description: "Scenario analysis and predictive financial modeling"
+    },
+    {
+      icon: Settings,
+      title: "Custom Dashboard",
+      description: "Personalized metrics tracking and goal management system"
+    }
+  ];
+
   const testimonials = [
     {
       name: "Marco Rossi",
@@ -66,16 +106,58 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
           <div className="py-20">
             <div className="container mx-auto px-4">
               <div className="text-center mb-16">
-                <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                <h2 className="text-4xl font-bold text-gray-900 mb-4">
                   {t('nav.product')}
                 </h2>
                 <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                  {t('features.subtitle')}
+                  Scopri tutte le funzionalità della dashboard che avrai a disposizione dopo la registrazione
                 </p>
               </div>
               
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                {features.map((feature, index) => {
+              {/* Dashboard Preview */}
+              <div className="mb-16">
+                <div className="bg-gradient-to-br from-blue-50 to-green-50 rounded-lg p-8 mb-8">
+                  <div className="flex items-center justify-center mb-6">
+                    <div className="bg-white rounded-lg shadow-lg p-4 w-full max-w-4xl">
+                      <div className="flex items-center justify-between mb-4 pb-4 border-b">
+                        <h3 className="text-xl font-semibold">Dashboard Principale</h3>
+                        <div className="flex space-x-2">
+                          <div className="w-3 h-3 bg-red-400 rounded-full"></div>
+                          <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                          <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-7 gap-2 mb-4">
+                        <div className="col-span-1 bg-gray-100 p-2 rounded text-xs text-center">Overview</div>
+                        <div className="col-span-1 bg-gray-100 p-2 rounded text-xs text-center">Statements</div>
+                        <div className="col-span-1 bg-gray-100 p-2 rounded text-xs text-center">Analytics</div>
+                        <div className="col-span-1 bg-gray-100 p-2 rounded text-xs text-center">DuPont</div>
+                        <div className="col-span-1 bg-gray-100 p-2 rounded text-xs text-center">AI Solution</div>
+                        <div className="col-span-1 bg-gray-100 p-2 rounded text-xs text-center">AI Insights</div>
+                        <div className="col-span-1 bg-gray-100 p-2 rounded text-xs text-center">Custom</div>
+                      </div>
+                      <div className="grid grid-cols-3 gap-4">
+                        <div className="bg-blue-50 p-3 rounded">
+                          <div className="text-xs text-blue-600 mb-1">Revenue</div>
+                          <div className="font-bold">€125,000</div>
+                        </div>
+                        <div className="bg-green-50 p-3 rounded">
+                          <div className="text-xs text-green-600 mb-1">Profit</div>
+                          <div className="font-bold">€35,000</div>
+                        </div>
+                        <div className="bg-purple-50 p-3 rounded">
+                          <div className="text-xs text-purple-600 mb-1">Cash Flow</div>
+                          <div className="font-bold">€22,000</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Dashboard Features */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {dashboardFeatures.map((feature, index) => {
                   const Icon = feature.icon;
                   return (
                     <Card key={index} className="text-center hover:shadow-lg transition-shadow">
@@ -91,51 +173,6 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
                     </Card>
                   );
                 })}
-              </div>
-            </div>
-          </div>
-        );
-      case 'solutions':
-        return (
-          <div className="py-20">
-            <div className="container mx-auto px-4">
-              <div className="text-center mb-16">
-                <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                  {t('nav.solutions')}
-                </h2>
-                <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                  {t('features.subtitle')}
-                </p>
-              </div>
-              
-              <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-                <Card>
-                  <CardHeader>
-                    <BarChart3 className="h-12 w-12 text-blue-600 mb-4" />
-                    <CardTitle>{t('features.dashboard.title')}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <CardDescription>{t('features.dashboard.desc')}</CardDescription>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader>
-                    <Brain className="h-12 w-12 text-green-600 mb-4" />
-                    <CardTitle>{t('features.ai.title')}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <CardDescription>{t('features.ai.desc')}</CardDescription>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader>
-                    <Shield className="h-12 w-12 text-purple-600 mb-4" />
-                    <CardTitle>{t('features.security.title')}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <CardDescription>{t('features.security.desc')}</CardDescription>
-                  </CardContent>
-                </Card>
               </div>
             </div>
           </div>
@@ -266,66 +303,6 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
               </div>
             </section>
 
-            {/* Video Tutorial Section */}
-            <section className="py-20 bg-gray-50">
-              <div className="container mx-auto px-4">
-                <div className="text-center mb-16">
-                  <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                    {t('video.title')}
-                  </h2>
-                  <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                    {t('video.subtitle')}
-                  </p>
-                </div>
-
-                <div className="max-w-4xl mx-auto">
-                  <Card className="overflow-hidden">
-                    <div className="relative bg-gradient-to-br from-blue-600 to-green-600 aspect-video">
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="text-center text-white">
-                          <Play className="h-16 w-16 mx-auto mb-4 bg-white/20 rounded-full p-4" />
-                          <h3 className="text-xl font-semibold mb-2">{t('video.tutorial.title')}</h3>
-                          <p className="text-blue-100 mb-4">{t('video.tutorial.duration')}</p>
-                          <Button 
-                            variant="secondary" 
-                            size="lg"
-                            className="bg-white text-blue-600 hover:bg-gray-100"
-                          >
-                            <Play className="h-4 w-4 mr-2" />
-                            {t('video.tutorial.cta')}
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </Card>
-                </div>
-
-                <div className="grid md:grid-cols-3 gap-6 mt-12 max-w-4xl mx-auto">
-                  <Card>
-                    <CardContent className="p-4 text-center">
-                      <BarChart3 className="h-8 w-8 text-blue-600 mx-auto mb-2" />
-                      <h4 className="font-semibold mb-1">{t('video.card1.title')}</h4>
-                      <p className="text-sm text-gray-600">{t('video.card1.desc')}</p>
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardContent className="p-4 text-center">
-                      <Brain className="h-8 w-8 text-green-600 mx-auto mb-2" />
-                      <h4 className="font-semibold mb-1">{t('video.card2.title')}</h4>
-                      <p className="text-sm text-gray-600">{t('video.card2.desc')}</p>
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardContent className="p-4 text-center">
-                      <CreditCard className="h-8 w-8 text-purple-600 mx-auto mb-2" />
-                      <h4 className="font-semibold mb-1">{t('video.card3.title')}</h4>
-                      <p className="text-sm text-gray-600">{t('video.card3.desc')}</p>
-                    </CardContent>
-                  </Card>
-                </div>
-              </div>
-            </section>
-
             {/* Features Section */}
             <section id="features" className="py-20 bg-white">
               <div className="container mx-auto px-4">
@@ -443,12 +420,6 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
                 className={`transition-colors ${activeSection === 'product' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
               >
                 {t('nav.product')}
-              </button>
-              <button 
-                onClick={() => setActiveSection('solutions')}
-                className={`transition-colors ${activeSection === 'solutions' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
-              >
-                {t('nav.solutions')}
               </button>
               <button 
                 onClick={() => setActiveSection('why')}
