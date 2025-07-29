@@ -10,7 +10,6 @@ import {
 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import DuPontAnalysis from "./financial/DuPontAnalysis";
-import ScenarioAnalysis from "./ai/ScenarioAnalysis";
 
 interface AnalyticsProps {
   user?: any;
@@ -164,7 +163,7 @@ const Analytics = ({ user }: AnalyticsProps) => {
       </div>
 
       <Tabs defaultValue="ratios" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="ratios" className="flex items-center gap-2">
             <Calculator className="h-4 w-4" />
             Financial Ratios
@@ -172,10 +171,6 @@ const Analytics = ({ user }: AnalyticsProps) => {
           <TabsTrigger value="dupont" className="flex items-center gap-2">
             <Target className="h-4 w-4" />
             DuPont Analysis
-          </TabsTrigger>
-          <TabsTrigger value="ai-insights" className="flex items-center gap-2">
-            <BarChart3 className="h-4 w-4" />
-            AI Insights
           </TabsTrigger>
         </TabsList>
 
@@ -226,10 +221,6 @@ const Analytics = ({ user }: AnalyticsProps) => {
 
         <TabsContent value="dupont" className="space-y-6">
           <DuPontAnalysis data={dupontData} />
-        </TabsContent>
-
-        <TabsContent value="ai-insights" className="space-y-6">
-          <ScenarioAnalysis financialData={financialData} />
         </TabsContent>
       </Tabs>
     </div>
