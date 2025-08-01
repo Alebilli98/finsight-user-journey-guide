@@ -409,7 +409,7 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
                 <TrendingUp className="h-7 w-7 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">FinSight</h1>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">Finsk.Ai</h1>
                 <p className="text-xs text-blue-600 font-medium">{t('footer.tagline')}</p>
               </div>
             </div>
@@ -476,7 +476,7 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
                   <TrendingUp className="h-5 w-5 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-bold">FinSight</h3>
+                  <h3 className="font-bold">Finsk.Ai</h3>
                   <p className="text-xs text-gray-400">{t('footer.tagline')}</p>
                 </div>
               </div>
