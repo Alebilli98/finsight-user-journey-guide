@@ -430,7 +430,7 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
                 onClick={() => setActiveSection('why')}
                 className={`transition-colors ${activeSection === 'why' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
               >
-                {t('nav.why')}
+                PERCHÉ FINSK.AI?
               </button>
               <button 
                 onClick={() => setActiveSection('resources')}
