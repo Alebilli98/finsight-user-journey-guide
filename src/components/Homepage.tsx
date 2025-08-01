@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -183,36 +182,42 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
             <div className="container mx-auto px-4">
               <div className="text-center mb-16">
                 <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                  {t('nav.why')}
+                  PERCHÉ FINSK.AI?
                 </h2>
                 <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                  {t('about.subtitle')}
+                  La nostra missione è democratizzare l'intelligenza finanziaria per startup e PMI
                 </p>
               </div>
               
               <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
                 <Card>
                   <CardHeader>
-                    <CardTitle>{t('about.mission.title')}</CardTitle>
+                    <CardTitle>La Nostra Missione</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <CardDescription>{t('about.mission.desc')}</CardDescription>
+                    <CardDescription>
+                      Crediamo che ogni startup meriti di avere accesso agli stessi strumenti finanziari avanzati delle grandi aziende. La nostra piattaforma powered by AI livella il campo di gioco.
+                    </CardDescription>
                   </CardContent>
                 </Card>
                 <Card>
                   <CardHeader>
-                    <CardTitle>{t('about.vision.title')}</CardTitle>
+                    <CardTitle>La Nostra Visione</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <CardDescription>{t('about.vision.desc')}</CardDescription>
+                    <CardDescription>
+                      Un mondo dove ogni imprenditore può prendere decisioni finanziarie informate e guidare la crescita sostenibile attraverso dati e insights intelligenti.
+                    </CardDescription>
                   </CardContent>
                 </Card>
                 <Card>
                   <CardHeader>
-                    <CardTitle>{t('about.team.title')}</CardTitle>
+                    <CardTitle>Il Nostro Team</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <CardDescription>{t('about.team.desc')}</CardDescription>
+                    <CardDescription>
+                      Un gruppo diversificato di esperti finanziari, ingegneri AI e imprenditori seriali con sede a Dubai, il cuore dell'innovazione MENA.
+                    </CardDescription>
                   </CardContent>
                 </Card>
               </div>
@@ -395,6 +400,44 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
     }
   };
 
+  const dashboardFeatures = [
+    {
+      icon: TrendingUp,
+      title: "Overview Dashboard",
+      description: "Real-time financial health monitoring with key performance indicators"
+    },
+    {
+      icon: FileText,
+      title: "Financial Statements",
+      description: "Complete Income Statement, Balance Sheet, and Cash Flow analysis"
+    },
+    {
+      icon: BarChart3,
+      title: "Advanced Analytics",
+      description: "In-depth financial analytics with trend analysis and forecasting"
+    },
+    {
+      icon: Calculator,
+      title: "DuPont Analysis",
+      description: "Break down ROE components for comprehensive profitability analysis"
+    },
+    {
+      icon: Bot,
+      title: "AI Solution",
+      description: "Intelligent financial recommendations and automated insights"
+    },
+    {
+      icon: Brain,
+      title: "AI Insights",
+      description: "Scenario analysis and predictive financial modeling"
+    },
+    {
+      icon: Settings,
+      title: "Custom Dashboard",
+      description: "Personalized metrics tracking and goal management system"
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
       {/* Navigation */}
@@ -516,7 +559,7 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
           </div>
 
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400">
-            <p>{t('footer.copyright')}</p>
+            <p>© 2024 Finsk.Ai. Tutti i diritti riservati. Dubai International Free Zone Authority (IFZA)</p>
           </div>
         </div>
       </footer>

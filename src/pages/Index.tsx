@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -27,7 +28,7 @@ const Index = () => {
 
   // Check for existing user session on component mount
   useEffect(() => {
-    const savedUser = localStorage.getItem("finsight_user");
+    const savedUser = localStorage.getItem("finsk_user");
     if (savedUser) {
       const userData = JSON.parse(savedUser);
       setUser(userData);
@@ -82,14 +83,14 @@ const Index = () => {
     // Mark onboarding as completed
     const updatedUser = { ...user, hasCompletedOnboarding: true };
     setUser(updatedUser);
-    localStorage.setItem("finsight_user", JSON.stringify(updatedUser));
+    localStorage.setItem("finsk_user", JSON.stringify(updatedUser));
     
     // Update users array
-    const savedUsers = JSON.parse(localStorage.getItem("finsight_users") || "[]");
+    const savedUsers = JSON.parse(localStorage.getItem("finsk_users") || "[]");
     const updatedUsers = savedUsers.map((u: any) => 
       u.email === user.email ? updatedUser : u
     );
-    localStorage.setItem("finsight_users", JSON.stringify(updatedUsers));
+    localStorage.setItem("finsk_users", JSON.stringify(updatedUsers));
     
     setShowOnboarding(false);
     setActiveSection("dashboard");
@@ -100,7 +101,7 @@ const Index = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("finsight_user");
+    localStorage.removeItem("finsk_user");
     setUser(null);
     setIsAuthenticated(false);
     setActiveSection("dashboard");
@@ -114,12 +115,12 @@ const Index = () => {
   const handleUserUpdate = (updatedUser: any) => {
     setUser(updatedUser);
     // Update both current user and users array
-    localStorage.setItem("finsight_user", JSON.stringify(updatedUser));
-    const savedUsers = JSON.parse(localStorage.getItem("finsight_users") || "[]");
+    localStorage.setItem("finsk_user", JSON.stringify(updatedUser));
+    const savedUsers = JSON.parse(localStorage.getItem("finsk_users") || "[]");
     const updatedUsers = savedUsers.map((u: any) => 
       u.email === updatedUser.email ? updatedUser : u
     );
-    localStorage.setItem("finsight_users", JSON.stringify(updatedUsers));
+    localStorage.setItem("finsk_users", JSON.stringify(updatedUsers));
   };
 
   const renderContent = () => {
