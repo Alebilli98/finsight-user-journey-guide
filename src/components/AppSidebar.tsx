@@ -47,8 +47,8 @@ const AppSidebar = ({ activeSection, setActiveSection }: AppSidebarProps) => {
             </div>
             {!collapsed && (
               <div>
-                <h1 className="text-xl font-bold text-gray-900">FinSight</h1>
-                <p className="text-sm text-gray-500">Your Financial Guide</p>
+                <h1 className="text-xl font-bold text-gray-900">Finsk.Ai</h1>
+                <p className="text-sm text-gray-500">Your AI Financial Guide</p>
               </div>
             )}
           </SidebarGroupLabel>

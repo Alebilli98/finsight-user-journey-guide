@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -15,7 +14,7 @@ const AboutSection = () => {
     },
     {
       icon: Users,
-      title: "Client Empowerment",
+      title: "Client Empowerment", 
       description: "We democratize financial expertise, enabling every startup and SME to make informed strategic decisions."
     },
     {
@@ -59,10 +58,10 @@ const AboutSection = () => {
             <Globe className="h-3 w-3 mr-1" />
             Dubai, UAE Based
           </Badge>
-          <h2 className="text-4xl font-bold text-gray-900 mb-6">About FinSight</h2>
+          <h2 className="text-4xl font-bold text-gray-900 mb-6">About Finsk.Ai</h2>
           <p className="text-xl text-gray-600 max-w-4xl mx-auto mb-12">
             We unleash the full potential of startups and SMEs, fostering and driving their growth through 
-            an integrated technological solution and solid financial advice, enabling them to compete 
+            an integrated AI-powered technological solution and solid financial advice, enabling them to compete 
             effectively with larger and more established companies.
           </p>
         </div>

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -95,7 +94,7 @@ const Index = () => {
     setShowOnboarding(false);
     setActiveSection("dashboard");
     toast({
-      title: `Benvenuto in FinSight, ${user.firstName}!`,
+      title: `Benvenuto in Finsk.Ai, ${user.firstName}!`,
       description: "Il tuo viaggio di trasformazione finanziaria inizia ora.",
     });
   };
