@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +13,20 @@ import ScenarioAnalysis from "./ai/ScenarioAnalysis";
 const AISolution = () => {
   const [activeTab, setActiveTab] = useState<'assistant' | 'chat' | 'insights' | 'scenario'>('assistant');
   const [chatMessage, setChatMessage] = useState("");
+
+  // Default financial data for ScenarioAnalysis
+  const defaultFinancialData = {
+    annualRevenue: 100000,
+    merchandiseCost: 60000,
+    operatingExpenses: 25000,
+    grossMargin: 40,
+    monthlyRecurringRevenue: 8333,
+    cashRunway: 12,
+    burnRate: 5000,
+    monthlyRevenue: 8333,
+    currentRatio: 1.5,
+    operatingCashFlow: 15000
+  };
 
   const aiFeatures = [
     {
@@ -51,7 +64,7 @@ const AISolution = () => {
       case 'assistant':
         return <AIAssistant />;
       case 'scenario':
-        return <ScenarioAnalysis />;
+        return <ScenarioAnalysis financialData={defaultFinancialData} />;
       case 'chat':
         return (
           <div className="space-y-6">

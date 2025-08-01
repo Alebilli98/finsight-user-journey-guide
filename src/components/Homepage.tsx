@@ -400,44 +400,6 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
     }
   };
 
-  const dashboardFeatures = [
-    {
-      icon: TrendingUp,
-      title: "Overview Dashboard",
-      description: "Real-time financial health monitoring with key performance indicators"
-    },
-    {
-      icon: FileText,
-      title: "Financial Statements",
-      description: "Complete Income Statement, Balance Sheet, and Cash Flow analysis"
-    },
-    {
-      icon: BarChart3,
-      title: "Advanced Analytics",
-      description: "In-depth financial analytics with trend analysis and forecasting"
-    },
-    {
-      icon: Calculator,
-      title: "DuPont Analysis",
-      description: "Break down ROE components for comprehensive profitability analysis"
-    },
-    {
-      icon: Bot,
-      title: "AI Solution",
-      description: "Intelligent financial recommendations and automated insights"
-    },
-    {
-      icon: Brain,
-      title: "AI Insights",
-      description: "Scenario analysis and predictive financial modeling"
-    },
-    {
-      icon: Settings,
-      title: "Custom Dashboard",
-      description: "Personalized metrics tracking and goal management system"
-    }
-  ];
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
       {/* Navigation */}
