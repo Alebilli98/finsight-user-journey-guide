@@ -27,11 +27,26 @@ const Header = ({ isOnboarded, user, onLogout, onProfile }: HeaderProps) => {
   const { t } = useLanguage();
 
   return (
-    <header className="bg-white/90 backdrop-blur-lg shadow-lg border-b border-primary/20">
+    <header className="bg-white/95 backdrop-blur-xl shadow-lg border-b border-primary/20">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center space-x-4">
             {isOnboarded && <SidebarTrigger className="text-primary hover:text-accent transition-colors" />}
+            {isOnboarded && (
+              <div className="flex items-center space-x-3">
+                <div className="bg-tech-gradient p-2.5 rounded-xl shadow-lg">
+                  <img 
+                    src="/lovable-uploads/79cc2aab-18a5-4eb6-97d0-e35487ae3632.png" 
+                    alt="Finsk.Ai Logo" 
+                    className="h-6 w-6"
+                  />
+                </div>
+                <div>
+                  <h1 className="text-xl font-bold bg-tech-gradient bg-clip-text text-transparent font-inter">Finsk.Ai</h1>
+                  <p className="text-xs text-primary font-medium font-poppins">Your AI Financial Guide</p>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="flex items-center space-x-4">
@@ -92,7 +107,7 @@ const Header = ({ isOnboarded, user, onLogout, onProfile }: HeaderProps) => {
                 <LanguageSelector />
               </>
             )}
-            <Badge variant="secondary" className="bg-tech-gradient text-white border-0 font-inter">
+            <Badge variant="secondary" className="bg-tech-gradient text-white border-0 font-inter shadow-lg">
               {user?.plan || "Premier"} Plan
             </Badge>
           </div>

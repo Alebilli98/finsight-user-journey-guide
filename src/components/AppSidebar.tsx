@@ -42,13 +42,17 @@ const AppSidebar = ({ activeSection, setActiveSection }: AppSidebarProps) => {
       <SidebarContent className="p-4">
         <SidebarGroup>
           <SidebarGroupLabel className="flex items-center space-x-3 px-3 py-6 mb-4">
-            <div className="bg-gradient-to-r from-blue-600 to-green-600 p-2.5 rounded-xl shadow-md">
-              <TrendingUp className="h-6 w-6 text-white" />
+            <div className="bg-tech-gradient p-2.5 rounded-xl shadow-lg group-hover:scale-105 transition-transform duration-300">
+              <img 
+                src="/lovable-uploads/79cc2aab-18a5-4eb6-97d0-e35487ae3632.png" 
+                alt="Finsk.Ai Logo" 
+                className="h-6 w-6"
+              />
             </div>
             {!collapsed && (
               <div>
-                <h1 className="text-xl font-bold text-gray-900">Finsk.Ai</h1>
-                <p className="text-sm text-gray-500">Your AI Financial Guide</p>
+                <h1 className="text-xl font-bold bg-tech-gradient bg-clip-text text-transparent font-inter">Finsk.Ai</h1>
+                <p className="text-sm text-primary font-medium font-poppins">Your AI Financial Guide</p>
               </div>
             )}
           </SidebarGroupLabel>
@@ -66,8 +70,8 @@ const AppSidebar = ({ activeSection, setActiveSection }: AppSidebarProps) => {
                         onClick={() => setActiveSection(item.id)}
                         className={`w-full justify-start py-3 px-4 rounded-xl transition-all transform hover:scale-105 ${
                           isActive 
-                            ? "bg-gradient-to-r from-blue-100 to-green-100 text-blue-700 font-medium shadow-lg border border-blue-200" 
-                            : "hover:bg-gray-100 text-gray-700 hover:shadow-md"
+                            ? "bg-tech-gradient text-white font-medium shadow-lg border border-primary/20" 
+                            : "hover:bg-primary/10 text-tech-gray hover:text-primary hover:shadow-md"
                         }`}
                       >
                         <Icon className="h-5 w-5 flex-shrink-0" />
