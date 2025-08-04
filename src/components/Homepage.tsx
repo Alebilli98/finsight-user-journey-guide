@@ -443,8 +443,12 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
               className="flex items-center space-x-4 cursor-pointer group"
               onClick={() => setActiveSection('home')}
             >
-              <div className="bg-tech-gradient p-4 rounded-2xl shadow-lg group-hover:scale-105 transition-transform duration-300">
-                <TrendingUp className="h-8 w-8 text-white" />
+              <div className="group-hover:scale-105 transition-transform duration-300">
+                <img 
+                  src="/lovable-uploads/62c27d0c-77d9-443f-9571-3f00422c3ac8.png" 
+                  alt="Finsk.Ai Logo" 
+                  className="h-12 w-auto"
+                />
               </div>
               <div>
                 <h1 className="text-3xl font-bold bg-tech-gradient bg-clip-text text-transparent font-inter">Finsk.Ai</h1>
@@ -518,9 +522,11 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center space-x-4 mb-6">
-                <div className="bg-tech-gradient p-3 rounded-xl">
-                  <TrendingUp className="h-6 w-6 text-white" />
-                </div>
+                <img 
+                  src="/lovable-uploads/62c27d0c-77d9-443f-9571-3f00422c3ac8.png" 
+                  alt="Finsk.Ai Logo" 
+                  className="h-8 w-auto"
+                />
                 <div>
                   <h3 className="font-bold text-xl font-inter">Finsk.Ai</h3>
                   <p className="text-xs text-cyan-accent font-poppins">{t('footer.tagline')}</p>
