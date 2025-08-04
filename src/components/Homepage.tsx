@@ -444,8 +444,8 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
             >
               <div className="flex items-center space-x-3 group-hover:scale-105 transition-transform duration-300">
                 <img 
-                  src="/lovable-uploads/62c27d0c-77d9-443f-9571-3f00422c3ac8.png" 
-                  alt="Finsk.Ai Logo" 
+                  src="/lovable-uploads/75cd2fc8-828e-472f-a023-c73b62d70d27.png" 
+                  alt="Finsk.Ai Logo Symbol" 
                   className="h-10 w-auto"
                 />
                 <div>
@@ -522,8 +522,8 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
             <div>
               <div className="flex items-center space-x-4 mb-6">
                 <img 
-                  src="/lovable-uploads/62c27d0c-77d9-443f-9571-3f00422c3ac8.png" 
-                  alt="Finsk.Ai Logo" 
+                  src="/lovable-uploads/75cd2fc8-828e-472f-a023-c73b62d70d27.png" 
+                  alt="Finsk.Ai Logo Symbol" 
                   className="h-8 w-auto"
                 />
                 <div>
