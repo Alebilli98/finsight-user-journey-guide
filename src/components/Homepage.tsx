@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -443,16 +442,16 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
               className="flex items-center space-x-4 cursor-pointer group"
               onClick={() => setActiveSection('home')}
             >
-              <div className="group-hover:scale-105 transition-transform duration-300">
+              <div className="flex items-center space-x-3 group-hover:scale-105 transition-transform duration-300">
                 <img 
                   src="/lovable-uploads/62c27d0c-77d9-443f-9571-3f00422c3ac8.png" 
                   alt="Finsk.Ai Logo" 
-                  className="h-12 w-auto"
+                  className="h-10 w-auto"
                 />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold bg-tech-gradient bg-clip-text text-transparent font-inter">Finsk.Ai</h1>
-                <p className="text-xs text-primary font-medium font-poppins">{t('footer.tagline')}</p>
+                <div>
+                  <h1 className="text-3xl font-bold bg-tech-gradient bg-clip-text text-transparent font-inter">Finsk.Ai</h1>
+                  <p className="text-xs text-primary font-medium font-poppins">{t('footer.tagline')}</p>
+                </div>
               </div>
             </div>
 
