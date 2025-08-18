@@ -447,7 +447,7 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
                 <img 
                   src="/lovable-uploads/3649b85f-a01b-4935-b35c-c20278d06f18.png" 
                   alt="Tralis AI Logo" 
-                  className="h-16 w-auto"
+                  className="h-32 w-auto"
                 />
               </div>
             </div>
