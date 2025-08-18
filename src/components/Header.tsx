@@ -34,17 +34,11 @@ const Header = ({ isOnboarded, user, onLogout, onProfile }: HeaderProps) => {
             {isOnboarded && <SidebarTrigger className="text-primary hover:text-accent transition-colors" />}
             {isOnboarded && (
               <div className="flex items-center space-x-3">
-                <div className="bg-tech-gradient p-2.5 rounded-xl shadow-lg">
-                  <img 
-                    src="/lovable-uploads/79cc2aab-18a5-4eb6-97d0-e35487ae3632.png" 
-                    alt="Finsk.Ai Logo" 
-                    className="h-6 w-6"
-                  />
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold bg-tech-gradient bg-clip-text text-transparent font-inter">Finsk.Ai</h1>
-                  <p className="text-xs text-primary font-medium font-poppins">Your AI Financial Guide</p>
-                </div>
+                <img 
+                  src="/lovable-uploads/3649b85f-a01b-4935-b35c-c20278d06f18.png" 
+                  alt="Tralis AI Logo" 
+                  className="h-8 w-auto"
+                />
               </div>
             )}
           </div>

@@ -188,7 +188,7 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
                   <Shield className="h-10 w-10 text-white" />
                 </div>
                 <h2 className="text-4xl font-bold text-dark-blue mb-4 font-inter">
-                  PERCHÉ FINSK.AI?
+                  PERCHÉ TRALIS AI?
                 </h2>
                 <p className="text-lg text-tech-gray max-w-2xl mx-auto font-poppins">
                   La nostra missione è democratizzare l'intelligenza finanziaria per startup e PMI
@@ -444,12 +444,12 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
             >
               <div className="flex items-center space-x-3 group-hover:scale-105 transition-transform duration-300">
                 <img 
-                  src="/lovable-uploads/75cd2fc8-828e-472f-a023-c73b62d70d27.png" 
-                  alt="Finsk.Ai Logo Symbol" 
-                  className="h-10 w-auto"
+                  src="/lovable-uploads/3649b85f-a01b-4935-b35c-c20278d06f18.png" 
+                  alt="Tralis AI Logo" 
+                  className="h-12 w-auto"
                 />
                 <div>
-                  <h1 className="text-3xl font-bold bg-tech-gradient bg-clip-text text-transparent font-inter">Finsk.Ai</h1>
+                  <h1 className="text-3xl font-bold bg-tech-gradient bg-clip-text text-transparent font-inter">Tralis AI</h1>
                   <p className="text-xs text-primary font-medium font-poppins">{t('footer.tagline')}</p>
                 </div>
               </div>
@@ -466,7 +466,7 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
                 onClick={() => setActiveSection('why')}
                 className={`transition-all duration-300 font-semibold font-inter ${activeSection === 'why' ? 'text-primary border-b-2 border-primary' : 'text-tech-gray hover:text-primary'}`}
               >
-                PERCHÉ FINSK.AI?
+                PERCHÉ TRALIS AI?
               </button>
               <button 
                 onClick={() => setActiveSection('resources')}
@@ -522,12 +522,12 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
             <div>
               <div className="flex items-center space-x-4 mb-6">
                 <img 
-                  src="/lovable-uploads/75cd2fc8-828e-472f-a023-c73b62d70d27.png" 
-                  alt="Finsk.Ai Logo Symbol" 
-                  className="h-8 w-auto"
+                  src="/lovable-uploads/3649b85f-a01b-4935-b35c-c20278d06f18.png" 
+                  alt="Tralis AI Logo" 
+                  className="h-10 w-auto"
                 />
                 <div>
-                  <h3 className="font-bold text-xl font-inter">Finsk.Ai</h3>
+                  <h3 className="font-bold text-xl font-inter">Tralis AI</h3>
                   <p className="text-xs text-cyan-accent font-poppins">{t('footer.tagline')}</p>
                 </div>
               </div>
@@ -567,7 +567,7 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
           </div>
 
           <div className="border-t border-gray-700 mt-12 pt-8 text-center text-sm text-gray-400 font-poppins">
-            <p>© 2024 Finsk.Ai. Tutti i diritti riservati. Dubai International Free Zone Authority (IFZA)</p>
+            <p>© 2024 Tralis AI. Tutti i diritti riservati. Dubai International Free Zone Authority (IFZA)</p>
           </div>
         </div>
       </footer>

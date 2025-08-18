@@ -42,19 +42,11 @@ const AppSidebar = ({ activeSection, setActiveSection }: AppSidebarProps) => {
       <SidebarContent className="p-4">
         <SidebarGroup>
           <SidebarGroupLabel className="flex items-center space-x-3 px-3 py-6 mb-4">
-            <div className="bg-tech-gradient p-2.5 rounded-xl shadow-lg group-hover:scale-105 transition-transform duration-300">
-              <img 
-                src="/lovable-uploads/79cc2aab-18a5-4eb6-97d0-e35487ae3632.png" 
-                alt="Finsk.Ai Logo" 
-                className="h-6 w-6"
-              />
-            </div>
-            {!collapsed && (
-              <div>
-                <h1 className="text-xl font-bold bg-tech-gradient bg-clip-text text-transparent font-inter">Finsk.Ai</h1>
-                <p className="text-sm text-primary font-medium font-poppins">Your AI Financial Guide</p>
-              </div>
-            )}
+            <img 
+              src="/lovable-uploads/3649b85f-a01b-4935-b35c-c20278d06f18.png" 
+              alt="Tralis AI Logo" 
+              className="h-8 w-auto group-hover:scale-105 transition-transform duration-300"
+            />
           </SidebarGroupLabel>
 
           <SidebarGroupContent>
