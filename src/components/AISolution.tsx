@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,6 +13,20 @@ import ScenarioAnalysis from "./ai/ScenarioAnalysis";
 
 const AISolution = () => {
   const [activeTab, setActiveTab] = useState("assistant");
+
+  // Mock financial data for ScenarioAnalysis
+  const mockFinancialData = {
+    annualRevenue: 500000,
+    merchandiseCost: 300000,
+    operatingExpenses: 120000,
+    grossMargin: 40,
+    monthlyRecurringRevenue: 25000,
+    cashRunway: 18,
+    burnRate: 15000,
+    monthlyRevenue: 41667,
+    operatingCashFlow: 80000,
+    currentRatio: 1.5
+  };
 
   const aiFeatures = [
     {
@@ -155,7 +168,7 @@ const AISolution = () => {
               </div>
             </CardHeader>
             <CardContent>
-              <ScenarioAnalysis />
+              <ScenarioAnalysis financialData={mockFinancialData} />
             </CardContent>
           </Card>
         </TabsContent>

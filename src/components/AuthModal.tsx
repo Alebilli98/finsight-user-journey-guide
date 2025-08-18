@@ -13,12 +13,12 @@ import { useLanguage } from "@/contexts/LanguageContext";
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAuth: (userData: any) => void;
+  onAuthSuccess: (userData: any) => void;
   defaultTab?: 'login' | 'signup';
 }
 
-const AuthModal = ({ isOpen, onClose, onAuth, defaultTab = 'login' }: AuthModalProps) => {
-  const [activeTab, setActiveTab] = useState(defaultTab);
+const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = 'login' }: AuthModalProps) => {
+  const [activeTab, setActiveTab] = useState<'login' | 'signup'>(defaultTab);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { t } = useLanguage();
@@ -42,7 +42,7 @@ const AuthModal = ({ isOpen, onClose, onAuth, defaultTab = 'login' }: AuthModalP
     
     // Simulate API call
     setTimeout(() => {
-      onAuth({
+      onAuthSuccess({
         firstName: "Alessio",
         lastName: "Bulletti",
         email: loginData.email,
@@ -60,7 +60,7 @@ const AuthModal = ({ isOpen, onClose, onAuth, defaultTab = 'login' }: AuthModalP
     
     // Simulate API call
     setTimeout(() => {
-      onAuth({
+      onAuthSuccess({
         firstName: signupData.firstName,
         lastName: signupData.lastName,
         email: signupData.email,
@@ -94,7 +94,7 @@ const AuthModal = ({ isOpen, onClose, onAuth, defaultTab = 'login' }: AuthModalP
           </div>
         </DialogHeader>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'login' | 'signup')} className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-6">
             <TabsTrigger value="login">Login</TabsTrigger>
             <TabsTrigger value="signup">Sign Up</TabsTrigger>
