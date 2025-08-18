@@ -8,6 +8,7 @@ import {
   LineChart, Line, Area, AreaChart
 } from "recharts";
 import { TrendingUp, Info, Target, Calculator } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface DuPontAnalysisProps {
   data: {
@@ -42,6 +43,7 @@ interface DuPontAnalysisProps {
 }
 
 const DuPontAnalysis = ({ data }: DuPontAnalysisProps) => {
+  const { t } = useLanguage();
   const hasRealData = data.revenue > 0 && data.totalAssets > 0;
   
   const ComponentCard = ({ 
@@ -80,7 +82,7 @@ const DuPontAnalysis = ({ data }: DuPontAnalysisProps) => {
                       <h4 className="font-medium">{title}</h4>
                       <p className="text-sm text-muted-foreground">{description}</p>
                       <div className="text-xs bg-gray-50 p-2 rounded">
-                        <strong>Calculation:</strong> {calculation}
+                        <strong>{t('dupont.calculation') || 'Calculation'}:</strong> {calculation}
                       </div>
                     </div>
                   </PopoverContent>
@@ -99,7 +101,7 @@ const DuPontAnalysis = ({ data }: DuPontAnalysisProps) => {
             
             {benchmark && (
               <div className="text-center text-sm text-muted-foreground">
-                Industry avg: {benchmark.toFixed(2)}{unit}
+                {t('dupont.industry.avg') || 'Industry avg'}: {benchmark.toFixed(2)}{unit}
               </div>
             )}
           </div>
@@ -112,12 +114,12 @@ const DuPontAnalysis = ({ data }: DuPontAnalysisProps) => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold">DuPont Analysis</h2>
-          <p className="text-muted-foreground">Break down Return on Equity (ROE) into its key components</p>
+          <h2 className="text-2xl font-bold">{t('dupont.title') || 'DuPont Analysis'}</h2>
+          <p className="text-muted-foreground">{t('dupont.description') || 'Break down Return on Equity (ROE) into its key components'}</p>
         </div>
         <Badge variant="secondary">
           <Calculator className="h-3 w-3 mr-1" />
-          Financial Analysis
+          {t('dupont.financial.analysis') || 'Financial Analysis'}
         </Badge>
       </div>
 
@@ -125,7 +127,7 @@ const DuPontAnalysis = ({ data }: DuPontAnalysisProps) => {
       <Card className="bg-gradient-to-r from-blue-50 to-green-50">
         <CardContent className="p-6">
           <div className="text-center space-y-4">
-            <h3 className="text-lg font-semibold">DuPont Equation</h3>
+            <h3 className="text-lg font-semibold">{t('dupont.equation') || 'DuPont Equation'}</h3>
             
             {/* Large Screen Layout */}
             <div className="hidden lg:flex items-center justify-center space-x-4 text-lg">
@@ -137,21 +139,21 @@ const DuPontAnalysis = ({ data }: DuPontAnalysisProps) => {
               <span className="text-2xl font-bold">=</span>
               
               <div className="bg-blue-100 px-4 py-3 rounded-lg border-2 border-blue-200">
-                <div className="font-medium text-blue-800">Net Profit Margin</div>
+                <div className="font-medium text-blue-800">{t('dupont.net.profit.margin') || 'Net Profit Margin'}</div>
                 <div className="text-xl font-bold text-blue-600">{data.netProfitMargin.toFixed(2)}%</div>
               </div>
               
               <span className="text-2xl font-bold">×</span>
               
               <div className="bg-purple-100 px-4 py-3 rounded-lg border-2 border-purple-200">
-                <div className="font-medium text-purple-800">Asset Turnover</div>
+                <div className="font-medium text-purple-800">{t('dupont.asset.turnover') || 'Asset Turnover'}</div>
                 <div className="text-xl font-bold text-purple-600">{data.assetTurnover.toFixed(2)}</div>
               </div>
               
               <span className="text-2xl font-bold">×</span>
               
               <div className="bg-orange-100 px-4 py-3 rounded-lg border-2 border-orange-200">
-                <div className="font-medium text-orange-800">Equity Multiplier</div>
+                <div className="font-medium text-orange-800">{t('dupont.equity.multiplier') || 'Equity Multiplier'}</div>
                 <div className="text-xl font-bold text-orange-600">{data.equityMultiplier.toFixed(2)}</div>
               </div>
             </div>
@@ -159,29 +161,29 @@ const DuPontAnalysis = ({ data }: DuPontAnalysisProps) => {
             {/* Mobile Layout */}
             <div className="lg:hidden space-y-3">
               <div className="bg-green-100 px-4 py-3 rounded-lg border-2 border-green-200">
-                <div className="font-medium text-green-800">Return on Equity (ROE)</div>
+                <div className="font-medium text-green-800">{t('dupont.return.on.equity') || 'Return on Equity (ROE)'}</div>
                 <div className="text-2xl font-bold text-green-600">{data.roe.toFixed(2)}%</div>
               </div>
               
-              <div className="text-center font-bold">Equals</div>
+              <div className="text-center font-bold">{t('dupont.equals') || 'Equals'}</div>
               
               <div className="grid grid-cols-1 gap-2">
                 <div className="bg-blue-100 px-4 py-3 rounded-lg border-2 border-blue-200">
-                  <div className="font-medium text-blue-800">Net Profit Margin</div>
+                  <div className="font-medium text-blue-800">{t('dupont.net.profit.margin') || 'Net Profit Margin'}</div>
                   <div className="text-xl font-bold text-blue-600">{data.netProfitMargin.toFixed(2)}%</div>
                 </div>
                 
                 <div className="text-center font-bold">×</div>
                 
                 <div className="bg-purple-100 px-4 py-3 rounded-lg border-2 border-purple-200">
-                  <div className="font-medium text-purple-800">Asset Turnover</div>
+                  <div className="font-medium text-purple-800">{t('dupont.asset.turnover') || 'Asset Turnover'}</div>
                   <div className="text-xl font-bold text-purple-600">{data.assetTurnover.toFixed(2)}</div>
                 </div>
                 
                 <div className="text-center font-bold">×</div>
                 
                 <div className="bg-orange-100 px-4 py-3 rounded-lg border-2 border-orange-200">
-                  <div className="font-medium text-orange-800">Equity Multiplier</div>
+                  <div className="font-medium text-orange-800">{t('dupont.equity.multiplier') || 'Equity Multiplier'}</div>
                   <div className="text-xl font-bold text-orange-600">{data.equityMultiplier.toFixed(2)}</div>
                 </div>
               </div>
@@ -193,37 +195,37 @@ const DuPontAnalysis = ({ data }: DuPontAnalysisProps) => {
       {/* Component Details */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <ComponentCard
-          title="Return on Equity"
+          title={t('dupont.return.on.equity') || 'Return on Equity'}
           value={data.roe}
           benchmark={data.industryBenchmarks?.roe}
-          description="Overall profitability relative to shareholder equity. Higher ROE indicates more efficient use of equity."
+          description={t('dupont.roe.description') || 'Overall profitability relative to shareholder equity. Higher ROE indicates more efficient use of equity.'}
           unit="%"
-          calculation="Net Income ÷ Total Equity"
+          calculation={t('dupont.roe.calculation') || 'Net Income ÷ Total Equity'}
         />
         
         <ComponentCard
-          title="Net Profit Margin"
+          title={t('dupont.net.profit.margin') || 'Net Profit Margin'}
           value={data.netProfitMargin}
           benchmark={data.industryBenchmarks?.netProfitMargin}
-          description="Profitability efficiency - how much profit is generated from each euro of revenue."
+          description={t('dupont.npm.description') || 'Profitability efficiency - how much profit is generated from each euro of revenue.'}
           unit="%"
-          calculation="Net Income ÷ Revenue"
+          calculation={t('dupont.npm.calculation') || 'Net Income ÷ Revenue'}
         />
         
         <ComponentCard
-          title="Asset Turnover"
+          title={t('dupont.asset.turnover') || 'Asset Turnover'}
           value={data.assetTurnover}
           benchmark={data.industryBenchmarks?.assetTurnover}
-          description="Asset utilization efficiency - how effectively assets are used to generate revenue."
-          calculation="Revenue ÷ Total Assets"
+          description={t('dupont.at.description') || 'Asset utilization efficiency - how effectively assets are used to generate revenue.'}
+          calculation={t('dupont.at.calculation') || 'Revenue ÷ Total Assets'}
         />
         
         <ComponentCard
-          title="Equity Multiplier"
+          title={t('dupont.equity.multiplier') || 'Equity Multiplier'}
           value={data.equityMultiplier}
           benchmark={data.industryBenchmarks?.equityMultiplier}
-          description="Financial leverage - how much assets are financed by debt vs equity. Higher = more leveraged."
-          calculation="Total Assets ÷ Total Equity"
+          description={t('dupont.em.description') || 'Financial leverage - how much assets are financed by debt vs equity. Higher = more leveraged.'}
+          calculation={t('dupont.em.calculation') || 'Total Assets ÷ Total Equity'}
         />
       </div>
 
@@ -231,8 +233,8 @@ const DuPontAnalysis = ({ data }: DuPontAnalysisProps) => {
       {hasRealData && data.historicalData.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>DuPont Components Trend Analysis</CardTitle>
-            <CardDescription>Historical performance of each ROE component</CardDescription>
+            <CardTitle>{t('dupont.trend.analysis') || 'DuPont Components Trend Analysis'}</CardTitle>
+            <CardDescription>{t('dupont.trend.description') || 'Historical performance of each ROE component'}</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={400}>
@@ -243,9 +245,9 @@ const DuPontAnalysis = ({ data }: DuPontAnalysisProps) => {
                 <Tooltip 
                   formatter={(value, name) => [
                     `${Number(value).toFixed(2)}${name === 'netProfitMargin' || name === 'roe' ? '%' : ''}`,
-                    name === 'netProfitMargin' ? 'Net Profit Margin' :
-                    name === 'assetTurnover' ? 'Asset Turnover' :
-                    name === 'equityMultiplier' ? 'Equity Multiplier' :
+                    name === 'netProfitMargin' ? t('dupont.net.profit.margin') || 'Net Profit Margin' :
+                    name === 'assetTurnover' ? t('dupont.asset.turnover') || 'Asset Turnover' :
+                    name === 'equityMultiplier' ? t('dupont.equity.multiplier') || 'Equity Multiplier' :
                     'ROE'
                   ]}
                 />
@@ -265,36 +267,36 @@ const DuPontAnalysis = ({ data }: DuPontAnalysisProps) => {
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <Target className="h-5 w-5" />
-              <span>Key Insights</span>
+              <span>{t('dupont.key.insights') || 'Key Insights'}</span>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="p-3 bg-blue-50 rounded-lg">
-              <h4 className="font-medium text-blue-900 mb-1">Profitability Driver</h4>
+              <h4 className="font-medium text-blue-900 mb-1">{t('dupont.profitability.driver') || 'Profitability Driver'}</h4>
               <p className="text-sm text-blue-800">
                 {data.netProfitMargin > (data.industryBenchmarks?.netProfitMargin || 10) 
-                  ? "Strong profit margins indicate efficient cost management and pricing power."
-                  : "Consider improving operational efficiency and cost control to boost margins."
+                  ? t('dupont.strong.margins') || "Strong profit margins indicate efficient cost management and pricing power."
+                  : t('dupont.improve.margins') || "Consider improving operational efficiency and cost control to boost margins."
                 }
               </p>
             </div>
             
             <div className="p-3 bg-purple-50 rounded-lg">
-              <h4 className="font-medium text-purple-900 mb-1">Asset Efficiency</h4>
+              <h4 className="font-medium text-purple-900 mb-1">{t('dupont.asset.efficiency') || 'Asset Efficiency'}</h4>
               <p className="text-sm text-purple-800">
                 {data.assetTurnover > (data.industryBenchmarks?.assetTurnover || 1) 
-                  ? "Excellent asset utilization - generating strong revenue from asset base."
-                  : "Focus on increasing revenue generation from existing assets or optimizing asset base."
+                  ? t('dupont.excellent.utilization') || "Excellent asset utilization - generating strong revenue from asset base."
+                  : t('dupont.focus.revenue') || "Focus on increasing revenue generation from existing assets or optimizing asset base."
                 }
               </p>
             </div>
             
             <div className="p-3 bg-orange-50 rounded-lg">
-              <h4 className="font-medium text-orange-900 mb-1">Financial Leverage</h4>
+              <h4 className="font-medium text-orange-900 mb-1">{t('dupont.financial.leverage') || 'Financial Leverage'}</h4>
               <p className="text-sm text-orange-800">
                 {data.equityMultiplier > 2 
-                  ? "High leverage amplifies returns but increases financial risk."
-                  : "Conservative leverage provides stability but may limit growth potential."
+                  ? t('dupont.high.leverage') || "High leverage amplifies returns but increases financial risk."
+                  : t('dupont.conservative.leverage') || "Conservative leverage provides stability but may limit growth potential."
                 }
               </p>
             </div>
@@ -303,36 +305,36 @@ const DuPontAnalysis = ({ data }: DuPontAnalysisProps) => {
 
         <Card>
           <CardHeader>
-            <CardTitle>ROE Improvement Strategies</CardTitle>
+            <CardTitle>{t('dupont.improvement.strategies') || 'ROE Improvement Strategies'}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="space-y-2">
-              <h4 className="font-medium">Increase Net Profit Margin:</h4>
+              <h4 className="font-medium">{t('dupont.increase.npm') || 'Increase Net Profit Margin'}:</h4>
               <ul className="text-sm text-muted-foreground space-y-1 pl-4">
-                <li>• Optimize pricing strategies</li>
-                <li>• Reduce operating costs</li>
-                <li>• Improve operational efficiency</li>
-                <li>• Focus on higher-margin products/services</li>
+                <li>• {t('dupont.optimize.pricing') || 'Optimize pricing strategies'}</li>
+                <li>• {t('dupont.reduce.costs') || 'Reduce operating costs'}</li>
+                <li>• {t('dupont.improve.efficiency') || 'Improve operational efficiency'}</li>
+                <li>• {t('dupont.higher.margin') || 'Focus on higher-margin products/services'}</li>
               </ul>
             </div>
             
             <div className="space-y-2">
-              <h4 className="font-medium">Improve Asset Turnover:</h4>
+              <h4 className="font-medium">{t('dupont.improve.at') || 'Improve Asset Turnover'}:</h4>
               <ul className="text-sm text-muted-foreground space-y-1 pl-4">
-                <li>• Increase sales volume</li>
-                <li>• Optimize inventory management</li>
-                <li>• Improve asset utilization</li>
-                <li>• Divest underperforming assets</li>
+                <li>• {t('dupont.increase.sales') || 'Increase sales volume'}</li>
+                <li>• {t('dupont.optimize.inventory') || 'Optimize inventory management'}</li>
+                <li>• {t('dupont.improve.utilization') || 'Improve asset utilization'}</li>
+                <li>• {t('dupont.divest.assets') || 'Divest underperforming assets'}</li>
               </ul>
             </div>
             
             <div className="space-y-2">
-              <h4 className="font-medium">Optimize Financial Leverage:</h4>
+              <h4 className="font-medium">{t('dupont.optimize.leverage') || 'Optimize Financial Leverage'}:</h4>
               <ul className="text-sm text-muted-foreground space-y-1 pl-4">
-                <li>• Balance debt and equity financing</li>
-                <li>• Consider strategic debt for growth</li>
-                <li>• Maintain optimal capital structure</li>
-                <li>• Monitor financial risk levels</li>
+                <li>• {t('dupont.balance.financing') || 'Balance debt and equity financing'}</li>
+                <li>• {t('dupont.strategic.debt') || 'Consider strategic debt for growth'}</li>
+                <li>• {t('dupont.optimal.structure') || 'Maintain optimal capital structure'}</li>
+                <li>• {t('dupont.monitor.risk') || 'Monitor financial risk levels'}</li>
               </ul>
             </div>
           </CardContent>
