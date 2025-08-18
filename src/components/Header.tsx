@@ -37,7 +37,7 @@ const Header = ({ isOnboarded, user, onLogout, onProfile }: HeaderProps) => {
                 <img 
                   src="/lovable-uploads/3649b85f-a01b-4935-b35c-c20278d06f18.png" 
                   alt="Tralis AI Logo" 
-                  className="h-8 w-auto"
+                  className="h-12 w-auto"
                 />
               </div>
             )}

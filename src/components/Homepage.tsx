@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -188,7 +189,7 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
                   <Shield className="h-10 w-10 text-white" />
                 </div>
                 <h2 className="text-4xl font-bold text-dark-blue mb-4 font-inter">
-                  PERCHÉ TRALIS AI?
+                  WHY TRALIS AI?
                 </h2>
                 <p className="text-lg text-tech-gray max-w-2xl mx-auto font-poppins">
                   La nostra missione è democratizzare l'intelligenza finanziaria per startup e PMI
@@ -446,12 +447,8 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
                 <img 
                   src="/lovable-uploads/3649b85f-a01b-4935-b35c-c20278d06f18.png" 
                   alt="Tralis AI Logo" 
-                  className="h-12 w-auto"
+                  className="h-16 w-auto"
                 />
-                <div>
-                  <h1 className="text-3xl font-bold bg-tech-gradient bg-clip-text text-transparent font-inter">Tralis AI</h1>
-                  <p className="text-xs text-primary font-medium font-poppins">{t('footer.tagline')}</p>
-                </div>
               </div>
             </div>
 
@@ -466,7 +463,7 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
                 onClick={() => setActiveSection('why')}
                 className={`transition-all duration-300 font-semibold font-inter ${activeSection === 'why' ? 'text-primary border-b-2 border-primary' : 'text-tech-gray hover:text-primary'}`}
               >
-                PERCHÉ TRALIS AI?
+                WHY TRALIS AI?
               </button>
               <button 
                 onClick={() => setActiveSection('resources')}
@@ -528,7 +525,6 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
                 />
                 <div>
                   <h3 className="font-bold text-xl font-inter">Tralis AI</h3>
-                  <p className="text-xs text-cyan-accent font-poppins">{t('footer.tagline')}</p>
                 </div>
               </div>
               <p className="text-gray-300 text-sm font-poppins leading-relaxed">
