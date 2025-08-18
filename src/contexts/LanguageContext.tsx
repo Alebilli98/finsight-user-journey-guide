@@ -22,7 +22,7 @@ export const useLanguage = () => {
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguage] = useState<Language>(() => {
     const saved = localStorage.getItem('tralis_language');
-    return (saved as Language) || 'it';
+    return (saved as Language) || 'en'; // Changed default from 'it' to 'en'
   });
 
   useEffect(() => {
