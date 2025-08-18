@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Eye, EyeOff, Mail, Lock, User, Building2, MapPin, TrendingUp } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, User, Building2, TrendingUp } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 interface AuthModalProps {
@@ -96,22 +96,22 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = 'login' }: Aut
 
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'login' | 'signup')} className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-6">
-            <TabsTrigger value="login">Login</TabsTrigger>
-            <TabsTrigger value="signup">Sign Up</TabsTrigger>
+            <TabsTrigger value="login">{t('auth.login')}</TabsTrigger>
+            <TabsTrigger value="signup">{t('auth.signup')}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="login">
             <Card className="border-0 shadow-none">
               <CardHeader className="text-center pb-4">
-                <CardTitle className="text-xl text-dark-blue font-inter">Welcome Back</CardTitle>
+                <CardTitle className="text-xl text-dark-blue font-inter">{t('auth.welcome')}</CardTitle>
                 <CardDescription className="text-tech-gray font-poppins">
-                  Enter your credentials to access your Tralis AI dashboard
+                  {t('auth.credentials')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleLogin} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="text-dark-blue font-inter">Email</Label>
+                    <Label htmlFor="email" className="text-dark-blue font-inter">{t('auth.email')}</Label>
                     <div className="relative">
                       <Mail className="absolute left-3 top-3 h-4 w-4 text-tech-gray" />
                       <Input
@@ -127,7 +127,7 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = 'login' }: Aut
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="password" className="text-dark-blue font-inter">Password</Label>
+                    <Label htmlFor="password" className="text-dark-blue font-inter">{t('auth.password')}</Label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-3 h-4 w-4 text-tech-gray" />
                       <Input
@@ -154,7 +154,7 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = 'login' }: Aut
                     className="w-full tech-button text-white border-0 font-inter"
                     disabled={isLoading}
                   >
-                    {isLoading ? "Logging in..." : "Login"}
+                    {isLoading ? t('auth.logging') : t('auth.login')}
                   </Button>
                 </form>
               </CardContent>
@@ -164,16 +164,16 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = 'login' }: Aut
           <TabsContent value="signup">
             <Card className="border-0 shadow-none">
               <CardHeader className="text-center pb-4">
-                <CardTitle className="text-xl text-dark-blue font-inter">Create Account</CardTitle>
+                <CardTitle className="text-xl text-dark-blue font-inter">{t('auth.create')}</CardTitle>
                 <CardDescription className="text-tech-gray font-poppins">
-                  Join Tralis AI and unlock your financial potential
+                  {t('auth.join')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSignup} className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="firstName" className="text-dark-blue font-inter">First Name</Label>
+                      <Label htmlFor="firstName" className="text-dark-blue font-inter">{t('auth.firstName')}</Label>
                       <div className="relative">
                         <User className="absolute left-3 top-3 h-4 w-4 text-tech-gray" />
                         <Input
@@ -188,7 +188,7 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = 'login' }: Aut
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="lastName" className="text-dark-blue font-inter">Last Name</Label>
+                      <Label htmlFor="lastName" className="text-dark-blue font-inter">{t('auth.lastName')}</Label>
                       <div className="relative">
                         <User className="absolute left-3 top-3 h-4 w-4 text-tech-gray" />
                         <Input
@@ -204,7 +204,7 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = 'login' }: Aut
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="signupEmail" className="text-dark-blue font-inter">Email</Label>
+                    <Label htmlFor="signupEmail" className="text-dark-blue font-inter">{t('auth.email')}</Label>
                     <div className="relative">
                       <Mail className="absolute left-3 top-3 h-4 w-4 text-tech-gray" />
                       <Input
@@ -220,7 +220,7 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = 'login' }: Aut
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="company" className="text-dark-blue font-inter">Company</Label>
+                    <Label htmlFor="company" className="text-dark-blue font-inter">{t('auth.company')}</Label>
                     <div className="relative">
                       <Building2 className="absolute left-3 top-3 h-4 w-4 text-tech-gray" />
                       <Input
@@ -235,7 +235,7 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = 'login' }: Aut
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="signupPassword" className="text-dark-blue font-inter">Password</Label>
+                    <Label htmlFor="signupPassword" className="text-dark-blue font-inter">{t('auth.password')}</Label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-3 h-4 w-4 text-tech-gray" />
                       <Input
@@ -262,7 +262,7 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = 'login' }: Aut
                     className="w-full tech-button text-white border-0 font-inter"
                     disabled={isLoading}
                   >
-                    {isLoading ? "Creating account..." : "Create Account"}
+                    {isLoading ? t('auth.creating') : t('auth.signup')}
                   </Button>
                 </form>
               </CardContent>
@@ -271,7 +271,7 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = 'login' }: Aut
         </Tabs>
 
         <div className="text-center text-xs text-tech-gray mt-4 font-poppins">
-          By continuing, you agree to Tralis AI's Terms of Service and Privacy Policy
+          {t('auth.terms')}
         </div>
       </DialogContent>
     </Dialog>

@@ -27,14 +27,14 @@ const AppSidebar = ({ activeSection, setActiveSection }: AppSidebarProps) => {
   const { t } = useLanguage();
 
   const navigationItems = [
-    { id: "dashboard", label: "Dashboard", icon: TrendingUp },
-    { id: "analytics", label: "Analytics", icon: BarChart3 },
-    { id: "reports", label: "Reports", icon: FileText },
-    { id: "data-import", label: "Data Import", icon: Upload },
-    { id: "ai-solution", label: "AI Solution", icon: Brain },
-    { id: "lending", label: "Lending", icon: CreditCard },
-    { id: "calendar", label: "Calendar", icon: Calendar },
-    { id: "packages", label: "Packages", icon: Package },
+    { id: "dashboard", label: t('sidebar.dashboard'), icon: TrendingUp },
+    { id: "analytics", label: t('sidebar.analytics'), icon: BarChart3 },
+    { id: "reports", label: t('sidebar.reports'), icon: FileText },
+    { id: "data-import", label: t('sidebar.data-import'), icon: Upload },
+    { id: "ai-solution", label: t('sidebar.ai-solution'), icon: Brain },
+    { id: "lending", label: t('sidebar.lending'), icon: CreditCard },
+    { id: "calendar", label: t('sidebar.calendar'), icon: Calendar },
+    { id: "packages", label: t('sidebar.packages'), icon: Package },
   ];
 
   return (

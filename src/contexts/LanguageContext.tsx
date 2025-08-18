@@ -21,12 +21,12 @@ export const useLanguage = () => {
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguage] = useState<Language>(() => {
-    const saved = localStorage.getItem('finsight_language');
+    const saved = localStorage.getItem('tralis_language');
     return (saved as Language) || 'it';
   });
 
   useEffect(() => {
-    localStorage.setItem('finsight_language', language);
+    localStorage.setItem('tralis_language', language);
   }, [language]);
 
   const t = (key: string): string => {
@@ -44,14 +44,130 @@ const translations = {
   it: {
     // Navigation
     'nav.product': 'PRODOTTO',
-    'nav.solutions': 'SOLUZIONI',
-    'nav.why': 'PERCHÉ FINSIGHT?',
+    'nav.solutions': 'SOLUZIONI', 
+    'nav.why': 'PERCHÉ TRALIS AI?',
     'nav.resources': 'RISORSE',
     'nav.pricing': 'PREZZI',
     'nav.login': 'Accedi',
     'nav.signup': 'Registrati Gratis',
     'nav.contact': 'Contattaci',
     'nav.glossary': 'Glossario',
+    
+    // Sidebar
+    'sidebar.dashboard': 'Dashboard',
+    'sidebar.analytics': 'Analytics',
+    'sidebar.reports': 'Report',
+    'sidebar.data-import': 'Importa Dati',
+    'sidebar.ai-solution': 'Soluzione AI',
+    'sidebar.lending': 'Finanziamenti',
+    'sidebar.calendar': 'Calendario',
+    'sidebar.packages': 'Pacchetti',
+    
+    // Header
+    'header.profile': 'Profilo',
+    'header.settings': 'Impostazioni',
+    'header.logout': 'Esci',
+    'header.plan': 'Piano',
+    
+    // Auth Modal
+    'auth.welcome': 'Bentornato',
+    'auth.credentials': 'Inserisci le tue credenziali per accedere alla tua dashboard Tralis AI',
+    'auth.create': 'Crea Account',
+    'auth.join': 'Unisciti a Tralis AI e sblocca il tuo potenziale finanziario',
+    'auth.email': 'Email',
+    'auth.password': 'Password',
+    'auth.firstName': 'Nome',
+    'auth.lastName': 'Cognome',
+    'auth.company': 'Azienda',
+    'auth.login': 'Accedi',
+    'auth.signup': 'Crea Account',
+    'auth.logging': 'Accesso in corso...',
+    'auth.creating': 'Creazione account...',
+    'auth.terms': 'Continuando, accetti i Termini di Servizio e la Privacy Policy di Tralis AI',
+    
+    // Dashboard
+    'dashboard.title': 'Dashboard Finanziaria',
+    'dashboard.welcome': 'Benvenuto nella tua dashboard finanziaria',
+    'dashboard.overview': 'Panoramica',
+    'dashboard.revenue': 'Ricavi',
+    'dashboard.expenses': 'Spese',
+    'dashboard.profit': 'Profitto',
+    'dashboard.cashflow': 'Flusso di Cassa',
+    'dashboard.month': 'Questo Mese',
+    'dashboard.growth': 'Crescita',
+    'dashboard.vs-last': 'vs mese scorso',
+    
+    // Analytics
+    'analytics.title': 'Analytics Avanzate',
+    'analytics.subtitle': 'Analisi approfondite delle tue performance finanziarie',
+    'analytics.revenue-trend': 'Trend Ricavi',
+    'analytics.expense-breakdown': 'Ripartizione Spese',
+    'analytics.profit-margin': 'Margine di Profitto',
+    'analytics.kpi': 'Indicatori Chiave',
+    'analytics.forecast': 'Previsioni',
+    'analytics.insights': 'Insights',
+    
+    // Reports
+    'reports.title': 'Report Finanziari',
+    'reports.subtitle': 'Genera e visualizza report dettagliati',
+    'reports.monthly': 'Report Mensile',
+    'reports.quarterly': 'Report Trimestrale',
+    'reports.annual': 'Report Annuale',
+    'reports.custom': 'Report Personalizzato',
+    'reports.generate': 'Genera Report',
+    'reports.download': 'Scarica',
+    'reports.export': 'Esporta',
+    
+    // AI Solution
+    'ai.title': 'Soluzione AI',
+    'ai.subtitle': 'Assistente AI per analisi finanziarie avanzate',
+    'ai.assistant': 'Assistente AI Tralis AI',
+    'ai.analysis': 'Analisi automatica e comandi intelligenti per la tua azienda',
+    'ai.ask': 'Chiedi al tuo assistente AI',
+    'ai.send': 'Invia',
+    'ai.suggestions': 'Suggerimenti',
+    'ai.insights': 'Insights AI',
+    
+    // Lending
+    'lending.title': 'Soluzioni di Finanziamento',
+    'lending.subtitle': 'Trova le migliori opzioni di finanziamento per la tua azienda',
+    'lending.options': 'Opzioni Disponibili',
+    'lending.apply': 'Richiedi Finanziamento',
+    'lending.calculator': 'Calcolatore Prestiti',
+    'lending.eligibility': 'Verifica Idoneità',
+    
+    // Calendar
+    'calendar.title': 'Calendario Finanziario',
+    'calendar.subtitle': 'Gestisci scadenze e appuntamenti importanti',
+    'calendar.events': 'Eventi',
+    'calendar.deadlines': 'Scadenze',
+    'calendar.meetings': 'Riunioni',
+    'calendar.add': 'Aggiungi Evento',
+    
+    // Packages
+    'packages.title': 'Pacchetti e Piani',
+    'packages.subtitle': 'Scegli il piano perfetto per le tue esigenze',
+    'packages.current': 'Piano Attuale',
+    'packages.upgrade': 'Aggiorna',
+    'packages.features': 'Funzionalità',
+    'packages.contact': 'Contatta il Team',
+    
+    // Data Import
+    'import.title': 'Importa Dati',
+    'import.subtitle': 'Carica i tuoi dati finanziari',
+    'import.upload': 'Carica File',
+    'import.excel': 'File Excel',
+    'import.csv': 'File CSV',
+    'import.template': 'Scarica Template',
+    'import.process': 'Elabora',
+    
+    // User Profile
+    'profile.title': 'Profilo Utente',
+    'profile.personal': 'Informazioni Personali',
+    'profile.company': 'Informazioni Azienda',
+    'profile.security': 'Sicurezza',
+    'profile.save': 'Salva Modifiche',
+    'profile.edit': 'Modifica',
     
     // Homepage Hero
     'hero.badge': 'Innovazione Globale',
@@ -63,9 +179,9 @@ const translations = {
     'hero.cta.secondary': 'Accedi al Tuo Account',
     
     // Video Section
-    'video.title': 'Scopri FinSight in Azione',
-    'video.subtitle': 'Guarda come FinSight trasforma la gestione finanziaria della tua azienda con un tour completo della piattaforma.',
-    'video.tutorial.title': 'Tutorial Completo FinSight',
+    'video.title': 'Scopri Tralis AI in Azione',
+    'video.subtitle': 'Guarda come Tralis AI trasforma la gestione finanziaria della tua azienda con un tour completo della piattaforma.',
+    'video.tutorial.title': 'Tutorial Completo Tralis AI',
     'video.tutorial.duration': 'Durata: 8 minuti',
     'video.tutorial.cta': 'Guarda il Video',
     'video.card1.title': 'Dashboard Finanziaria',
@@ -83,65 +199,19 @@ const translations = {
     'features.ai.title': 'Insights Powered by AI',
     'features.ai.desc': 'Ricevi raccomandazioni personalizzate e analisi predittive su misura per la tua attività.',
     'features.security.title': 'Sicuro e Conforme',
-    'features.security.desc': 'Sicurezza di livello enterprise con piena conformità GDPR e regolamenti Dubai Free Zone.',
+    'features.security.desc': 'Sicurezza di livello enterprise con piena conformità alle normative internazionali.',
     'features.funding.title': 'Preparazione Finanziamenti',
     'features.funding.desc': 'Preparati per gli investimenti con report finanziari completi e proiezioni.',
     
     // Testimonials
     'testimonials.title': 'Scelto da Aziende in Crescita',
-    'testimonials.quote1': 'FinSight ha rivoluzionato il modo in cui gestiamo le nostre finanze. Gli insights AI sono incredibilmente accurati.',
+    'testimonials.quote1': 'Tralis AI ha rivoluzionato il modo in cui gestiamo le nostre finanze. Gli insights AI sono incredibilmente accurati.',
     'testimonials.quote2': 'Finalmente, una piattaforma finanziaria costruita specificamente per le startup. Le dashboard sono incredibili!',
     
     // CTA Section
     'cta.title': 'Pronto a Trasformare la Tua Gestione Finanziaria?',
-    'cta.subtitle': 'Unisciti a centinaia di startup che già usano FinSight per guidare la crescita e prendere decisioni migliori.',
+    'cta.subtitle': 'Unisciti a centinaia di startup che già usano Tralis AI per guidare la crescita e prendere decisioni migliori.',
     'cta.button': 'Inizia Oggi',
-    
-    // About Section
-    'about.title': 'Chi Siamo',
-    'about.subtitle': 'La nostra missione è democratizzare l\'intelligenza finanziaria per startup e PMI',
-    'about.mission.title': 'La Nostra Missione',
-    'about.mission.desc': 'Crediamo che ogni startup meriti di avere accesso agli stessi strumenti finanziari avanzati delle grandi aziende. La nostra piattaforma powered by AI livella il campo di gioco.',
-    'about.vision.title': 'La Nostra Visione',
-    'about.vision.desc': 'Un mondo dove ogni imprenditore può prendere decisioni finanziarie informate e guidare la crescita sostenibile attraverso dati e insights intelligenti.',
-    'about.team.title': 'Il Nostro Team',
-    'about.team.desc': 'Un gruppo diversificato di esperti finanziari, ingegneri AI e imprenditori seriali con sede a Dubai, il cuore dell\'innovazione MENA.',
-    
-    // Pricing Section
-    'pricing.title': 'Scegli il Piano Perfetto per la Tua Azienda',
-    'pricing.subtitle': 'Inizia gratis e scala con la crescita del tuo business',
-    'pricing.starter.title': 'Starter',
-    'pricing.starter.price': 'Gratis',
-    'pricing.starter.desc': 'Perfetto per startup in fase iniziale',
-    'pricing.professional.title': 'Professional',
-    'pricing.professional.price': '€99/mese',
-    'pricing.professional.desc': 'Per aziende in crescita',
-    'pricing.enterprise.title': 'Enterprise',
-    'pricing.enterprise.price': 'Su misura',
-    'pricing.enterprise.desc': 'Per grandi organizzazioni',
-    'pricing.cta': 'Inizia Ora',
-    'pricing.contact': 'Contattaci',
-    
-    // Contact Section
-    'contact.title': 'Contattaci',
-    'contact.subtitle': 'Siamo qui per aiutarti a trasformare la gestione finanziaria della tua azienda',
-    'contact.form.name': 'Nome',
-    'contact.form.email': 'Email',
-    'contact.form.company': 'Azienda',
-    'contact.form.message': 'Messaggio',
-    'contact.form.send': 'Invia Messaggio',
-    'contact.info.title': 'Informazioni di Contatto',
-    'contact.info.address': 'Dubai International Financial Centre, Dubai, UAE',
-    'contact.info.email': 'info@finsight.ae',
-    'contact.info.phone': '+971 4 123 4567',
-    
-    // Footer
-    'footer.tagline': 'La Tua Guida Finanziaria',
-    'footer.description': 'Diamo potere alle startup e PMI con intelligenza finanziaria powered by AI.',
-    'footer.product': 'Prodotto',
-    'footer.company': 'Azienda',
-    'footer.legal': 'Legale',
-    'footer.copyright': '© 2024 FinSight. Tutti i diritti riservati. Dubai International Free Zone Authority (IFZA)',
     
     // Language Selection
     'language.select': 'Seleziona Lingua',
@@ -149,31 +219,147 @@ const translations = {
     'language.english': 'English',
     'language.spanish': 'Español',
     
-    // Resources Section
-    'resources.subtitle': 'Accedi a risorse e definizioni utili per la gestione finanziaria',
-    'glossary.description': 'Termini finanziari e metriche essenziali per la tua attività',
-    'glossary.financial.title': 'Termini Finanziari',
-    'glossary.metrics.title': 'Metriche Chiave',
-    'glossary.roi': 'Ritorno sugli Investimenti - misura l\'efficacia di un investimento',
-    'glossary.ebitda': 'Earnings Before Interest, Taxes, Depreciation and Amortization',
-    'glossary.cashflow': 'Flusso di cassa - movimento di denaro in entrata e uscita',
-    'glossary.liquidity': 'Capacità di convertire rapidamente asset in contanti',
-    'glossary.kpi': 'Key Performance Indicators - indicatori di performance',
-    'glossary.grossmargin': 'Differenza tra ricavi e costi diretti',
-    'glossary.debtratio': 'Rapporto tra debiti totali e patrimonio netto',
-    'glossary.workingcapital': 'Capitale circolante netto per operazioni quotidiane',
+    // Common
+    'common.loading': 'Caricamento...',
+    'common.error': 'Errore',
+    'common.success': 'Successo',
+    'common.cancel': 'Annulla',
+    'common.confirm': 'Conferma',
+    'common.delete': 'Elimina',
+    'common.edit': 'Modifica',
+    'common.save': 'Salva',
+    'common.back': 'Indietro',
+    'common.next': 'Avanti',
+    'common.previous': 'Precedente',
+    'common.close': 'Chiudi',
   },
   en: {
     // Navigation
     'nav.product': 'PRODUCT',
     'nav.solutions': 'SOLUTIONS',
-    'nav.why': 'WHY FINSIGHT?',
+    'nav.why': 'WHY TRALIS AI?',
     'nav.resources': 'RESOURCES',
     'nav.pricing': 'PRICING',
     'nav.login': 'Login',
     'nav.signup': 'Sign Up Free',
     'nav.contact': 'Contact Us',
     'nav.glossary': 'Glossary',
+    
+    // Sidebar
+    'sidebar.dashboard': 'Dashboard',
+    'sidebar.analytics': 'Analytics',
+    'sidebar.reports': 'Reports',
+    'sidebar.data-import': 'Data Import',
+    'sidebar.ai-solution': 'AI Solution',
+    'sidebar.lending': 'Lending',
+    'sidebar.calendar': 'Calendar',
+    'sidebar.packages': 'Packages',
+    
+    // Header
+    'header.profile': 'Profile',
+    'header.settings': 'Settings',
+    'header.logout': 'Logout',
+    'header.plan': 'Plan',
+    
+    // Auth Modal
+    'auth.welcome': 'Welcome Back',
+    'auth.credentials': 'Enter your credentials to access your Tralis AI dashboard',
+    'auth.create': 'Create Account',
+    'auth.join': 'Join Tralis AI and unlock your financial potential',
+    'auth.email': 'Email',
+    'auth.password': 'Password',
+    'auth.firstName': 'First Name',
+    'auth.lastName': 'Last Name',
+    'auth.company': 'Company',
+    'auth.login': 'Login',
+    'auth.signup': 'Create Account',
+    'auth.logging': 'Logging in...',
+    'auth.creating': 'Creating account...',
+    'auth.terms': 'By continuing, you agree to Tralis AI\'s Terms of Service and Privacy Policy',
+    
+    // Dashboard
+    'dashboard.title': 'Financial Dashboard',
+    'dashboard.welcome': 'Welcome to your financial dashboard',
+    'dashboard.overview': 'Overview',
+    'dashboard.revenue': 'Revenue',
+    'dashboard.expenses': 'Expenses',
+    'dashboard.profit': 'Profit',
+    'dashboard.cashflow': 'Cash Flow',
+    'dashboard.month': 'This Month',
+    'dashboard.growth': 'Growth',
+    'dashboard.vs-last': 'vs last month',
+    
+    // Analytics
+    'analytics.title': 'Advanced Analytics',
+    'analytics.subtitle': 'Deep insights into your financial performance',
+    'analytics.revenue-trend': 'Revenue Trend',
+    'analytics.expense-breakdown': 'Expense Breakdown',
+    'analytics.profit-margin': 'Profit Margin',
+    'analytics.kpi': 'Key Indicators',
+    'analytics.forecast': 'Forecast',
+    'analytics.insights': 'Insights',
+    
+    // Reports
+    'reports.title': 'Financial Reports',
+    'reports.subtitle': 'Generate and view detailed reports',
+    'reports.monthly': 'Monthly Report',
+    'reports.quarterly': 'Quarterly Report',
+    'reports.annual': 'Annual Report',
+    'reports.custom': 'Custom Report',
+    'reports.generate': 'Generate Report',
+    'reports.download': 'Download',
+    'reports.export': 'Export',
+    
+    // AI Solution
+    'ai.title': 'AI Solution',
+    'ai.subtitle': 'AI Assistant for advanced financial analysis',
+    'ai.assistant': 'Tralis AI Assistant',
+    'ai.analysis': 'Automated analysis and intelligent commands for your business',
+    'ai.ask': 'Ask your AI assistant',
+    'ai.send': 'Send',
+    'ai.suggestions': 'Suggestions',
+    'ai.insights': 'AI Insights',
+    
+    // Lending
+    'lending.title': 'Lending Solutions',
+    'lending.subtitle': 'Find the best financing options for your business',
+    'lending.options': 'Available Options',
+    'lending.apply': 'Apply for Financing',
+    'lending.calculator': 'Loan Calculator',
+    'lending.eligibility': 'Check Eligibility',
+    
+    // Calendar
+    'calendar.title': 'Financial Calendar',
+    'calendar.subtitle': 'Manage important deadlines and appointments',
+    'calendar.events': 'Events',
+    'calendar.deadlines': 'Deadlines',
+    'calendar.meetings': 'Meetings',
+    'calendar.add': 'Add Event',
+    
+    // Packages
+    'packages.title': 'Packages & Plans',
+    'packages.subtitle': 'Choose the perfect plan for your needs',
+    'packages.current': 'Current Plan',
+    'packages.upgrade': 'Upgrade',
+    'packages.features': 'Features',
+    'packages.contact': 'Contact Team',
+    
+    // Data Import
+    'import.title': 'Data Import',
+    'import.subtitle': 'Upload your financial data',
+    'import.upload': 'Upload File',
+    'import.excel': 'Excel File',
+    'import.csv': 'CSV File',
+    'import.template': 'Download Template',
+    'import.process': 'Process',
+    
+    // User Profile
+    'profile.title': 'User Profile',
+    'profile.personal': 'Personal Information',
+    'profile.company': 'Company Information',
+    'profile.security': 'Security',
+    'profile.save': 'Save Changes',
+    'profile.edit': 'Edit',
     
     // Homepage Hero
     'hero.badge': 'Global Innovation',
@@ -185,9 +371,9 @@ const translations = {
     'hero.cta.secondary': 'Login to Your Account',
     
     // Video Section
-    'video.title': 'Discover FinSight in Action',
-    'video.subtitle': 'Watch how FinSight transforms your company\'s financial management with a complete platform tour.',
-    'video.tutorial.title': 'Complete FinSight Tutorial',
+    'video.title': 'Discover Tralis AI in Action',
+    'video.subtitle': 'Watch how Tralis AI transforms your company\'s financial management with a complete platform tour.',
+    'video.tutorial.title': 'Complete Tralis AI Tutorial',
     'video.tutorial.duration': 'Duration: 8 minutes',
     'video.tutorial.cta': 'Watch Video',
     'video.card1.title': 'Financial Dashboard',
@@ -205,65 +391,19 @@ const translations = {
     'features.ai.title': 'AI-Powered Insights',
     'features.ai.desc': 'Get personalized recommendations and predictive analytics tailored to your business.',
     'features.security.title': 'Secure & Compliant',
-    'features.security.desc': 'Enterprise-level security with full GDPR compliance and Dubai Free Zone regulations.',
+    'features.security.desc': 'Enterprise-level security with full compliance to international regulations.',
     'features.funding.title': 'Funding Preparation',
     'features.funding.desc': 'Get ready for investments with comprehensive financial reports and projections.',
     
     // Testimonials
     'testimonials.title': 'Chosen by Growing Companies',
-    'testimonials.quote1': 'FinSight has revolutionized how we manage our finances. The AI insights are incredibly accurate.',
+    'testimonials.quote1': 'Tralis AI has revolutionized how we manage our finances. The AI insights are incredibly accurate.',
     'testimonials.quote2': 'Finally, a financial platform built specifically for startups. The dashboards are amazing!',
     
     // CTA Section
     'cta.title': 'Ready to Transform Your Financial Management?',
-    'cta.subtitle': 'Join hundreds of startups already using FinSight to drive growth and make better decisions.',
+    'cta.subtitle': 'Join hundreds of startups already using Tralis AI to drive growth and make better decisions.',
     'cta.button': 'Start Today',
-    
-    // About Section
-    'about.title': 'About Us',
-    'about.subtitle': 'Our mission is to democratize financial intelligence for startups and SMEs',
-    'about.mission.title': 'Our Mission',
-    'about.mission.desc': 'We believe every startup deserves access to the same advanced financial tools as large corporations. Our AI-powered platform levels the playing field.',
-    'about.vision.title': 'Our Vision',
-    'about.vision.desc': 'A world where every entrepreneur can make informed financial decisions and drive sustainable growth through intelligent data and insights.',
-    'about.team.title': 'Our Team',
-    'about.team.desc': 'A diverse group of financial experts, AI engineers, and serial entrepreneurs based in Dubai, the heart of MENA innovation.',
-    
-    // Pricing Section
-    'pricing.title': 'Choose the Perfect Plan for Your Business',
-    'pricing.subtitle': 'Start free and scale as your business grows',
-    'pricing.starter.title': 'Starter',
-    'pricing.starter.price': 'Free',
-    'pricing.starter.desc': 'Perfect for early-stage startups',
-    'pricing.professional.title': 'Professional',
-    'pricing.professional.price': '$99/month',
-    'pricing.professional.desc': 'For growing businesses',
-    'pricing.enterprise.title': 'Enterprise',
-    'pricing.enterprise.price': 'Custom',
-    'pricing.enterprise.desc': 'For large organizations',
-    'pricing.cta': 'Get Started',
-    'pricing.contact': 'Contact Us',
-    
-    // Contact Section
-    'contact.title': 'Contact Us',
-    'contact.subtitle': 'We\'re here to help you transform your company\'s financial management',
-    'contact.form.name': 'Name',
-    'contact.form.email': 'Email',
-    'contact.form.company': 'Company',
-    'contact.form.message': 'Message',
-    'contact.form.send': 'Send Message',
-    'contact.info.title': 'Contact Information',
-    'contact.info.address': 'Dubai International Financial Centre, Dubai, UAE',
-    'contact.info.email': 'info@finsight.ae',
-    'contact.info.phone': '+971 4 123 4567',
-    
-    // Footer
-    'footer.tagline': 'Your Financial Guide',
-    'footer.description': 'We empower startups and SMEs with AI-powered financial intelligence.',
-    'footer.product': 'Product',
-    'footer.company': 'Company',
-    'footer.legal': 'Legal',
-    'footer.copyright': '© 2024 FinSight. All rights reserved. Dubai International Free Zone Authority (IFZA)',
     
     // Language Selection
     'language.select': 'Select Language',
@@ -271,31 +411,147 @@ const translations = {
     'language.english': 'English',
     'language.spanish': 'Español',
     
-    // Resources Section
-    'resources.subtitle': 'Access useful resources and definitions for financial management',
-    'glossary.description': 'Essential financial terms and metrics for your business',
-    'glossary.financial.title': 'Financial Terms',
-    'glossary.metrics.title': 'Key Metrics',
-    'glossary.roi': 'Return on Investment - measures the effectiveness of an investment',
-    'glossary.ebitda': 'Earnings Before Interest, Taxes, Depreciation and Amortization',
-    'glossary.cashflow': 'Cash flow - movement of money in and out of business',
-    'glossary.liquidity': 'Ability to quickly convert assets into cash',
-    'glossary.kpi': 'Key Performance Indicators - performance metrics',
-    'glossary.grossmargin': 'Difference between revenue and direct costs',
-    'glossary.debtratio': 'Ratio between total debt and equity',
-    'glossary.workingcapital': 'Net working capital for daily operations',
+    // Common
+    'common.loading': 'Loading...',
+    'common.error': 'Error',
+    'common.success': 'Success',
+    'common.cancel': 'Cancel',
+    'common.confirm': 'Confirm',
+    'common.delete': 'Delete',
+    'common.edit': 'Edit',
+    'common.save': 'Save',
+    'common.back': 'Back',
+    'common.next': 'Next',
+    'common.previous': 'Previous',
+    'common.close': 'Close',
   },
   es: {
     // Navigation
     'nav.product': 'PRODUCTO',
     'nav.solutions': 'SOLUCIONES',
-    'nav.why': '¿POR QUÉ FINSIGHT?',
+    'nav.why': '¿POR QUÉ TRALIS AI?',
     'nav.resources': 'RECURSOS',
     'nav.pricing': 'PRECIOS',
     'nav.login': 'Iniciar Sesión',
     'nav.signup': 'Registro Gratis',
     'nav.contact': 'Contáctanos',
     'nav.glossary': 'Glosario',
+    
+    // Sidebar
+    'sidebar.dashboard': 'Dashboard',
+    'sidebar.analytics': 'Analytics',
+    'sidebar.reports': 'Reportes',
+    'sidebar.data-import': 'Importar Datos',
+    'sidebar.ai-solution': 'Solución AI',
+    'sidebar.lending': 'Financiamiento',
+    'sidebar.calendar': 'Calendario',
+    'sidebar.packages': 'Paquetes',
+    
+    // Header
+    'header.profile': 'Perfil',
+    'header.settings': 'Configuración',
+    'header.logout': 'Cerrar Sesión',
+    'header.plan': 'Plan',
+    
+    // Auth Modal
+    'auth.welcome': 'Bienvenido de Vuelta',
+    'auth.credentials': 'Ingresa tus credenciales para acceder a tu dashboard de Tralis AI',
+    'auth.create': 'Crear Cuenta',
+    'auth.join': 'Únete a Tralis AI y desbloquea tu potencial financiero',
+    'auth.email': 'Email',
+    'auth.password': 'Contraseña',
+    'auth.firstName': 'Nombre',
+    'auth.lastName': 'Apellido',
+    'auth.company': 'Empresa',
+    'auth.login': 'Iniciar Sesión',
+    'auth.signup': 'Crear Cuenta',
+    'auth.logging': 'Iniciando sesión...',
+    'auth.creating': 'Creando cuenta...',
+    'auth.terms': 'Al continuar, aceptas los Términos de Servicio y Política de Privacidad de Tralis AI',
+    
+    // Dashboard
+    'dashboard.title': 'Dashboard Financiero',
+    'dashboard.welcome': 'Bienvenido a tu dashboard financiero',
+    'dashboard.overview': 'Resumen',
+    'dashboard.revenue': 'Ingresos',
+    'dashboard.expenses': 'Gastos',
+    'dashboard.profit': 'Ganancia',
+    'dashboard.cashflow': 'Flujo de Efectivo',
+    'dashboard.month': 'Este Mes',
+    'dashboard.growth': 'Crecimiento',
+    'dashboard.vs-last': 'vs mes pasado',
+    
+    // Analytics
+    'analytics.title': 'Analytics Avanzados',
+    'analytics.subtitle': 'Análisis profundos de tu rendimiento financiero',
+    'analytics.revenue-trend': 'Tendencia de Ingresos',
+    'analytics.expense-breakdown': 'Desglose de Gastos',
+    'analytics.profit-margin': 'Margen de Ganancia',
+    'analytics.kpi': 'Indicadores Clave',
+    'analytics.forecast': 'Pronóstico',
+    'analytics.insights': 'Insights',
+    
+    // Reports
+    'reports.title': 'Reportes Financieros',
+    'reports.subtitle': 'Genera y visualiza reportes detallados',
+    'reports.monthly': 'Reporte Mensual',
+    'reports.quarterly': 'Reporte Trimestral',
+    'reports.annual': 'Reporte Anual',
+    'reports.custom': 'Reporte Personalizado',
+    'reports.generate': 'Generar Reporte',
+    'reports.download': 'Descargar',
+    'reports.export': 'Exportar',
+    
+    // AI Solution
+    'ai.title': 'Solución AI',
+    'ai.subtitle': 'Asistente AI para análisis financiero avanzado',
+    'ai.assistant': 'Asistente Tralis AI',
+    'ai.analysis': 'Análisis automático y comandos inteligentes para tu negocio',
+    'ai.ask': 'Pregunta a tu asistente AI',
+    'ai.send': 'Enviar',
+    'ai.suggestions': 'Sugerencias',
+    'ai.insights': 'Insights AI',
+    
+    // Lending
+    'lending.title': 'Soluciones de Financiamiento',
+    'lending.subtitle': 'Encuentra las mejores opciones de financiamiento para tu negocio',
+    'lending.options': 'Opciones Disponibles',
+    'lending.apply': 'Solicitar Financiamiento',
+    'lending.calculator': 'Calculadora de Préstamos',
+    'lending.eligibility': 'Verificar Elegibilidad',
+    
+    // Calendar
+    'calendar.title': 'Calendario Financiero',
+    'calendar.subtitle': 'Gestiona fechas límite y citas importantes',
+    'calendar.events': 'Eventos',
+    'calendar.deadlines': 'Fechas Límite',
+    'calendar.meetings': 'Reuniones',
+    'calendar.add': 'Agregar Evento',
+    
+    // Packages
+    'packages.title': 'Paquetes y Planes',
+    'packages.subtitle': 'Elige el plan perfecto para tus necesidades',
+    'packages.current': 'Plan Actual',
+    'packages.upgrade': 'Actualizar',
+    'packages.features': 'Características',
+    'packages.contact': 'Contactar Equipo',
+    
+    // Data Import
+    'import.title': 'Importar Datos',
+    'import.subtitle': 'Sube tus datos financieros',
+    'import.upload': 'Subir Archivo',
+    'import.excel': 'Archivo Excel',
+    'import.csv': 'Archivo CSV',
+    'import.template': 'Descargar Plantilla',
+    'import.process': 'Procesar',
+    
+    // User Profile
+    'profile.title': 'Perfil de Usuario',
+    'profile.personal': 'Información Personal',
+    'profile.company': 'Información de Empresa',
+    'profile.security': 'Seguridad',
+    'profile.save': 'Guardar Cambios',
+    'profile.edit': 'Editar',
     
     // Homepage Hero
     'hero.badge': 'Innovación Global',
@@ -307,9 +563,9 @@ const translations = {
     'hero.cta.secondary': 'Acceder a tu Cuenta',
     
     // Video Section
-    'video.title': 'Descubre FinSight en Acción',
-    'video.subtitle': 'Mira cómo FinSight transforma la gestión financiera de tu empresa con un tour completo de la plataforma.',
-    'video.tutorial.title': 'Tutorial Completo de FinSight',
+    'video.title': 'Descubre Tralis AI en Acción',
+    'video.subtitle': 'Mira cómo Tralis AI transforma la gestión financiera de tu empresa con un tour completo de la plataforma.',
+    'video.tutorial.title': 'Tutorial Completo de Tralis AI',
     'video.tutorial.duration': 'Duración: 8 minutos',
     'video.tutorial.cta': 'Ver Video',
     'video.card1.title': 'Panel Financiero',
@@ -327,65 +583,19 @@ const translations = {
     'features.ai.title': 'Insights Impulsados por IA',
     'features.ai.desc': 'Obtén recomendaciones personalizadas y análisis predictivos adaptados a tu negocio.',
     'features.security.title': 'Seguro y Conforme',
-    'features.security.desc': 'Seguridad de nivel empresarial con pleno cumplimiento GDPR y regulaciones de Zona Franca de Dubai.',
+    'features.security.desc': 'Seguridad de nivel empresarial con pleno cumplimiento de regulaciones internacionales.',
     'features.funding.title': 'Preparación de Financiamiento',
     'features.funding.desc': 'Prepárate para inversiones con reportes financieros integrales y proyecciones.',
     
     // Testimonials
     'testimonials.title': 'Elegido por Empresas en Crecimiento',
-    'testimonials.quote1': 'FinSight ha revolucionado la forma en que gestionamos nuestras finanzas. Los insights de IA son increíblemente precisos.',
+    'testimonials.quote1': 'Tralis AI ha revolucionado la forma en que gestionamos nuestras finanzas. Los insights de IA son increíblemente precisos.',
     'testimonials.quote2': '¡Finalmente, una plataforma financiera construida específicamente para startups. Los dashboards son increíbles!',
     
-    // CTA Section
+    // CTA Section  
     'cta.title': '¿Listo para Transformar tu Gestión Financiera?',
-    'cta.subtitle': 'Únete a cientos de startups que ya usan FinSight para impulsar el crecimiento y tomar mejores decisiones.',
+    'cta.subtitle': 'Únete a cientos de startups que ya usan Tralis AI para impulsar el crecimiento y tomar mejores decisiones.',
     'cta.button': 'Comenzar Hoy',
-    
-    // About Section
-    'about.title': 'Acerca de Nosotros',
-    'about.subtitle': 'Nuestra misión es democratizar la inteligencia financiera para startups y PyMEs',
-    'about.mission.title': 'Nuestra Misión',
-    'about.mission.desc': 'Creemos que cada startup merece acceso a las mismas herramientas financieras avanzadas que las grandes corporaciones. Nuestra plataforma impulsada por IA nivela el campo de juego.',
-    'about.vision.title': 'Nuestra Visión',
-    'about.vision.desc': 'Un mundo donde cada emprendedor pueda tomar decisiones financieras informadas e impulsar el crecimiento sostenible a través de datos e insights inteligentes.',
-    'about.team.title': 'Nuestro Equipo',
-    'about.team.desc': 'Un grupo diverso de expertos financieros, ingenieros de IA y emprendedores seriales con sede en Dubai, el corazón de la innovación MENA.',
-    
-    // Pricing Section
-    'pricing.title': 'Elige el Plan Perfecto para tu Negocio',
-    'pricing.subtitle': 'Comienza gratis y escala conforme tu negocio crece',
-    'pricing.starter.title': 'Inicial',
-    'pricing.starter.price': 'Gratis',
-    'pricing.starter.desc': 'Perfecto para startups en etapa temprana',
-    'pricing.professional.title': 'Profesional',
-    'pricing.professional.price': '$99/mes',
-    'pricing.professional.desc': 'Para negocios en crecimiento',
-    'pricing.enterprise.title': 'Empresarial',
-    'pricing.enterprise.price': 'Personalizado',
-    'pricing.enterprise.desc': 'Para grandes organizaciones',
-    'pricing.cta': 'Comenzar',
-    'pricing.contact': 'Contáctanos',
-    
-    // Contact Section
-    'contact.title': 'Contáctanos',
-    'contact.subtitle': 'Estamos aquí para ayudarte a transformar la gestión financiera de tu empresa',
-    'contact.form.name': 'Nombre',
-    'contact.form.email': 'Email',
-    'contact.form.company': 'Empresa',
-    'contact.form.message': 'Mensaje',
-    'contact.form.send': 'Enviar Mensaje',
-    'contact.info.title': 'Información de Contacto',
-    'contact.info.address': 'Centro Financiero Internacional de Dubai, Dubai, UAE',
-    'contact.info.email': 'info@finsight.ae',
-    'contact.info.phone': '+971 4 123 4567',
-    
-    // Footer
-    'footer.tagline': 'Tu Guía Financiera',
-    'footer.description': 'Empoderamos a startups y PyMEs con inteligencia financiera impulsada por IA.',
-    'footer.product': 'Producto',
-    'footer.company': 'Empresa',
-    'footer.legal': 'Legal',
-    'footer.copyright': '© 2024 FinSight. Todos los derechos reservados. Autoridad de Zona Libre Internacional de Dubai (IFZA)',
     
     // Language Selection
     'language.select': 'Seleccionar Idioma',
@@ -393,18 +603,18 @@ const translations = {
     'language.english': 'Inglés',
     'language.spanish': 'Español',
     
-    // Resources Section
-    'resources.subtitle': 'Accede a recursos útiles y definiciones para la gestión financiera',
-    'glossary.description': 'Términos financieros y métricas esenciales para tu negocio',
-    'glossary.financial.title': 'Términos Financieros',
-    'glossary.metrics.title': 'Métricas Clave',
-    'glossary.roi': 'Retorno de la Inversión - mide la efectividad de una inversión',
-    'glossary.ebitda': 'Ganancias antes de Intereses, Impuestos, Depreciación y Amortización',
-    'glossary.cashflow': 'Flujo de efectivo - movimiento de dinero entrante y saliente',
-    'glossary.liquidity': 'Capacidad de convertir rápidamente activos en efectivo',
-    'glossary.kpi': 'Indicadores Clave de Rendimiento - métricas de rendimiento',
-    'glossary.grossmargin': 'Diferencia entre ingresos y costos directos',
-    'glossary.debtratio': 'Relación entre deuda total y patrimonio',
-    'glossary.workingcapital': 'Capital de trabajo neto para operaciones diarias',
+    // Common
+    'common.loading': 'Cargando...',
+    'common.error': 'Error',
+    'common.success': 'Éxito',
+    'common.cancel': 'Cancelar',
+    'common.confirm': 'Confirmar',
+    'common.delete': 'Eliminar',
+    'common.edit': 'Editar',
+    'common.save': 'Guardar',
+    'common.back': 'Atrás',
+    'common.next': 'Siguiente',
+    'common.previous': 'Anterior',
+    'common.close': 'Cerrar',
   }
 };

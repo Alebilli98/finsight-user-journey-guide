@@ -84,16 +84,16 @@ const Header = ({ isOnboarded, user, onLogout, onProfile }: HeaderProps) => {
                     <DropdownMenuSeparator className="bg-primary/20" />
                     <DropdownMenuItem onClick={onProfile} className="text-tech-gray hover:text-primary hover:bg-primary/10">
                       <User className="mr-2 h-4 w-4" />
-                      Profile
+                      {t('header.profile')}
                     </DropdownMenuItem>
                     <DropdownMenuItem className="text-tech-gray hover:text-primary hover:bg-primary/10">
                       <Settings className="mr-2 h-4 w-4" />
-                      Settings
+                      {t('header.settings')}
                     </DropdownMenuItem>
                     <DropdownMenuSeparator className="bg-primary/20" />
                     <DropdownMenuItem onClick={onLogout} className="text-tech-gray hover:text-destructive hover:bg-destructive/10">
                       <LogOut className="mr-2 h-4 w-4" />
-                      Logout
+                      {t('header.logout')}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -102,7 +102,7 @@ const Header = ({ isOnboarded, user, onLogout, onProfile }: HeaderProps) => {
               </>
             )}
             <Badge variant="secondary" className="bg-tech-gradient text-white border-0 font-inter shadow-lg">
-              {user?.plan || "Premier"} Plan
+              {user?.plan || "Premier"} {t('header.plan')}
             </Badge>
           </div>
         </div>

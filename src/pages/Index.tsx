@@ -15,6 +15,7 @@ import Calendar from "@/components/Calendar";
 import Packages from "@/components/Packages";
 import UserProfile from "@/components/UserProfile";
 import DataImport from "@/components/DataImport";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState("dashboard");
@@ -24,6 +25,7 @@ const Index = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authModalTab, setAuthModalTab] = useState<"login" | "signup">("login");
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   // Check for existing user session on component mount
   useEffect(() => {
@@ -72,8 +74,8 @@ const Index = () => {
     } else {
       setActiveSection("dashboard");
       toast({
-        title: `Bentornato, ${userData.firstName}!`,
-        description: "La tua dashboard finanziaria è pronta.",
+        title: `${t('auth.welcome')}, ${userData.firstName}!`,
+        description: t('dashboard.welcome'),
       });
     }
   };
@@ -106,7 +108,7 @@ const Index = () => {
     setActiveSection("dashboard");
     setShowOnboarding(false);
     toast({
-      title: "Disconnesso",
+      title: t('header.logout'),
       description: "Sei stato disconnesso con successo.",
     });
   };
