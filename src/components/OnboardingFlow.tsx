@@ -17,7 +17,7 @@ const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
   const [hoveredIntegration, setHoveredIntegration] = useState<string | null>(null);
 
   const steps = [
-    "Welcome to Finsk.Ai",
+    "Welcome to Tralis AI",
     "Connect Your Business Accounts",
     "Setup Complete"
   ];
@@ -74,7 +74,7 @@ const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
               <TrendingUp className="h-10 w-10 text-white" />
             </div>
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome to Finsk.Ai</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome to Tralis AI</h2>
               <p className="text-lg text-gray-600 mb-4">Your AI-Powered Financial Intelligence Platform</p>
               <div className="flex justify-center">
                 <Badge className="bg-blue-100 text-blue-800 px-3 py-1">
@@ -306,7 +306,7 @@ const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
           
           <div className="flex justify-end mt-8">
             <Button onClick={nextStep} size="lg" className="px-8">
-              {currentStep === steps.length - 1 ? "Enter Finsk.Ai" : "Continue"}
+              {currentStep === steps.length - 1 ? "Enter Tralis AI" : "Continue"}
             </Button>
           </div>
         </CardContent>

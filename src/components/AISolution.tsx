@@ -1,57 +1,40 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
-  Bot, MessageSquare, Lightbulb, Settings, Send, Mic,
-  TrendingUp, BarChart3, Brain, Target
+  Bot, MessageSquare, Lightbulb, Settings, 
+  TrendingUp, BarChart3, Brain, Zap,
+  ArrowRight, Sparkles
 } from "lucide-react";
 import AIAssistant from "./ai/AIAssistant";
 import ScenarioAnalysis from "./ai/ScenarioAnalysis";
 
 const AISolution = () => {
-  const [activeTab, setActiveTab] = useState<'assistant' | 'chat' | 'insights' | 'scenario'>('assistant');
-  const [chatMessage, setChatMessage] = useState("");
-
-  // Default financial data for ScenarioAnalysis
-  const defaultFinancialData = {
-    annualRevenue: 100000,
-    merchandiseCost: 60000,
-    operatingExpenses: 25000,
-    grossMargin: 40,
-    monthlyRecurringRevenue: 8333,
-    cashRunway: 12,
-    burnRate: 5000,
-    monthlyRevenue: 8333,
-    currentRatio: 1.5,
-    operatingCashFlow: 15000
-  };
+  const [activeTab, setActiveTab] = useState("assistant");
 
   const aiFeatures = [
     {
-      id: 'assistant',
       icon: Bot,
       title: "AI Assistant",
       description: "Assistente intelligente per analisi finanziarie",
       color: "blue"
     },
     {
-      id: 'chat',
       icon: MessageSquare,
       title: "Chat AI",
       description: "Conversazione naturale con l'AI",
       color: "green"
     },
     {
-      id: 'insights',
       icon: Lightbulb,
       title: "AI Insights",
       description: "Insights automatici sui tuoi dati",
       color: "purple"
     },
     {
-      id: 'scenario',
       icon: Settings,
       title: "Scenario Analysis",
       description: "Analisi di scenari what-if",
@@ -59,170 +42,61 @@ const AISolution = () => {
     }
   ];
 
-  const renderTabContent = () => {
-    switch (activeTab) {
-      case 'assistant':
-        return <AIAssistant />;
-      case 'scenario':
-        return <ScenarioAnalysis financialData={defaultFinancialData} />;
-      case 'chat':
-        return (
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="flex items-center gap-2">
-                      <Bot className="h-5 w-5" />
-                      Comando AI
-                    </CardTitle>
-                    <CardDescription>
-                      Scrivi o parla per dare comandi all'assistente AI
-                    </CardDescription>
-                  </div>
-                  <Badge className="bg-purple-100 text-purple-800">AI Avanzata</Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="relative">
-                    <Textarea 
-                      placeholder="Es: 'Fissa un meeting con le risorse umane mercoledì alle 9' oppure 'Prepara un report vendite trimestrale'"
-                      value={chatMessage}
-                      onChange={(e) => setChatMessage(e.target.value)}
-                      className="min-h-[100px] pr-20"
-                    />
-                    <div className="absolute right-2 bottom-2 flex gap-2">
-                      <Button size="sm" variant="ghost" className="p-2">
-                        <Mic className="h-4 w-4" />
-                      </Button>
-                      <Button size="sm" className="p-2">
-                        <Send className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <h4 className="font-medium mb-2">Esempi di comandi:</h4>
-                    <ul className="space-y-1 text-sm text-gray-600">
-                      <li>• "Analizza le performance del Q3 e suggerisci miglioramenti"</li>
-                      <li>• "Crea un forecast di vendite per i prossimi 6 mesi"</li>
-                      <li>• "Confronta i nostri KPI con i benchmark del settore"</li>
-                      <li>• "Prepara una presentazione sui risultati finanziari"</li>
-                    </ul>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        );
-      case 'insights':
-        return (
-          <div className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5 text-blue-600" />
-                    Insight Automatici
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="p-3 bg-blue-50 rounded-lg">
-                      <p className="font-medium text-blue-900">Trend Positivo Rilevato</p>
-                      <p className="text-sm text-blue-700">Le tue vendite sono cresciute del 15% nell'ultimo trimestre</p>
-                    </div>
-                    <div className="p-3 bg-amber-50 rounded-lg">
-                      <p className="font-medium text-amber-900">Attenzione Cash Flow</p>
-                      <p className="text-sm text-amber-700">Prevista una diminuzione di liquidità nei prossimi 30 giorni</p>
-                    </div>
-                    <div className="p-3 bg-green-50 rounded-lg">
-                      <p className="font-medium text-green-900">Opportunità di Crescita</p>
-                      <p className="text-sm text-green-700">Il margine lordo è migliorato del 8% rispetto all'anno scorso</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <BarChart3 className="h-5 w-5 text-green-600" />
-                    Raccomandazioni AI
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="p-3 border-l-4 border-blue-500 bg-blue-50">
-                      <p className="font-medium">Ottimizza i Costi Operativi</p>
-                      <p className="text-sm text-gray-600">Riduci del 12% le spese generali per migliorare la redditività</p>
-                    </div>
-                    <div className="p-3 border-l-4 border-green-500 bg-green-50">
-                      <p className="font-medium">Investimenti Consigliati</p>
-                      <p className="text-sm text-gray-600">Aumenta il budget marketing del 20% per massimizzare il ROI</p>
-                    </div>
-                    <div className="p-3 border-l-4 border-purple-500 bg-purple-50">
-                      <p className="font-medium">Diversificazione Portfolio</p>
-                      <p className="text-sm text-gray-600">Considera l'espansione in nuovi mercati geografici</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        );
-      default:
-        return null;
-    }
-  };
-
   return (
-    <div className="space-y-8 p-6 bg-gradient-to-br from-purple-50 to-blue-50 min-h-screen">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between space-y-4 lg:space-y-0">
-        <div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-            AI-Powered Solutions
-          </h1>
-          <p className="text-gray-600 mt-2">Intelligent recommendations and insights tailored to your business</p>
+      <div className="text-center">
+        <div className="inline-flex items-center justify-center w-16 h-16 bg-tech-gradient rounded-2xl mb-4">
+          <Brain className="h-8 w-8 text-white" />
         </div>
-        <Badge className="bg-gradient-to-r from-purple-100 to-purple-200 text-purple-800 border-0 px-4 py-2 rounded-full">
-          <Brain className="h-4 w-4 mr-2" />
+        <h1 className="text-3xl font-bold text-dark-blue mb-4 font-inter">AI-Powered Solutions</h1>
+        <p className="text-lg text-tech-gray max-w-2xl mx-auto font-poppins">
+          Intelligent recommendations and insights tailored to your business
+        </p>
+        <Badge className="mt-4 bg-tech-gradient text-white border-0" variant="secondary">
+          <Sparkles className="h-3 w-3 mr-1" />
           AI Powered
         </Badge>
       </div>
 
-      {/* AI Features Navigation */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {aiFeatures.map((feature) => {
+      {/* AI Features Grid */}
+      <div className="grid md:grid-cols-4 gap-6 mb-8">
+        {aiFeatures.map((feature, index) => {
           const Icon = feature.icon;
-          const isActive = activeTab === feature.id;
+          const isActive = (feature.title === "AI Assistant" && activeTab === "assistant") ||
+                          (feature.title === "Scenario Analysis" && activeTab === "scenario");
           
           return (
             <Card 
-              key={feature.id}
-              className={`cursor-pointer transition-all hover:shadow-lg ${
-                isActive ? 'ring-2 ring-blue-500 bg-blue-50' : ''
+              key={index} 
+              className={`tech-card cursor-pointer transition-all duration-300 hover:shadow-lg transform hover:scale-105 border-2 ${
+                isActive ? 'border-primary bg-primary/5' : 'border-transparent hover:border-primary/20'
               }`}
-              onClick={() => setActiveTab(feature.id as any)}
+              onClick={() => {
+                if (feature.title === "AI Assistant") setActiveTab("assistant");
+                if (feature.title === "Scenario Analysis") setActiveTab("scenario");
+              }}
             >
-              <CardContent className="p-4 text-center">
-                <div className={`mx-auto mb-2 p-2 rounded-full w-fit ${
+              <CardHeader className="text-center pb-2">
+                <div className={`mx-auto mb-3 p-3 rounded-xl w-fit ${
                   feature.color === 'blue' ? 'bg-blue-100' :
                   feature.color === 'green' ? 'bg-green-100' :
                   feature.color === 'purple' ? 'bg-purple-100' :
                   'bg-orange-100'
                 }`}>
-                  <Icon className={`h-5 w-5 ${
+                  <Icon className={`h-6 w-6 ${
                     feature.color === 'blue' ? 'text-blue-600' :
                     feature.color === 'green' ? 'text-green-600' :
                     feature.color === 'purple' ? 'text-purple-600' :
                     'text-orange-600'
                   }`} />
                 </div>
-                <h3 className="font-semibold text-sm">{feature.title}</h3>
-                <p className="text-xs text-gray-500 mt-1">{feature.description}</p>
+                <CardTitle className="text-lg text-dark-blue font-inter">{feature.title}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-tech-gray text-center font-poppins">
+                  {feature.description}
+                </CardDescription>
               </CardContent>
             </Card>
           );
@@ -230,23 +104,114 @@ const AISolution = () => {
       </div>
 
       {/* Main Content Area */}
-      <div className="bg-white rounded-lg shadow-lg p-6">
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            {activeTab === 'assistant' && 'Assistente AI Finsk.Ai'}
-            {activeTab === 'chat' && 'Chat AI'}
-            {activeTab === 'insights' && 'AI Insights'}
-            {activeTab === 'scenario' && 'Scenario Analysis'}
-          </h2>
-          <p className="text-gray-600">
-            {activeTab === 'assistant' && 'Analisi automatica e comandi intelligenti per la tua azienda'}
-            {activeTab === 'chat' && 'Comunica direttamente con l\'AI per ottenere risposte immediate'}
-            {activeTab === 'insights' && 'Insights automatici e raccomandazioni basate sui tuoi dati'}
-            {activeTab === 'scenario' && 'Esplora diversi scenari futuri per la tua azienda'}
-          </p>
-        </div>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-2 mb-8">
+          <TabsTrigger value="assistant" className="font-inter">AI Assistant</TabsTrigger>
+          <TabsTrigger value="scenario" className="font-inter">Scenario Analysis</TabsTrigger>
+        </TabsList>
 
-        {renderTabContent()}
+        <TabsContent value="assistant" className="space-y-6">
+          <Card className="tech-card border-0 shadow-lg">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-xl text-dark-blue font-inter flex items-center">
+                    <Bot className="h-5 w-5 mr-2 text-primary" />
+                    Assistente AI Tralis AI
+                  </CardTitle>
+                  <CardDescription className="text-tech-gray font-poppins">
+                    Analisi automatica e comandi intelligenti per la tua azienda
+                  </CardDescription>
+                </div>
+                <Badge className="bg-tech-gradient text-white border-0">
+                  <Zap className="h-3 w-3 mr-1" />
+                  AI Avanzata
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <AIAssistant />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="scenario" className="space-y-6">
+          <Card className="tech-card border-0 shadow-lg">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-xl text-dark-blue font-inter flex items-center">
+                    <Settings className="h-5 w-5 mr-2 text-primary" />
+                    Scenario Analysis
+                  </CardTitle>
+                  <CardDescription className="text-tech-gray font-poppins">
+                    Analisi di scenari what-if
+                  </CardDescription>
+                </div>
+                <Badge className="bg-tech-gradient text-white border-0">
+                  <TrendingUp className="h-3 w-3 mr-1" />
+                  Predictive
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <ScenarioAnalysis />
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+
+      {/* AI Capabilities */}
+      <div className="grid md:grid-cols-2 gap-8">
+        <Card className="tech-card border-0 shadow-lg">
+          <CardHeader>
+            <CardTitle className="text-dark-blue font-inter flex items-center">
+              <BarChart3 className="h-5 w-5 mr-2 text-primary" />
+              Intelligent Analysis
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-3 text-tech-gray font-poppins">
+              <li className="flex items-start space-x-2">
+                <ArrowRight className="h-4 w-4 text-primary mt-0.5" />
+                <span>Automated financial health assessment</span>
+              </li>
+              <li className="flex items-start space-x-2">
+                <ArrowRight className="h-4 w-4 text-primary mt-0.5" />
+                <span>Cash flow forecasting and predictions</span>
+              </li>
+              <li className="flex items-start space-x-2">
+                <ArrowRight className="h-4 w-4 text-primary mt-0.5" />
+                <span>Risk analysis and recommendations</span>
+              </li>
+            </ul>
+          </CardContent>
+        </Card>
+
+        <Card className="tech-card border-0 shadow-lg">
+          <CardHeader>
+            <CardTitle className="text-dark-blue font-inter flex items-center">
+              <Brain className="h-5 w-5 mr-2 text-primary" />
+              Smart Recommendations
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-3 text-tech-gray font-poppins">
+              <li className="flex items-start space-x-2">
+                <ArrowRight className="h-4 w-4 text-primary mt-0.5" />
+                <span>Personalized business insights</span>
+              </li>
+              <li className="flex items-start space-x-2">
+                <ArrowRight className="h-4 w-4 text-primary mt-0.5" />
+                <span>Growth opportunity identification</span>
+              </li>
+              <li className="flex items-start space-x-2">
+                <ArrowRight className="h-4 w-4 text-primary mt-0.5" />
+                <span>Strategic planning assistance</span>
+              </li>
+            </ul>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
