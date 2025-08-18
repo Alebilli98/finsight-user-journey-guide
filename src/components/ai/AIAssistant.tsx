@@ -217,7 +217,7 @@ Ho analizzato la tua struttura costi e preparato un piano strategico:
       response = {
         id: Date.now().toString(),
         type: 'analysis',
-        content: `🤖 **Assistente FinSight**
+        content: `🤖 **Assistente Tralis AI**
 
 Ho analizzato la tua richiesta: "${input}"
 
@@ -287,7 +287,7 @@ Vuoi che approfondisca qualche aspetto specifico?`,
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-xl font-semibold text-gray-900">Assistente AI FinSight</h3>
+          <h3 className="text-xl font-semibold text-gray-900">Assistente AI Tralis AI</h3>
           <p className="text-gray-600">Analisi automatica e comandi intelligenti per la tua azienda</p>
         </div>
         <Badge className="bg-gradient-to-r from-purple-500 to-blue-500 text-white">
