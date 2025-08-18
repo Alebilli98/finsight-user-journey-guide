@@ -87,8 +87,8 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess, defaultTab = 'login' }: Aut
                 Tralis AI
               </DialogTitle>
               <Badge variant="secondary" className="bg-tech-gradient text-white border-0 text-xs px-2 py-0.5">
-                <MapPin className="h-3 w-3 mr-1" />
-                Dubai, UAE
+                <TrendingUp className="h-3 w-3 mr-1" />
+                Financial Intelligence
               </Badge>
             </div>
           </div>

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -28,7 +27,7 @@ const Index = () => {
 
   // Check for existing user session on component mount
   useEffect(() => {
-    const savedUser = localStorage.getItem("finsk_user");
+    const savedUser = localStorage.getItem("tralis_user");
     if (savedUser) {
       const userData = JSON.parse(savedUser);
       setUser(userData);
@@ -83,25 +82,25 @@ const Index = () => {
     // Mark onboarding as completed
     const updatedUser = { ...user, hasCompletedOnboarding: true };
     setUser(updatedUser);
-    localStorage.setItem("finsk_user", JSON.stringify(updatedUser));
+    localStorage.setItem("tralis_user", JSON.stringify(updatedUser));
     
     // Update users array
-    const savedUsers = JSON.parse(localStorage.getItem("finsk_users") || "[]");
+    const savedUsers = JSON.parse(localStorage.getItem("tralis_users") || "[]");
     const updatedUsers = savedUsers.map((u: any) => 
       u.email === user.email ? updatedUser : u
     );
-    localStorage.setItem("finsk_users", JSON.stringify(updatedUsers));
+    localStorage.setItem("tralis_users", JSON.stringify(updatedUsers));
     
     setShowOnboarding(false);
     setActiveSection("dashboard");
     toast({
-      title: `Benvenuto in Finsk.Ai, ${user.firstName}!`,
+      title: `Benvenuto in Tralis AI, ${user.firstName}!`,
       description: "Il tuo viaggio di trasformazione finanziaria inizia ora.",
     });
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("finsk_user");
+    localStorage.removeItem("tralis_user");
     setUser(null);
     setIsAuthenticated(false);
     setActiveSection("dashboard");
@@ -115,12 +114,12 @@ const Index = () => {
   const handleUserUpdate = (updatedUser: any) => {
     setUser(updatedUser);
     // Update both current user and users array
-    localStorage.setItem("finsk_user", JSON.stringify(updatedUser));
-    const savedUsers = JSON.parse(localStorage.getItem("finsk_users") || "[]");
+    localStorage.setItem("tralis_user", JSON.stringify(updatedUser));
+    const savedUsers = JSON.parse(localStorage.getItem("tralis_users") || "[]");
     const updatedUsers = savedUsers.map((u: any) => 
       u.email === updatedUser.email ? updatedUser : u
     );
-    localStorage.setItem("finsk_users", JSON.stringify(updatedUsers));
+    localStorage.setItem("tralis_users", JSON.stringify(updatedUsers));
   };
 
   const renderContent = () => {

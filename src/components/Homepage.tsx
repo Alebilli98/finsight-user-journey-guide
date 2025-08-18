@@ -54,7 +54,7 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
     },
     {
       name: "Sarah Al-Ahmad",
-      company: "Dubai Innovations",
+      company: "Innovation Labs",
       quote: t('testimonials.quote2'),
       rating: 5
     }
@@ -231,7 +231,7 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
                   </CardHeader>
                   <CardContent>
                     <CardDescription className="text-tech-gray font-poppins">
-                      Un gruppo diversificato di esperti finanziari, ingegneri AI e imprenditori seriali con sede a Dubai, il cuore dell'innovazione MENA.
+                      Un gruppo diversificato di esperti finanziari, ingegneri AI e imprenditori seriali impegnati nell'innovazione finanziaria.
                     </CardDescription>
                   </CardContent>
                 </Card>
@@ -567,7 +567,7 @@ const Homepage = ({ onLogin, onSignup }: HomepageProps) => {
           </div>
 
           <div className="border-t border-gray-700 mt-12 pt-8 text-center text-sm text-gray-400 font-poppins">
-            <p>© 2024 Tralis AI. Tutti i diritti riservati. Dubai International Free Zone Authority (IFZA)</p>
+            <p>© 2024 Tralis AI. Tutti i diritti riservati.</p>
           </div>
         </div>
       </footer>
