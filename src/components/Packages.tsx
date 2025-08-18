@@ -133,7 +133,7 @@ const Packages = () => {
   const handleUpgrade = (packageName: string) => {
     toast({
       title: "Upgrade Initiated",
-      description: `Upgrading to ${packageName}. Our Dubai-based team will contact you shortly.`,
+      description: `Upgrading to ${packageName}. Our team will contact you shortly.`,
     });
   };
 
@@ -147,15 +147,15 @@ const Packages = () => {
   return (
     <div className="space-y-8">
       <div className="text-center space-y-4">
-        <h1 className="text-3xl font-bold text-gray-900">Choose Your FinSight Package</h1>
+        <h1 className="text-3xl font-bold text-gray-900">Choose Your Tralis AI Package</h1>
         <p className="text-lg text-gray-600 max-w-3xl mx-auto">
           Democratizing access to sophisticated financial tools. From foundational insights 
           to comprehensive financial intelligence with ESG analysis.
         </p>
         <div className="flex justify-center">
           <Badge className="bg-blue-100 text-blue-800 px-3 py-1">
-            <Building2 className="h-3 w-3 mr-1" />
-            Operated from Dubai International Free Zone
+            <TrendingUp className="h-3 w-3 mr-1" />
+            Financial Intelligence Platform
           </Badge>
         </div>
       </div>
@@ -304,7 +304,7 @@ const Packages = () => {
             </div>
             <h3 className="text-2xl font-bold text-gray-900">Enterprise & Consulting Solutions</h3>
             <p className="text-gray-600">
-              Large organization or need custom solutions? Our Dubai-based team offers 
+              Large organization or need custom solutions? Our team offers 
               enterprise-grade platforms, dedicated infrastructure, and personalized 
               financial consulting services.
             </p>
@@ -313,7 +313,7 @@ const Packages = () => {
                 Schedule Consultation
               </Button>
               <Button>
-                Contact Dubai Office
+                Contact Our Team
               </Button>
             </div>
           </div>
