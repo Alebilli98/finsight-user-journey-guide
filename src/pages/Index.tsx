@@ -9,12 +9,11 @@ import OnboardingFlow from "@/components/OnboardingFlow";
 import Dashboard from "@/components/Dashboard";
 import Analytics from "@/components/Analytics";
 import Reports from "@/components/Reports";
-import AISolution from "@/components/AISolution";
-import LendingSolution from "@/components/LendingSolution";
 import Calendar from "@/components/Calendar";
-import Packages from "@/components/Packages";
 import UserProfile from "@/components/UserProfile";
 import DataImport from "@/components/DataImport";
+import FinancialGoal from "@/components/FinancialGoal";
+import LearningHub from "@/components/LearningHub";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const Index = () => {
@@ -137,19 +136,9 @@ const Index = () => {
       case "reports":
         return <Reports />;
       case "financial-goal":
-        return (
-          <div className="p-8">
-            <h2 className="text-3xl font-bold mb-4">Financial Goal</h2>
-            <p className="text-muted-foreground">Financial goal tracking coming soon...</p>
-          </div>
-        );
+        return <FinancialGoal />;
       case "learning-hub":
-        return (
-          <div className="p-8">
-            <h2 className="text-3xl font-bold mb-4">Learning Hub</h2>
-            <p className="text-muted-foreground">Learning resources coming soon...</p>
-          </div>
-        );
+        return <LearningHub />;
       case "calendar":
         return <Calendar />;
       case "profile":
