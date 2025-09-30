@@ -20,12 +20,24 @@ const FinancialStatements = ({ user }: FinancialStatementsProps) => {
   const hasRealData = financialData.annualRevenue > 0 || financialData.totalAssets > 0;
 
   // Mock data structure - replace with real data from user
+  const revenue = financialData.annualRevenue || 0;
+  const costOfGoodsSold = financialData.costOfGoodsSold || 0;
+  const grossProfit = revenue - costOfGoodsSold;
+  const operatingExpenses = financialData.operatingExpenses || 0;
+  const depreciation = financialData.depreciation || 0;
+  const amortization = financialData.amortization || 0;
+  const ebit = grossProfit - operatingExpenses;
+  const ebitda = ebit + depreciation + amortization;
+  
   const incomeStatementData = {
-    revenue: financialData.annualRevenue || 0,
-    costOfGoodsSold: financialData.costOfGoodsSold || 0,
-    grossProfit: (financialData.annualRevenue || 0) - (financialData.costOfGoodsSold || 0),
-    operatingExpenses: financialData.operatingExpenses || 0,
-    ebit: ((financialData.annualRevenue || 0) - (financialData.costOfGoodsSold || 0) - (financialData.operatingExpenses || 0)),
+    revenue,
+    costOfGoodsSold,
+    grossProfit,
+    operatingExpenses,
+    depreciation,
+    amortization,
+    ebit,
+    ebitda,
     interestExpense: financialData.interestExpense || 0,
     taxes: financialData.taxes || 0,
     netIncome: financialData.netIncome || 0,
@@ -112,27 +124,64 @@ const FinancialStatements = ({ user }: FinancialStatementsProps) => {
       </div>
 
       {/* Statement Overview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card className="hover:shadow-lg transition-shadow border-l-4 border-l-green-500">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-sm font-medium">Income Statement</CardTitle>
+              <CardTitle className="text-sm font-medium">Revenue</CardTitle>
               <TrendingUp className="h-5 w-5 text-green-600" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Revenue</span>
-                <span className="font-medium">€{incomeStatementData.revenue.toLocaleString()}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span>Net Income</span>
-                <span className={`font-medium ${incomeStatementData.netIncome >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                  €{incomeStatementData.netIncome.toLocaleString()}
-                </span>
-              </div>
+            <div className="text-2xl font-bold">€{incomeStatementData.revenue.toLocaleString()}</div>
+            <p className="text-xs text-muted-foreground mt-1">Annual Revenue</p>
+          </CardContent>
+        </Card>
+
+        <Card className="hover:shadow-lg transition-shadow border-l-4 border-l-blue-500 bg-blue-50/50">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm font-medium text-blue-900">EBITDA</CardTitle>
+              <TrendingUp className="h-5 w-5 text-blue-600" />
             </div>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-blue-900">€{ebitda.toLocaleString()}</div>
+            <p className="text-xs text-blue-700 mt-1">
+              Margin: {revenue > 0 ? ((ebitda / revenue) * 100).toFixed(1) : 0}%
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="hover:shadow-lg transition-shadow border-l-4 border-l-purple-500 bg-purple-50/50">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm font-medium text-purple-900">EBIT</CardTitle>
+              <TrendingUp className="h-5 w-5 text-purple-600" />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-purple-900">€{ebit.toLocaleString()}</div>
+            <p className="text-xs text-purple-700 mt-1">
+              Margin: {revenue > 0 ? ((ebit / revenue) * 100).toFixed(1) : 0}%
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="hover:shadow-lg transition-shadow border-l-4 border-l-orange-500">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm font-medium">Net Income</CardTitle>
+              <TrendingUp className="h-5 w-5 text-orange-600" />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className={`text-2xl font-bold ${incomeStatementData.netIncome >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+              €{incomeStatementData.netIncome.toLocaleString()}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              Margin: {revenue > 0 ? ((incomeStatementData.netIncome / revenue) * 100).toFixed(1) : 0}%
+            </p>
           </CardContent>
         </Card>
 

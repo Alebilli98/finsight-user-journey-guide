@@ -106,62 +106,6 @@ const CommerceDashboard = ({ user }: CommerceDashboardProps) => {
         />
       </div>
 
-      {/* Secondary Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">{t('commerce.total.customers') || 'Total Customers'}</p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">{totalCustomers.toLocaleString()}</p>
-                <div className="flex items-center mt-2 text-sm text-green-600">
-                  <ArrowUpRight className="h-4 w-4 mr-1" />
-                  8.2% {t('commerce.vs.last.month') || 'vs last month'}
-                </div>
-              </div>
-              <div className="p-3 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 shadow-lg">
-                <Users className="h-6 w-6 text-white" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">{t('commerce.monthly.orders') || 'Monthly Orders'}</p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">{monthlyOrders}</p>
-                <div className="flex items-center mt-2 text-sm text-green-600">
-                  <ArrowUpRight className="h-4 w-4 mr-1" />
-                  5.7% {t('commerce.vs.last.month') || 'vs last month'}
-                </div>
-              </div>
-              <div className="p-3 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg">
-                <ShoppingCart className="h-6 w-6 text-white" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">{t('commerce.average.order.value') || 'Average Order Value'}</p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">€{averageOrderValue.toFixed(0)}</p>
-                <div className="flex items-center mt-2 text-sm text-green-600">
-                  <ArrowUpRight className="h-4 w-4 mr-1" />
-                  3.4% {t('commerce.vs.last.month') || 'vs last month'}
-                </div>
-              </div>
-              <div className="p-3 rounded-full bg-gradient-to-br from-green-500 to-green-600 shadow-lg">
-                <TrendingUp className="h-6 w-6 text-white" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
 
       {/* Dashboard Charts Section */}
       <DashboardCharts financialData={financialData} />
