@@ -56,11 +56,10 @@ const translations = {
     'sidebar.dashboard': 'Dashboard',
     'sidebar.analytics': 'Analytics',
     'sidebar.reports': 'Report',
-    'sidebar.data-import': 'Importa Dati',
-    'sidebar.ai-solution': 'Soluzione AI',
-    'sidebar.lending': 'Finanziamenti',
+    'sidebar.financial-goal': 'Obiettivi Finanziari',
+    'sidebar.learning-hub': 'Centro Formazione',
     'sidebar.calendar': 'Calendario',
-    'sidebar.packages': 'Pacchetti',
+    'sidebar.data-import': 'Importa Dati',
     
     // Header
     'header.profile': 'Profilo',
@@ -324,11 +323,10 @@ const translations = {
     'sidebar.dashboard': 'Dashboard',
     'sidebar.analytics': 'Analytics',
     'sidebar.reports': 'Reports',
-    'sidebar.data-import': 'Data Import',
-    'sidebar.ai-solution': 'AI Solution',
-    'sidebar.lending': 'Lending',
+    'sidebar.financial-goal': 'Financial Goal',
+    'sidebar.learning-hub': 'Learning Hub',
     'sidebar.calendar': 'Calendar',
-    'sidebar.packages': 'Packages',
+    'sidebar.data-import': 'Data Import',
     
     // Header
     'header.profile': 'Profile',
@@ -592,11 +590,10 @@ const translations = {
     'sidebar.dashboard': 'Dashboard',
     'sidebar.analytics': 'Analytics',
     'sidebar.reports': 'Reportes',
-    'sidebar.data-import': 'Importar Datos',
-    'sidebar.ai-solution': 'Solución AI',
-    'sidebar.lending': 'Financiamiento',
+    'sidebar.financial-goal': 'Objetivos Financieros',
+    'sidebar.learning-hub': 'Centro de Aprendizaje',
     'sidebar.calendar': 'Calendario',
-    'sidebar.packages': 'Paquetes',
+    'sidebar.data-import': 'Importar Datos',
     
     // Header
     'header.profile': 'Perfil',

@@ -136,14 +136,22 @@ const Index = () => {
         return <Analytics user={user} />;
       case "reports":
         return <Reports />;
-      case "ai-solution":
-        return <AISolution />;
-      case "lending":
-        return <LendingSolution />;
+      case "financial-goal":
+        return (
+          <div className="p-8">
+            <h2 className="text-3xl font-bold mb-4">Financial Goal</h2>
+            <p className="text-muted-foreground">Financial goal tracking coming soon...</p>
+          </div>
+        );
+      case "learning-hub":
+        return (
+          <div className="p-8">
+            <h2 className="text-3xl font-bold mb-4">Learning Hub</h2>
+            <p className="text-muted-foreground">Learning resources coming soon...</p>
+          </div>
+        );
       case "calendar":
         return <Calendar />;
-      case "packages":
-        return <Packages />;
       case "profile":
         return <UserProfile user={user} onUserUpdate={handleUserUpdate} />;
       case "data-import":

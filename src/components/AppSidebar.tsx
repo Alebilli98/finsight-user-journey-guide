@@ -1,6 +1,6 @@
 
 import { 
-  TrendingUp, BarChart3, FileText, Brain, CreditCard, Package, Calendar, Upload
+  TrendingUp, BarChart3, FileText, Target, GraduationCap, Calendar, Upload
 } from "lucide-react";
 import {
   Sidebar,
@@ -30,11 +30,10 @@ const AppSidebar = ({ activeSection, setActiveSection }: AppSidebarProps) => {
     { id: "dashboard", label: t('sidebar.dashboard'), icon: TrendingUp },
     { id: "analytics", label: t('sidebar.analytics'), icon: BarChart3 },
     { id: "reports", label: t('sidebar.reports'), icon: FileText },
-    { id: "data-import", label: t('sidebar.data-import'), icon: Upload },
-    { id: "ai-solution", label: t('sidebar.ai-solution'), icon: Brain },
-    { id: "lending", label: t('sidebar.lending'), icon: CreditCard },
+    { id: "financial-goal", label: t('sidebar.financial-goal'), icon: Target },
+    { id: "learning-hub", label: t('sidebar.learning-hub'), icon: GraduationCap },
     { id: "calendar", label: t('sidebar.calendar'), icon: Calendar },
-    { id: "packages", label: t('sidebar.packages'), icon: Package },
+    { id: "data-import", label: t('sidebar.data-import'), icon: Upload },
   ];
 
   return (
