@@ -8,7 +8,7 @@ import {
   ArrowUpRight, ArrowDownRight, Eye, Download
 } from "lucide-react";
 import { MetricCard } from "@/components/charts/AdvancedCharts";
-import RevenueCharts from "@/components/charts/RevenueCharts";
+import DashboardCharts from "@/components/charts/DashboardCharts";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 interface CommerceDashboardProps {
@@ -54,8 +54,8 @@ const CommerceDashboard = ({ user }: CommerceDashboardProps) => {
         </div>
       </div>
 
-      {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* Key Metrics - 6 Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <MetricCard
           title={t('commerce.total.revenue') || 'Total Revenue'}
           value={`€${totalRevenue.toLocaleString()}`}
@@ -87,6 +87,22 @@ const CommerceDashboard = ({ user }: CommerceDashboardProps) => {
           trend="up"
           color="green"
           icon={<ArrowUpRight className="h-6 w-6 text-white" />}
+        />
+        <MetricCard
+          title={t('commerce.total.customers') || 'Total Customers'}
+          value={totalCustomers.toLocaleString()}
+          change={8.2}
+          trend="up"
+          color="purple"
+          icon={<Users className="h-6 w-6 text-white" />}
+        />
+        <MetricCard
+          title={t('commerce.average.order.value') || 'Average Order Value'}
+          value={`€${averageOrderValue.toFixed(0)}`}
+          change={3.4}
+          trend="up"
+          color="cyan"
+          icon={<ShoppingCart className="h-6 w-6 text-white" />}
         />
       </div>
 
@@ -147,21 +163,8 @@ const CommerceDashboard = ({ user }: CommerceDashboardProps) => {
         </Card>
       </div>
 
-      {/* Revenue Charts Section */}
-      <Card className="border-0 shadow-lg">
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <TrendingUp className="h-5 w-5 text-blue-600" />
-            <span>{t('commerce.revenue.analysis') || 'Revenue and Cost Analysis'}</span>
-          </CardTitle>
-          <CardDescription>
-            {t('commerce.revenue.description') || 'Detailed visualization of revenue, operating and financial costs'}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <RevenueCharts financialData={financialData} />
-        </CardContent>
-      </Card>
+      {/* Dashboard Charts Section */}
+      <DashboardCharts financialData={financialData} />
 
       {/* Performance Summary */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

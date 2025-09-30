@@ -38,18 +38,14 @@ const Dashboard = ({ user }: DashboardProps) => {
       <Tabs defaultValue="overview" className="w-full">
         <div className="border-b bg-white/50 backdrop-blur-sm">
           <div className="px-6">
-            <TabsList className="grid w-full grid-cols-3 bg-transparent h-12">
+            <TabsList className="grid w-full grid-cols-2 bg-transparent h-12">
               <TabsTrigger value="overview" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
                 <TrendingUp className="h-4 w-4 mr-2" />
                 Overview
               </TabsTrigger>
               <TabsTrigger value="statements" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
                 <FileText className="h-4 w-4 mr-2" />
-                Financial Statements
-              </TabsTrigger>
-              <TabsTrigger value="custom" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
-                <Settings className="h-4 w-4 mr-2" />
-                My Dashboard
+                Financial Statement
               </TabsTrigger>
             </TabsList>
           </div>
@@ -61,12 +57,6 @@ const Dashboard = ({ user }: DashboardProps) => {
 
         <TabsContent value="statements" className="mt-0">
           <FinancialStatements user={user} />
-        </TabsContent>
-
-        <TabsContent value="custom" className="mt-0">
-          <div className="p-6">
-            <CustomizableDashboard user={user} financialData={financialData} />
-          </div>
         </TabsContent>
       </Tabs>
     </div>
